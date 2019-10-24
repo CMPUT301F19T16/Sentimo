@@ -5,7 +5,24 @@ local.properties
 
 */build/
 
-.idea/workspace.xml
-.idea/tasks.xml
-.idea/datasources.xml
-.idea/dataSources.ids
+/.idea/workspace.xml
+/.idea/tasks.xml
+/.idea/datasources.xml
+/.idea/dataSources.ids
+/.idea/caches
+/.idea/libraries
+/.idea/modules.xml
+/.idea/assetWizardSettings.xml
+/.idea/dynamic.xml
+/.idea/uiDesigner.xml
+/.idea/gradle.xml
+
+.DS_Store
+captures/
+.externalNativeBuild
+
+/.project
+/.settings
+/app/.settings
+/app/.classpath
+/app/.project

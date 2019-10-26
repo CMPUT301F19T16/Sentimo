@@ -19,5 +19,4 @@ public class Mood {
         this.situation = situation;
     }
 
-
 }

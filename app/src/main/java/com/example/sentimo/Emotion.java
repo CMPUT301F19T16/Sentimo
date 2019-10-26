@@ -1,5 +1,6 @@
 package com.example.sentimo;
 
+
 public class Emotion {
     private String colour;
     private String name;

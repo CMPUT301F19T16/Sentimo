@@ -6,6 +6,7 @@ public class Confident extends Emotion {
     private String colour;
     //private Image emoji;
 
+
     public Confident() {
         super("Confident", "#EDF961");
     }

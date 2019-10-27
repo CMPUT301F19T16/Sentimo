@@ -3,7 +3,7 @@
 .gradle/
 local.properties
 
-*/build/
+build/
 
 /.idea/workspace.xml
 /.idea/tasks.xml

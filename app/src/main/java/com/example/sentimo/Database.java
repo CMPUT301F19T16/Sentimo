@@ -16,6 +16,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 
 public class Database {
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -33,27 +34,27 @@ public class Database {
         moodHistory = new ArrayList<>();
         moodHash = new HashMap<>();
         this.username = username;
+        getAllMoods();
     }
 
-    public void getAllMoods() {
-        // TODO: read data from database
+    /**
+     * Read data from firestore and save it to local array list
+     */
+    private void getAllMoods() {
         CollectionReference userMoods = getUserMoods();
         userMoods.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if (task.isSuccessful()) {
-                    for (QueryDocumentSnapshot document : task.getResult()) {
-                        Log.d("Get List", "inside!!!!!!!!!!!!!!!!!");
-                    }
-                } else {
-                    Log.d("Get List", "Error getting documents: ");
+                List<DocumentSnapshot> data = task.getResult().getDocuments();
+                for (DocumentSnapshot d : data) {
+                    Mood mood = d.toObject(Mood.class);
+                    moodHistory.add(mood);
                 }
             }
         });
     }
 
     public ArrayList<Mood> getMoodHistory() {
-        Log.d("Get History", "not successful or empty    " + moodHistory.size());
         return moodHistory;
     }
 
@@ -66,10 +67,10 @@ public class Database {
         CollectionReference userMoods = getUserMoods();
         String hashcode = Integer.toString(mood.hashCode());
         userMoods.document(hashcode).delete();
+        getAllMoods();
     }
 
     private CollectionReference getUserMoods() {
-//        TODO: Implement get by username
         return users.document(this.username).collection("moods");
     }
 

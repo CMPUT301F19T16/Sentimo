@@ -41,6 +41,7 @@ public class Database {
      * Read data from firestore and save it to local array list
      */
     private void getAllMoods() {
+        moodHistory.clear();
         CollectionReference userMoods = getUserMoods();
         userMoods.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override

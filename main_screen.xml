@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:gravity="right|bottom"
+    android:layout_height="match_parent">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/button_add"
+            android:layout_width="130dp"
+            android:layout_height="wrap_content"
+            android:text="Add" />
+
+        <Button
+            android:id="@+id/button_Friends"
+            android:layout_width="130dp"
+            android:layout_height="wrap_content"
+            android:text="Friends" />
+
+        <Button
+            android:id="@+id/button_Map"
+            android:layout_width="140dp"
+            android:layout_height="wrap_content"
+            android:text="Map" />
+
+
+    </LinearLayout>
+
+    <ListView
+        android:id="@+id/mood_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"></ListView>
+</LinearLayout>
+

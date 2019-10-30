@@ -37,6 +37,7 @@ public class AddMoodFragment extends DialogFragment implements SelectMoodFragmen
     private TextView situationTextView;
     private CheckBox locationCheckBox;
     private OnFragmentInteractionListener listener;
+    private Emotion emotion;
 
     public interface OnFragmentInteractionListener{
         void onDonePressed(Mood newMood);
@@ -68,6 +69,7 @@ public class AddMoodFragment extends DialogFragment implements SelectMoodFragmen
         situationButton = view.findViewById(R.id.add_situation_button);
         situationTextView = view.findViewById(R.id.add_situation_situation);
         locationCheckBox = view.findViewById(R.id.add_location_checkbox);
+        final Emotion emotion;
 
         // Should add TextWatchers
 
@@ -88,41 +90,15 @@ public class AddMoodFragment extends DialogFragment implements SelectMoodFragmen
                         String date = dateTextView.getText().toString();
                         String time = timeTextView.getText().toString();
                         String emotionText = emojiImageButton.getText().toString();
-                        Emotion emotion = null;
-                        switch(emotionText) {
-                            case "Happy":
-                                emotion = new Happy();
-                                break;
-                            case "Sad":
-                                emotion = new Sad();
-                                break;
-                            case "Mad":
-                                emotion = new Mad();
-                                break;
-                            case "Loved":
-                                emotion = new Loved();
-                                break;
-                            case "Worried":
-                                emotion = new Worried();
-                                break;
-                            case "Tired":
-                                emotion = new Tired();
-                                break;
-                            case "Confident":
-                                emotion = new Confident();
-                                break;
-                            case "Embarassed":
-                                emotion = new Embarrassed();
-                                break;
-                            default:
-                                throw new RuntimeException("Unrecognized emotion state " + emotionText);
+                        if (AddMoodFragment.this.emotion == null) {
+                            throw new RuntimeException("IMPLEMENT WARNING FOR NO EMOTION");
                         }
 //                        Emotion emotion = new Worried(); // Temp until emotion is implemented
                         String reason = reasonEditText.getText().toString();
                         String situation = situationTextView.getText().toString();
                         Boolean location = locationCheckBox.isChecked();
                         // Need to add if statements for null date, time, or emotion
-                        listener.onDonePressed(new Mood(date, time, emotion, reason, situation, location));
+                        listener.onDonePressed(new Mood(date, time, AddMoodFragment.this.emotion, reason, situation, location));
                     }
                 }).create();
 
@@ -132,7 +108,8 @@ public class AddMoodFragment extends DialogFragment implements SelectMoodFragmen
     @Override
     public void onDonePressed(Emotion emotion) {
         if (emotion != null) {
-            emojiImageButton.setText(emotion.getName());
+            this.emotion = emotion;
+            emojiImageButton.setText(this.emotion.getName());
         }
     }
 }

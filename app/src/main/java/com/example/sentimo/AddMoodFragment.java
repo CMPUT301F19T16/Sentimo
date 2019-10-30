@@ -87,7 +87,37 @@ public class AddMoodFragment extends DialogFragment implements SelectMoodFragmen
                     public void onClick(DialogInterface dialog, int which) {
                         String date = dateTextView.getText().toString();
                         String time = timeTextView.getText().toString();
-                        Emotion emotion = new Worried(); // Temp until emotion is implemented
+                        String emotionText = emojiImageButton.getText().toString();
+                        Emotion emotion = null;
+                        switch(emotionText) {
+                            case "Happy":
+                                emotion = new Happy();
+                                break;
+                            case "Sad":
+                                emotion = new Sad();
+                                break;
+                            case "Mad":
+                                emotion = new Mad();
+                                break;
+                            case "Loved":
+                                emotion = new Loved();
+                                break;
+                            case "Worried":
+                                emotion = new Worried();
+                                break;
+                            case "Tired":
+                                emotion = new Tired();
+                                break;
+                            case "Confident":
+                                emotion = new Confident();
+                                break;
+                            case "Embarassed":
+                                emotion = new Embarrassed();
+                                break;
+                            default:
+                                throw new RuntimeException("Unrecognized emotion state " + emotionText);
+                        }
+//                        Emotion emotion = new Worried(); // Temp until emotion is implemented
                         String reason = reasonEditText.getText().toString();
                         String situation = situationTextView.getText().toString();
                         Boolean location = locationCheckBox.isChecked();

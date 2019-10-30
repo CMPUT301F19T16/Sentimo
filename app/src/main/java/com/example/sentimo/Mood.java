@@ -10,18 +10,20 @@ public class Mood implements Serializable {
     private Emotion emotion;
     private String reason;
     private String situation;
+    private Boolean location;
     //private Location location
     //private Photo photo;
 
     public Mood(){}
 
     public Mood(String date, String time, Emotion emotion, String reason,
-                String situation){
+                String situation, Boolean location){
         this.date = date;
         this.time = time;
         this.emotion = emotion;
         this.reason = reason;
         this.situation = situation;
+        this.location = location;
     }
 
     public String getDate() {

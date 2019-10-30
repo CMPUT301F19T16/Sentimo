@@ -16,6 +16,7 @@ build/
 /.idea/dynamic.xml
 /.idea/uiDesigner.xml
 /.idea/gradle.xml
+/.idea/misc.xml
 
 .DS_Store
 captures/

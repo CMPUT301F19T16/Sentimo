@@ -16,7 +16,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
-public class EditMoodFragment extends DialogFragment implements SelectMoodFragment.OnFragmentInteractionListener {
+public class EditMoodFragment extends DialogFragment implements SelectMoodFragment.OnFragmentInteractionListener, SelectSituationFragment.SelectSituationListener {
 
     private int position;
     private Mood mood;
@@ -76,6 +76,13 @@ public class EditMoodFragment extends DialogFragment implements SelectMoodFragme
             }
         });
 
+        situationButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new SelectSituationFragment().show(getChildFragmentManager(), "SELECT_SITUATION");
+            }
+        });
+
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         return builder
                 .setView(view)
@@ -101,6 +108,13 @@ public class EditMoodFragment extends DialogFragment implements SelectMoodFragme
         if (emotion != null){
             this.emotion = emotion;
             emojiButton.setText(emotion.getName());
+        }
+    }
+
+    @Override
+    public void situationReturned(String string) {
+        if (string != null) {
+            situationButton.setText(string);
         }
     }
 }

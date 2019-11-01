@@ -10,20 +10,20 @@ public class Mood implements Serializable {
     private Emotion emotion;
     private String reason;
     private String situation;
-    private Boolean location;
+    private Boolean locationPermission;
     //private Location location
     //private Photo photo;
 
     public Mood(){}
 
     public Mood(String date, String time, Emotion emotion, String reason,
-                String situation, Boolean location){
+                String situation, Boolean locationPermission){
         this.date = date;
         this.time = time;
         this.emotion = emotion;
         this.reason = reason;
         this.situation = situation;
-        this.location = location;
+        this.locationPermission = locationPermission;
     }
 
     public String getDate() {
@@ -65,6 +65,10 @@ public class Mood implements Serializable {
     public void setSituation(String situation) {
         this.situation = situation;
     }
+
+    public Boolean getLocationPermission() {return locationPermission;}
+
+    public void setLocationPermission(Boolean locationPermission){this.locationPermission = locationPermission;}
 
     @Override
     public boolean equals(Object o) {

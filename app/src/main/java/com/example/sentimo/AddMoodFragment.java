@@ -5,8 +5,10 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.AbsListView;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -23,7 +25,7 @@ import androidx.fragment.app.DialogFragment;
 //// from the AddCityFragment class.
 //// I don't know who wrote the ListyCity demo, but the Android Studio .zip file is on eclass at this URL
 //// Url == https://eclass.srv.ualberta.ca/course/view.php?id=54165
-public class AddMoodFragment extends DialogFragment {
+public class AddMoodFragment extends DialogFragment implements SelectMoodFragment.OnFragmentInteractionListener {
     private TextView dateTextView;
     private TextView timeTextView;
     //private Image emojiImageView;
@@ -35,6 +37,7 @@ public class AddMoodFragment extends DialogFragment {
     private TextView situationTextView;
     private CheckBox locationCheckBox;
     private OnFragmentInteractionListener listener;
+    private Emotion emotion;
 
     public interface OnFragmentInteractionListener{
         void onDonePressed(Mood newMood);
@@ -66,8 +69,16 @@ public class AddMoodFragment extends DialogFragment {
         situationButton = view.findViewById(R.id.add_situation_button);
         situationTextView = view.findViewById(R.id.add_situation_situation);
         locationCheckBox = view.findViewById(R.id.add_location_checkbox);
+        final Emotion emotion;
 
         // Should add TextWatchers
+
+        emojiImageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new SelectMoodFragment().show(getChildFragmentManager(), "SELECT_MOOD");
+            }
+        });
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         return builder
@@ -78,15 +89,27 @@ public class AddMoodFragment extends DialogFragment {
                     public void onClick(DialogInterface dialog, int which) {
                         String date = dateTextView.getText().toString();
                         String time = timeTextView.getText().toString();
-                        Emotion emotion = new Worried(); // Temp until emotion is implemented
+                        String emotionText = emojiImageButton.getText().toString();
+                        if (AddMoodFragment.this.emotion == null) {
+                            throw new RuntimeException("IMPLEMENT WARNING FOR NO EMOTION");
+                        }
+//                        Emotion emotion = new Worried(); // Temp until emotion is implemented
                         String reason = reasonEditText.getText().toString();
                         String situation = situationTextView.getText().toString();
                         Boolean location = locationCheckBox.isChecked();
                         // Need to add if statements for null date, time, or emotion
-                        listener.onDonePressed(new Mood(date, time, emotion, reason, situation, location));
+                        listener.onDonePressed(new Mood(date, time, AddMoodFragment.this.emotion, reason, situation, location));
                     }
                 }).create();
 
 
+    }
+
+    @Override
+    public void onDonePressed(Emotion emotion) {
+        if (emotion != null) {
+            this.emotion = emotion;
+            emojiImageButton.setText(this.emotion.getName());
+        }
     }
 }

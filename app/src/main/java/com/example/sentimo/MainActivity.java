@@ -2,6 +2,8 @@ package com.example.sentimo;
 
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
+import android.widget.TextView;
+import java.util.ArrayList;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;

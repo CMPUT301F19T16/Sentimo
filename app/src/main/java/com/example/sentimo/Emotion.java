@@ -6,6 +6,8 @@ public class Emotion {
     private String name;
     //private Image emotion;
 
+    public Emotion() {}
+
     public Emotion(String name, String colour){
         this.name = name;
         this.colour = colour;

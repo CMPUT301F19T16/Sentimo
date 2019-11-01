@@ -27,4 +27,10 @@
         android:id="@+id/crowdButton"
         android:text="With a Crowd"></Button>
 
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/noSituationButton"
+        android:text="(No situation NOT IMPLEMENTED)"></Button>
+
 </LinearLayout>

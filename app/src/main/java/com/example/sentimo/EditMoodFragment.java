@@ -16,65 +16,66 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
-public class EditMoodFragment extends DialogFragment implements SelectMoodFragment.OnFragmentInteractionListener {
-
+public class EditMoodFragment extends ChangeMoodFragment {
     private int position;
-    private Mood mood;
-    private OnFragmentInteractionListener listener;
-    private EditText dateEditText;
-    private EditText timeEditText;
-    private EditText reasonEditText;
-    private Button emojiButton;
-    private Button situationButton;
-    private CheckBox locationCheckBox;
-    private Emotion emotion;
+    private Mood initialMood;
+    private EditMoodListener listener;
 
-    public interface OnFragmentInteractionListener{
+    // Subclass UI initialization
+
+    @Override
+    protected void subclassInitialization() {
+        this.emotion = initialMood.getEmotion();
+        this.situation = initialMood.getSituation();
+
+        dateTextView.setText(initialMood.getDate());
+        timeTextView.setText(initialMood.getTime());
+        reasonEditText.setText(initialMood.getReason());
+        Situation moodSituation = initialMood.getSituation();
+        if (moodSituation != null) {
+            situationButton.setText(moodSituation.getName());
+        } else {
+            situationButton.setText("(Optional)");
+        }
+        locationCheckBox.setChecked(initialMood.getLocationPermission());
+        emojiImageButton.setText(initialMood.getEmotion().getName());
+        emotion = initialMood.getEmotion();
+
+    }
+
+    // Subclass listener interfaces and methods
+
+    public interface EditMoodListener{
         void onConfirmEditPressed(Mood mood, int position);
     }
 
     public EditMoodFragment(Mood mood, int position){
         this.position = position;
-        this.mood = mood;
+        this.initialMood = mood;
     }
 
     @Override
     public void onAttach(Context context){
         super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener){
-            listener = (OnFragmentInteractionListener) context;
+        if (context instanceof EditMoodListener){
+            listener = (EditMoodListener) context;
         } else {
             throw new RuntimeException(context.toString()
                     + "must implement OnFragmentListener");
         }
     }
 
-    @NonNull
     @Override
-    public Dialog onCreateDialog(@Nullable Bundle savedInstanceState){
-        View view = LayoutInflater.from(getActivity()).inflate(R.layout.edit_mood_fragment, null);
+    public void callListener(Mood mood) {
+        listener.onConfirmEditPressed(mood, position);
+    }
 
-        dateEditText = view.findViewById(R.id.edit_date);
-        timeEditText = view.findViewById(R.id.edit_time);
-        reasonEditText = view.findViewById(R.id.edit_reason_editText);
-        situationButton = view.findViewById(R.id.edit_situation_button);
-        locationCheckBox = view.findViewById(R.id.edit_location_checkbox);
-        emojiButton = view.findViewById(R.id.edit_emotion_button);
 
-        dateEditText.setText(mood.getDate());
-        timeEditText.setText(mood.getTime());
-        reasonEditText.setText(mood.getReason());
-        situationButton.setText(mood.getSituation());
-        locationCheckBox.setChecked(mood.getLocationPermission());
-        emojiButton.setText(mood.getEmotion().getName());
-        emotion = mood.getEmotion();
 
-        emojiButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                new SelectMoodFragment().show(getChildFragmentManager(), "SELECT_MOOD");
-            }
-        });
+    // Alert dialog builder method
+
+    @Override
+    protected AlertDialog.Builder returnBuilder() {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         return builder
@@ -84,23 +85,15 @@ public class EditMoodFragment extends DialogFragment implements SelectMoodFragme
                 .setPositiveButton("Confirm Edit", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        String date = dateEditText.getText().toString();
-                        String time = timeEditText.getText().toString();
+                        String date = dateTextView.getText().toString();
+                        String time = timeTextView.getText().toString();
                         String reason = reasonEditText.getText().toString();
-                        String situation = situationButton.getText().toString();
                         Boolean locationPermission = locationCheckBox.isChecked();
-                        Mood mood = new Mood(date, time, emotion, reason, situation, locationPermission);
+                        Mood mood = new Mood(date, time, EditMoodFragment.this.emotion, reason, EditMoodFragment.this.situation, locationPermission);
                         listener.onConfirmEditPressed(mood, position);
                     }
-                }).create();
+                });
+
     }
 
-
-    @Override
-    public void onDonePressed(Emotion emotion){
-        if (emotion != null){
-            this.emotion = emotion;
-            emojiButton.setText(emotion.getName());
-        }
-    }
 }

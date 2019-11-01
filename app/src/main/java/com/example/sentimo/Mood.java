@@ -9,7 +9,7 @@ public class Mood implements Serializable {
     private String time;
     private Emotion emotion;
     private String reason;
-    private String situation;
+    private Situation situation;
     private Boolean locationPermission;
     //private Location location
     //private Photo photo;
@@ -17,7 +17,7 @@ public class Mood implements Serializable {
     public Mood(){}
 
     public Mood(String date, String time, Emotion emotion, String reason,
-                String situation, Boolean locationPermission){
+                Situation situation, Boolean locationPermission){
         this.date = date;
         this.time = time;
         this.emotion = emotion;
@@ -58,11 +58,11 @@ public class Mood implements Serializable {
         this.reason = reason;
     }
 
-    public String getSituation() {
+    public Situation getSituation() {
         return situation;
     }
 
-    public void setSituation(String situation) {
+    public void setSituation(Situation situation) {
         this.situation = situation;
     }
 

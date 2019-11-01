@@ -31,7 +31,7 @@
         </TextView>
 
         <Button
-            android:id="@+id/edit_emotion_button"
+            android:id="@+id/emotion_button"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_marginStart="8dp"
@@ -95,7 +95,7 @@
         </TextView>
 
         <EditText
-            android:id="@+id/edit_date"
+            android:id="@+id/date_text"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_marginStart="8dp"
@@ -142,7 +142,7 @@
         </TextView>
 
         <EditText
-            android:id="@+id/edit_time"
+            android:id="@+id/time_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
@@ -173,7 +173,7 @@
         app:layout_constraintTop_toBottomOf="@+id/constraintLayout_time_edit">
 
         <TextView
-            android:id="@+id/edit_reason_textview"
+            android:id="@+id/reason_text"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_marginStart="16dp"
@@ -182,13 +182,13 @@
             android:layout_marginBottom="8dp"
             android:text="Reason:"
             android:textSize="20sp"
-            app:layout_constraintBottom_toTopOf="@+id/edit_reason_editText"
+            app:layout_constraintBottom_toTopOf="@+id/reason_editText"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
         </TextView>
 
         <Button
-            android:id="@+id/edit_reason_image_button"
+            android:id="@+id/reason_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
@@ -199,9 +199,9 @@
             android:layout_marginBottom="8dp"
             android:text="Image"
             android:textSize="20sp"
-            app:layout_constraintBottom_toTopOf="@+id/edit_reason_editText"
+            app:layout_constraintBottom_toTopOf="@+id/reason_editText"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/edit_reason_textview"
+            app:layout_constraintStart_toEndOf="@+id/reason_text"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="1.0">
         </Button>
@@ -228,7 +228,7 @@
         </TextView>
 
         <EditText
-            android:id="@+id/edit_reason_editText"
+            android:id="@+id/reason_editText"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_marginStart="8dp"
@@ -253,9 +253,9 @@
             android:layout_marginBottom="8dp"
             android:text="Or"
             android:textSize="20sp"
-            app:layout_constraintBottom_toTopOf="@+id/edit_reason_editText"
+            app:layout_constraintBottom_toTopOf="@+id/reason_editText"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/edit_reason_image_button"
+            app:layout_constraintStart_toEndOf="@+id/reason_button"
             app:layout_constraintTop_toTopOf="parent">
         </TextView>
     </androidx.constraintlayout.widget.ConstraintLayout>
@@ -285,7 +285,7 @@
         </TextView>
 
         <Button
-            android:id="@+id/edit_situation_button"
+            android:id="@+id/situation_button"
             android:visibility="visible"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
@@ -305,7 +305,7 @@
         </Button>
 
         <TextView
-            android:id="@+id/edit_situation_situation"
+            android:id="@+id/situation_text"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_marginStart="8dp"
@@ -350,7 +350,7 @@
         </TextView>
 
         <CheckBox
-            android:id="@+id/edit_location_checkbox"
+            android:id="@+id/location_checkbox"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"

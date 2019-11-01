@@ -18,6 +18,7 @@ public class SelectSituationFragment extends DialogFragment {
     Button onePersonButton;
     Button severalPeopleButton;
     Button crowdButton;
+    Button noSituationButton;
     View view;
     SelectSituationListener listener;
 
@@ -32,29 +33,33 @@ public class SelectSituationFragment extends DialogFragment {
         onePersonButton = view.findViewById(R.id.onePersonButton);
         severalPeopleButton = view.findViewById(R.id.severalPeopleButton);
         crowdButton = view.findViewById(R.id.crowdButton);
+        noSituationButton = view.findViewById(R.id.noSituationButton);
 
         View.OnClickListener buttonListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 int id = v.getId();
-                String situationString = null;
+                Situation situation = null;
                 switch (id) {
                     case R.id.aloneButton:
-                        situationString = "Alone";
+                        situation = new AloneSituation();
                         break;
                     case R.id.onePersonButton:
-                        situationString = "With one person";
+                        situation = new OnePersonSituation();
                         break;
                     case R.id.severalPeopleButton:
-                        situationString = "With several people";
+                        situation = new SeveralPeopleSituation();
                         break;
                     case R.id.crowdButton:
-                        situationString = "With a crowd";
+                        situation = new CrowdSituation();
+                        break;
+                    case R.id.noSituationButton:
+                        situation = null;
                         break;
                     default:
                         throw new RuntimeException("Unknown situation button");
                 }
-                listener.situationReturned(situationString);
+                listener.SituationReturned(situation);
                 SelectSituationFragment.this.dismiss();
             }
         };
@@ -63,6 +68,7 @@ public class SelectSituationFragment extends DialogFragment {
         onePersonButton.setOnClickListener(buttonListener);
         severalPeopleButton.setOnClickListener(buttonListener);
         crowdButton.setOnClickListener(buttonListener);
+        noSituationButton.setOnClickListener(buttonListener);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         return builder
@@ -71,7 +77,7 @@ public class SelectSituationFragment extends DialogFragment {
                 .setPositiveButton("Cancel", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        listener.situationReturned(null);
+                        SelectSituationFragment.this.dismiss();
                     }
                 }).create();
 
@@ -84,6 +90,6 @@ public class SelectSituationFragment extends DialogFragment {
     }
 
     public interface SelectSituationListener {
-        public void situationReturned(String string);
+        public void SituationReturned(Situation situation);
     }
 }

@@ -1,7 +1,9 @@
 package com.example.sentimo;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.Fragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -75,6 +77,8 @@ public class SelectMoodFragment extends DialogFragment {
                     default:
                         throw new RuntimeException("Unknown emotion case");
                 }
+                listener.onDonePressed(SelectMoodFragment.this.emotion);
+                SelectMoodFragment.this.dismiss();
             }
         };
 
@@ -92,10 +96,10 @@ public class SelectMoodFragment extends DialogFragment {
         return builder
                 .setView(view)
                 .setTitle("Add Mood")
-                .setPositiveButton("Done", new DialogInterface.OnClickListener() {
+                .setPositiveButton("Cancel", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        listener.onDonePressed(SelectMoodFragment.this.emotion);
+                        listener.onDonePressed(null);
                     }
                 }).create();
     }

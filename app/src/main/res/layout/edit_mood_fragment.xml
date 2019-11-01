@@ -8,7 +8,7 @@
     android:layout_height="match_parent">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/constraintLayout_emotion"
+        android:id="@+id/constraintLayout_emotion_edit"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
@@ -16,7 +16,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
-            android:id="@+id/add_emotion_textview"
+            android:id="@+id/edit_emotion_textview"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_marginStart="16dp"
@@ -31,7 +31,7 @@
         </TextView>
 
         <Button
-            android:id="@+id/add_emotion_button"
+            android:id="@+id/edit_emotion_button"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_marginStart="8dp"
@@ -40,17 +40,17 @@
             android:layout_marginEnd="8dp"
             android:layout_marginRight="8dp"
             android:layout_marginBottom="8dp"
-            android:text="Add Emotion"
+            android:text="Edit Emotion"
             android:textSize="20sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.402"
-            app:layout_constraintStart_toEndOf="@+id/add_emotion_textview"
+            app:layout_constraintStart_toEndOf="@+id/edit_emotion_textview"
             app:layout_constraintTop_toTopOf="parent">
         </Button>
 
         <TextView
-            android:id="@+id/add_emotion_image"
+            android:id="@+id/edit_emotion_image"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_marginStart="8dp"
@@ -64,23 +64,23 @@
             android:visibility="invisible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/add_emotion_textview"
+            app:layout_constraintStart_toEndOf="@+id/edit_emotion_textview"
             app:layout_constraintTop_toTopOf="parent">
         </TextView>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/constraintLayout_date"
+        android:id="@+id/constraintLayout_date_edit"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/constraintLayout_emotion">
+        app:layout_constraintTop_toBottomOf="@+id/constraintLayout_emotion_edit">
 
         <TextView
-            android:id="@+id/add_date_textview"
+            android:id="@+id/edit_date_textview"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_marginStart="16dp"
@@ -94,8 +94,8 @@
             app:layout_constraintTop_toTopOf="parent">
         </TextView>
 
-        <TextView
-            android:id="@+id/add_date"
+        <EditText
+            android:id="@+id/edit_date"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_marginStart="8dp"
@@ -104,30 +104,30 @@
             android:layout_marginEnd="8dp"
             android:layout_marginRight="8dp"
             android:layout_marginBottom="8dp"
-            android:text="10/10/2010"
+            android:autofillHints="dd/mm/yyyy"
             android:textSize="20sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.52"
-            app:layout_constraintStart_toEndOf="@+id/add_date_textview"
+            app:layout_constraintStart_toEndOf="@+id/edit_date_textview"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="1.0">
-        </TextView>
+        </EditText>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/constraintLayout_time"
+        android:id="@+id/constraintLayout_time_edit"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/constraintLayout_date">
+        app:layout_constraintTop_toBottomOf="@+id/constraintLayout_date_edit">
 
         <TextView
-            android:id="@+id/add_time_textview"
+            android:id="@+id/edit_time_textview"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_marginStart="16dp"
@@ -141,8 +141,8 @@
             app:layout_constraintTop_toTopOf="parent">
         </TextView>
 
-        <TextView
-            android:id="@+id/add_time"
+        <EditText
+            android:id="@+id/edit_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
@@ -151,29 +151,29 @@
             android:layout_marginEnd="8dp"
             android:layout_marginRight="8dp"
             android:layout_marginBottom="8dp"
-            android:text="10:10"
+            android:autofillHints="hh:mm"
             android:textSize="20sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.415"
-            app:layout_constraintStart_toEndOf="@+id/add_time_textview"
+            app:layout_constraintStart_toEndOf="@+id/edit_time_textview"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.0">
-        </TextView>
+        </EditText>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/constraintLayout_reason"
+        android:id="@+id/constraintLayout_reason_edit"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/constraintLayout_time">
+        app:layout_constraintTop_toBottomOf="@+id/constraintLayout_time_edit">
 
         <TextView
-            android:id="@+id/add_reason_textview"
+            android:id="@+id/edit_reason_textview"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_marginStart="16dp"
@@ -182,13 +182,13 @@
             android:layout_marginBottom="8dp"
             android:text="Reason:"
             android:textSize="20sp"
-            app:layout_constraintBottom_toTopOf="@+id/add_reason_editText"
+            app:layout_constraintBottom_toTopOf="@+id/edit_reason_editText"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
         </TextView>
 
         <Button
-            android:id="@+id/add_reason_image_button"
+            android:id="@+id/edit_reason_image_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
@@ -199,15 +199,15 @@
             android:layout_marginBottom="8dp"
             android:text="Image"
             android:textSize="20sp"
-            app:layout_constraintBottom_toTopOf="@+id/add_reason_editText"
+            app:layout_constraintBottom_toTopOf="@+id/edit_reason_editText"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/add_reason_textview"
+            app:layout_constraintStart_toEndOf="@+id/edit_reason_textview"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="1.0">
         </Button>
 
         <TextView
-            android:id="@+id/add_reason_image"
+            android:id="@+id/edit_reason_image"
             android:visibility="invisible"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
@@ -228,7 +228,7 @@
         </TextView>
 
         <EditText
-            android:id="@+id/add_reason_editText"
+            android:id="@+id/edit_reason_editText"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_marginStart="8dp"
@@ -236,7 +236,6 @@
             android:layout_marginEnd="8dp"
             android:layout_marginRight="8dp"
             android:layout_marginBottom="4dp"
-            android:text=""
             android:textSize="20sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -254,24 +253,24 @@
             android:layout_marginBottom="8dp"
             android:text="Or"
             android:textSize="20sp"
-            app:layout_constraintBottom_toTopOf="@+id/add_reason_editText"
+            app:layout_constraintBottom_toTopOf="@+id/edit_reason_editText"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/add_reason_image_button"
+            app:layout_constraintStart_toEndOf="@+id/edit_reason_image_button"
             app:layout_constraintTop_toTopOf="parent">
         </TextView>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/constraintLayout_situation"
+        android:id="@+id/constraintLayout_situation_edit"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/constraintLayout_reason">
+        app:layout_constraintTop_toBottomOf="@+id/constraintLayout_reason_edit">
 
         <TextView
-            android:id="@+id/add_situation_textview"
+            android:id="@+id/edit_situation_textview"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_marginStart="16dp"
@@ -286,7 +285,7 @@
         </TextView>
 
         <Button
-            android:id="@+id/add_situation_button"
+            android:id="@+id/edit_situation_button"
             android:visibility="visible"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
@@ -296,18 +295,17 @@
             android:layout_marginEnd="8dp"
             android:layout_marginRight="8dp"
             android:layout_marginBottom="8dp"
-            android:text="(Optional)"
             android:textSize="20sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.388"
-            app:layout_constraintStart_toEndOf="@+id/add_situation_textview"
+            app:layout_constraintStart_toEndOf="@+id/edit_situation_textview"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.0">
         </Button>
 
         <TextView
-            android:id="@+id/add_situation_situation"
+            android:id="@+id/edit_situation_situation"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_marginStart="8dp"
@@ -321,23 +319,23 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.34"
-            app:layout_constraintStart_toEndOf="@+id/add_situation_textview"
+            app:layout_constraintStart_toEndOf="@+id/edit_situation_textview"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.448">
         </TextView>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/constraintLayout_location"
+        android:id="@+id/constraintLayout_location_edit"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/constraintLayout_situation">
+        app:layout_constraintTop_toBottomOf="@+id/constraintLayout_situation_edit">
 
         <TextView
-            android:id="@+id/add_location_textview"
+            android:id="@+id/edit_location_textview"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_marginStart="16dp"
@@ -352,7 +350,7 @@
         </TextView>
 
         <CheckBox
-            android:id="@+id/add_location_checkbox"
+            android:id="@+id/edit_location_checkbox"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
@@ -360,7 +358,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.689"
-            app:layout_constraintStart_toEndOf="@+id/add_location_textview"
+            app:layout_constraintStart_toEndOf="@+id/edit_location_textview"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.0">
         </CheckBox>

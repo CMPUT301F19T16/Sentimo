@@ -2,6 +2,7 @@ package com.example.sentimo;
 
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
+import android.widget.AdapterView;
 import android.widget.TextView;
 import java.util.ArrayList;
 import android.view.View;
@@ -11,7 +12,8 @@ import android.widget.ListView;
 
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity implements AddMoodFragment.OnFragmentInteractionListener{
+public class MainActivity extends AppCompatActivity implements AddMoodFragment.OnFragmentInteractionListener,
+                                                               EditMoodFragment.OnFragmentInteractionListener{
 
     private ListView moodList;
     private ArrayList<Mood> moodDataList;
@@ -41,10 +43,30 @@ public class MainActivity extends AppCompatActivity implements AddMoodFragment.O
             }
         });
 
+        moodList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Mood mood = moodAdapter.getItem(position);
+                new EditMoodFragment(mood, position).show(getSupportFragmentManager(), "EDIT_MOOD");
+            }
+        });
+
     }
 
     @Override
     public void onDonePressed(Mood mood){
         moodAdapter.add(mood);
+    }
+
+    @Override
+    public void onConfirmEditPressed(Mood mood, int position){
+        Mood oldMood = moodAdapter.getItem(position);
+        oldMood.setDate(mood.getDate());
+        oldMood.setTime(mood.getTime());
+        oldMood.setEmotion(mood.getEmotion());
+        oldMood.setReason(mood.getReason());
+        oldMood.setSituation(mood.getSituation());
+        oldMood.setLocationPermission(mood.getLocationPermission());
+        moodList.setAdapter(moodAdapter);
     }
 }

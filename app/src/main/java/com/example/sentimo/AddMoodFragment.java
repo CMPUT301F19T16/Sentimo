@@ -25,7 +25,7 @@ import androidx.fragment.app.DialogFragment;
 //// from the AddCityFragment class.
 //// I don't know who wrote the ListyCity demo, but the Android Studio .zip file is on eclass at this URL
 //// Url == https://eclass.srv.ualberta.ca/course/view.php?id=54165
-public class AddMoodFragment extends DialogFragment implements SelectMoodFragment.OnFragmentInteractionListener {
+public class AddMoodFragment extends DialogFragment implements SelectMoodFragment.OnFragmentInteractionListener, SelectSituationFragment.SelectSituationListener {
     private TextView dateTextView;
     private TextView timeTextView;
     //private Image emojiImageView;
@@ -69,7 +69,6 @@ public class AddMoodFragment extends DialogFragment implements SelectMoodFragmen
         situationButton = view.findViewById(R.id.add_situation_button);
         situationTextView = view.findViewById(R.id.add_situation_situation);
         locationCheckBox = view.findViewById(R.id.add_location_checkbox);
-        final Emotion emotion;
 
         // Should add TextWatchers
 
@@ -77,6 +76,13 @@ public class AddMoodFragment extends DialogFragment implements SelectMoodFragmen
             @Override
             public void onClick(View v) {
                 new SelectMoodFragment().show(getChildFragmentManager(), "SELECT_MOOD");
+            }
+        });
+
+        situationButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new SelectSituationFragment().show(getChildFragmentManager(), "SELECT_SITUATION");
             }
         });
 
@@ -95,7 +101,8 @@ public class AddMoodFragment extends DialogFragment implements SelectMoodFragmen
                         }
 //                        Emotion emotion = new Worried(); // Temp until emotion is implemented
                         String reason = reasonEditText.getText().toString();
-                        String situation = situationTextView.getText().toString();
+                        //String situation = situationTextView.getText().toString();
+                        String situation = situationButton.getText().toString();
                         Boolean location = locationCheckBox.isChecked();
                         // Need to add if statements for null date, time, or emotion
                         listener.onDonePressed(new Mood(date, time, AddMoodFragment.this.emotion, reason, situation, location));
@@ -110,6 +117,13 @@ public class AddMoodFragment extends DialogFragment implements SelectMoodFragmen
         if (emotion != null) {
             this.emotion = emotion;
             emojiImageButton.setText(this.emotion.getName());
+        }
+    }
+
+    @Override
+    public void situationReturned(String string) {
+        if (string != null) {
+            situationButton.setText(string);
         }
     }
 }

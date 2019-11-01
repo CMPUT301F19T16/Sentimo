@@ -18,6 +18,7 @@ public class SelectSituationFragment extends DialogFragment {
     Button onePersonButton;
     Button severalPeopleButton;
     Button crowdButton;
+    Button noSituationButton;
     View view;
     SelectSituationListener listener;
 
@@ -32,6 +33,7 @@ public class SelectSituationFragment extends DialogFragment {
         onePersonButton = view.findViewById(R.id.onePersonButton);
         severalPeopleButton = view.findViewById(R.id.severalPeopleButton);
         crowdButton = view.findViewById(R.id.crowdButton);
+        noSituationButton = view.findViewById(R.id.noSituationButton);
 
         View.OnClickListener buttonListener = new View.OnClickListener() {
             @Override
@@ -51,6 +53,9 @@ public class SelectSituationFragment extends DialogFragment {
                     case R.id.crowdButton:
                         situation = new CrowdSituation();
                         break;
+                    case R.id.noSituationButton:
+                        situation = null;
+                        break;
                     default:
                         throw new RuntimeException("Unknown situation button");
                 }
@@ -63,6 +68,7 @@ public class SelectSituationFragment extends DialogFragment {
         onePersonButton.setOnClickListener(buttonListener);
         severalPeopleButton.setOnClickListener(buttonListener);
         crowdButton.setOnClickListener(buttonListener);
+        noSituationButton.setOnClickListener(buttonListener);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         return builder
@@ -71,7 +77,7 @@ public class SelectSituationFragment extends DialogFragment {
                 .setPositiveButton("Cancel", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        listener.SituationReturned(null);
+                        SelectSituationFragment.this.dismiss();
                     }
                 }).create();
 

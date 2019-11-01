@@ -72,9 +72,11 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
 
     @Override
     public void SituationReturned(Situation situation) {
+        this.situation = situation;
         if (situation != null) {
-            this.situation = situation;
             situationButton.setText(situation.getName());
+        } else {
+            situationButton.setText("(Optional)");
         }
     }
 

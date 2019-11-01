@@ -12,8 +12,8 @@ import android.widget.ListView;
 
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity implements AddMoodFragment.OnFragmentInteractionListener,
-                                                               EditMoodFragment.OnFragmentInteractionListener{
+public class MainActivity extends AppCompatActivity implements AddMoodFragment.AddMoodListener,
+                                                               EditMoodFragment.EditMoodListener {
 
     private ListView moodList;
     private ArrayList<Mood> moodDataList;

@@ -18,7 +18,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
 public class SelectMoodFragment extends DialogFragment {
-    OnFragmentInteractionListener listener;
+    SelectMoodFragmentInteractionListener listener;
     Emotion emotion;
     Button happyButton;
     Button sadButton;
@@ -77,7 +77,7 @@ public class SelectMoodFragment extends DialogFragment {
                     default:
                         throw new RuntimeException("Unknown emotion case");
                 }
-                listener.onDonePressed(SelectMoodFragment.this.emotion);
+                listener.MoodReturned(SelectMoodFragment.this.emotion);
                 SelectMoodFragment.this.dismiss();
             }
         };
@@ -99,7 +99,7 @@ public class SelectMoodFragment extends DialogFragment {
                 .setPositiveButton("Cancel", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        listener.onDonePressed(null);
+                        listener.MoodReturned(null);
                     }
                 }).create();
     }
@@ -107,11 +107,11 @@ public class SelectMoodFragment extends DialogFragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        listener = (OnFragmentInteractionListener)getParentFragment();
+        listener = (SelectMoodFragmentInteractionListener)getParentFragment();
     }
 
-    public interface OnFragmentInteractionListener {
-        void onDonePressed(Emotion emotion);
+    public interface SelectMoodFragmentInteractionListener {
+        void MoodReturned(Emotion emotion);
     }
 
 }

@@ -54,7 +54,7 @@ public class SelectSituationFragment extends DialogFragment {
                     default:
                         throw new RuntimeException("Unknown situation button");
                 }
-                listener.situationReturned(situation);
+                listener.SituationReturned(situation);
                 SelectSituationFragment.this.dismiss();
             }
         };
@@ -71,7 +71,7 @@ public class SelectSituationFragment extends DialogFragment {
                 .setPositiveButton("Cancel", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        listener.situationReturned(null);
+                        listener.SituationReturned(null);
                     }
                 }).create();
 
@@ -84,6 +84,6 @@ public class SelectSituationFragment extends DialogFragment {
     }
 
     public interface SelectSituationListener {
-        public void situationReturned(Situation situation);
+        public void SituationReturned(Situation situation);
     }
 }

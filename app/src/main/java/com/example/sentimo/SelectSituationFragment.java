@@ -37,24 +37,24 @@ public class SelectSituationFragment extends DialogFragment {
             @Override
             public void onClick(View v) {
                 int id = v.getId();
-                String situationString = null;
+                Situation situation = null;
                 switch (id) {
                     case R.id.aloneButton:
-                        situationString = "Alone";
+                        situation = new AloneSituation();
                         break;
                     case R.id.onePersonButton:
-                        situationString = "With one person";
+                        situation = new OnePersonSituation();
                         break;
                     case R.id.severalPeopleButton:
-                        situationString = "With several people";
+                        situation = new SeveralPeopleSituation();
                         break;
                     case R.id.crowdButton:
-                        situationString = "With a crowd";
+                        situation = new CrowdSituation();
                         break;
                     default:
                         throw new RuntimeException("Unknown situation button");
                 }
-                listener.situationReturned(situationString);
+                listener.situationReturned(situation);
                 SelectSituationFragment.this.dismiss();
             }
         };
@@ -84,6 +84,6 @@ public class SelectSituationFragment extends DialogFragment {
     }
 
     public interface SelectSituationListener {
-        public void situationReturned(String string);
+        public void situationReturned(Situation situation);
     }
 }

@@ -38,6 +38,7 @@ public class AddMoodFragment extends DialogFragment implements SelectMoodFragmen
     private CheckBox locationCheckBox;
     private OnFragmentInteractionListener listener;
     private Emotion emotion;
+    private Situation situation;
 
     public interface OnFragmentInteractionListener{
         void onDonePressed(Mood newMood);
@@ -69,6 +70,9 @@ public class AddMoodFragment extends DialogFragment implements SelectMoodFragmen
         situationButton = view.findViewById(R.id.add_situation_button);
         situationTextView = view.findViewById(R.id.add_situation_situation);
         locationCheckBox = view.findViewById(R.id.add_location_checkbox);
+
+        this.emotion = null;
+        this.situation = null;
 
         // Should add TextWatchers
 
@@ -102,10 +106,12 @@ public class AddMoodFragment extends DialogFragment implements SelectMoodFragmen
 //                        Emotion emotion = new Worried(); // Temp until emotion is implemented
                         String reason = reasonEditText.getText().toString();
                         //String situation = situationTextView.getText().toString();
-                        String situation = situationButton.getText().toString();
+                        if (AddMoodFragment.this.situation == null) {
+                            throw new RuntimeException("IMPLEMENT WARNING FOR NO SITUATION");
+                        }
                         Boolean location = locationCheckBox.isChecked();
                         // Need to add if statements for null date, time, or emotion
-                        listener.onDonePressed(new Mood(date, time, AddMoodFragment.this.emotion, reason, situation, location));
+                        listener.onDonePressed(new Mood(date, time, AddMoodFragment.this.emotion, reason, AddMoodFragment.this.situation, location));
                     }
                 }).create();
 
@@ -121,9 +127,10 @@ public class AddMoodFragment extends DialogFragment implements SelectMoodFragmen
     }
 
     @Override
-    public void situationReturned(String string) {
-        if (string != null) {
-            situationButton.setText(string);
+    public void situationReturned(Situation situation) {
+        if (situation != null) {
+            this.situation = situation;
+            situationButton.setText(situation.getName());
         }
     }
 }

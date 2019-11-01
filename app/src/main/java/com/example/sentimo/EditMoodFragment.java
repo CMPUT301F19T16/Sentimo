@@ -28,6 +28,7 @@ public class EditMoodFragment extends DialogFragment implements SelectMoodFragme
     private Button situationButton;
     private CheckBox locationCheckBox;
     private Emotion emotion;
+    private Situation situation;
 
     public interface OnFragmentInteractionListener{
         void onConfirmEditPressed(Mood mood, int position);
@@ -64,7 +65,7 @@ public class EditMoodFragment extends DialogFragment implements SelectMoodFragme
         dateEditText.setText(mood.getDate());
         timeEditText.setText(mood.getTime());
         reasonEditText.setText(mood.getReason());
-        situationButton.setText(mood.getSituation());
+        situationButton.setText(mood.getSituation().getName());
         locationCheckBox.setChecked(mood.getLocationPermission());
         emojiButton.setText(mood.getEmotion().getName());
         emotion = mood.getEmotion();
@@ -96,7 +97,7 @@ public class EditMoodFragment extends DialogFragment implements SelectMoodFragme
                         String reason = reasonEditText.getText().toString();
                         String situation = situationButton.getText().toString();
                         Boolean locationPermission = locationCheckBox.isChecked();
-                        Mood mood = new Mood(date, time, emotion, reason, situation, locationPermission);
+                        Mood mood = new Mood(date, time, emotion, reason, EditMoodFragment.this.situation, locationPermission);
                         listener.onConfirmEditPressed(mood, position);
                     }
                 }).create();
@@ -112,9 +113,10 @@ public class EditMoodFragment extends DialogFragment implements SelectMoodFragme
     }
 
     @Override
-    public void situationReturned(String string) {
-        if (string != null) {
-            situationButton.setText(string);
+    public void situationReturned(Situation situation) {
+        if (situation != null) {
+            this.situation = situation;
+            situationButton.setText(this.situation.getName());
         }
     }
 }

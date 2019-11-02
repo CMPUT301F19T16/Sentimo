@@ -2,6 +2,7 @@ package com.example.sentimo.Fragments;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.media.Image;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,6 +10,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.ImageView;
 
 import com.example.sentimo.Emotions.Emotion;
 import com.example.sentimo.Mood;
@@ -22,13 +24,13 @@ import androidx.fragment.app.DialogFragment;
 public abstract class ChangeMoodFragment extends DialogFragment implements SelectSituationFragment.SelectSituationListener, SelectMoodFragment.SelectMoodFragmentInteractionListener {
     protected TextView dateTextView;
     protected TextView timeTextView;
-    //private Image emojiImageView;
+    protected ImageView emojiImageView;
     protected Button emojiImageButton;
     protected EditText reasonEditText;
     protected Button reasonImageButton;
-    //private Image reasonImageView;
+    protected ImageView reasonImageView;
     protected Button situationButton;
-    protected TextView situationTextView;
+//    protected TextView situationTextView;
     protected CheckBox locationCheckBox;
     protected Emotion emotion;
     protected Situation situation;
@@ -97,13 +99,13 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
 
         dateTextView = view.findViewById(R.id.date_text);
         timeTextView = view.findViewById(R.id.time_text);
-        //emojiImageView = view.findViewById(R.id.add_emotion_image);
+        emojiImageView = view.findViewById(R.id.emotion_image);
         emojiImageButton = view.findViewById(R.id.emotion_button);
         reasonEditText = view.findViewById(R.id.reason_editText);
         reasonImageButton = view.findViewById(R.id.reason_button);
-        //reasonImageView = view.findViewById(R.id.add_reason_image);
+        reasonImageView = view.findViewById(R.id.reason_image);
         situationButton = view.findViewById(R.id.situation_button);
-        situationTextView = view.findViewById(R.id.situation_text);
+//        situationTextView = view.findViewById(R.id.situation_text);
         locationCheckBox = view.findViewById(R.id.location_checkbox);
 
         emojiImageButton.setOnClickListener(emotionClick);

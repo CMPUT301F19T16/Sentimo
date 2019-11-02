@@ -57,22 +57,8 @@ public class AddMoodFragment extends ChangeMoodFragment {
                 .setView(view)
                 .setTitle("Add Mood")
                 .setNegativeButton("Back", null)
-                .setPositiveButton("Done", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        String date = dateTextView.getText().toString();
-                        String time = timeTextView.getText().toString();
-//                        String emotionText = emojiImageButton.getText().toString();
-                        if (AddMoodFragment.this.emotion == null) {
-                            throw new RuntimeException("IMPLEMENT WARNING FOR NO EMOTION");
-                        }
-                        String reason = reasonEditText.getText().toString();
-                        Boolean location = locationCheckBox.isChecked();
-                        // Need to add if statements for null date, time, or emotion
-                        Mood myMood = new Mood(date, time, AddMoodFragment.this.emotion, reason, AddMoodFragment.this.situation, location);
-                        callListener(myMood);
-                    }
-                });
+                // Positive Button behaviour set in super class to override default dismissal behaviour
+                .setPositiveButton("Done", null);
     }
 
 }

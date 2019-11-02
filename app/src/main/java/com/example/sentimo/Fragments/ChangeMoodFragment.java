@@ -40,6 +40,8 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
     protected View view;
 
 
+    // Method for reassigning positive button clicker found from
+    // StackOverflow post:https://stackoverflow.com/questions/2620444/how-to-prevent-a-dialog-from-closing-when-a-button-is-clicked
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState){
@@ -64,7 +66,27 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
         subclassInitialization();
 
         AlertDialog.Builder builder = returnBuilder();
-        return builder.create();
+        AlertDialog dialog = builder.create();
+        dialog.show();
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        String date = dateTextView.getText().toString();
+                        String time = timeTextView.getText().toString();
+//                        String emotionText = emojiImageButton.getText().toString();
+                        if (!isDataValid()) {
+                            displayWarning();
+                            return;
+                        }
+                        String reason = reasonEditText.getText().toString();
+                        Boolean location = locationCheckBox.isChecked();
+                        // Need to add if statements for null date, time, or emotion
+                        Mood myMood = new Mood(date, time, ChangeMoodFragment.this.emotion, reason, ChangeMoodFragment.this.situation, location);
+                        callListener(myMood);
+                        ChangeMoodFragment.this.dismiss();
+                    }
+                });
+        return dialog;
     }
 
     @Override
@@ -111,6 +133,17 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
         emojiImageButton.setOnClickListener(emotionClick);
 
         situationButton.setOnClickListener(situationClick);
+    }
+
+    public void displayWarning() {
+        new InvalidDataWarningFragment().show(getChildFragmentManager(), null);
+    }
+
+    public boolean isDataValid() {
+        if (ChangeMoodFragment.this.emotion != null) {
+            return true;
+        }
+        return false;
     }
 
     protected abstract void subclassInitialization();

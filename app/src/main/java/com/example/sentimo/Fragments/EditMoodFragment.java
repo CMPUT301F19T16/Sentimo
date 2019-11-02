@@ -73,18 +73,8 @@ public class EditMoodFragment extends ChangeMoodFragment {
                 .setView(view)
                 .setTitle("Mood")
                 .setNegativeButton("Back", null)
-                .setPositiveButton("Confirm Edit", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        String date = dateTextView.getText().toString();
-                        String time = timeTextView.getText().toString();
-                        String reason = reasonEditText.getText().toString();
-                        Boolean locationPermission = locationCheckBox.isChecked();
-                        Mood mood = new Mood(date, time, EditMoodFragment.this.emotion, reason, EditMoodFragment.this.situation, locationPermission);
-                        listener.onConfirmEditPressed(mood, position);
-                    }
-                });
-
+                // Positive Button behaviour set in super class to override default dismissal behaviour
+                .setPositiveButton("Confirm Edit", null);
     }
 
 }

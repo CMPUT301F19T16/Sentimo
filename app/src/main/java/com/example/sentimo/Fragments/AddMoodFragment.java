@@ -56,6 +56,7 @@ public class AddMoodFragment extends ChangeMoodFragment {
         return builder
                 .setView(view)
                 .setTitle("Add Mood")
+                .setNegativeButton("Back", null)
                 .setPositiveButton("Done", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {

@@ -18,6 +18,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
+import java.text.ParseException;
+
 // The AddMoodFragment class is a fragment that creates a Mood object that is then displayed on
 // the main screen.
 
@@ -77,10 +79,17 @@ public class AddMoodFragment extends ChangeMoodFragment {
                         if (AddMoodFragment.this.emotion == null) {
                             throw new RuntimeException("IMPLEMENT WARNING FOR NO EMOTION");
                         }
+                        // date string to formatted Date
+                        TimeFormatter timef = new TimeFormatter();
+                        try {
+                            timef.setTimeFormat(date, time);
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
                         String reason = reasonEditText.getText().toString();
                         Boolean location = locationCheckBox.isChecked();
                         // Need to add if statements for null date, time, or emotion
-                        Mood myMood = new Mood(date, time, AddMoodFragment.this.emotion, reason, AddMoodFragment.this.situation, location);
+                        Mood myMood = new Mood(timef, AddMoodFragment.this.emotion, reason, AddMoodFragment.this.situation, location);
                         callListener(myMood);
                     }
                 });

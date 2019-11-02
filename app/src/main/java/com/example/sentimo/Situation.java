@@ -1,6 +1,6 @@
 package com.example.sentimo;
 
-public abstract class Situation {
+public class Situation {
     String name;
 
     public String getName() {

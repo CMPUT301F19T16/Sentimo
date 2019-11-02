@@ -1,5 +1,7 @@
 package com.example.sentimo;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.AdapterView;
@@ -10,7 +12,15 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 
-import java.util.ArrayList;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QuerySnapshot;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity implements AddMoodFragment.AddMoodListener,
                                                                EditMoodFragment.EditMoodListener {
@@ -21,6 +31,7 @@ public class MainActivity extends AppCompatActivity implements AddMoodFragment.A
     private Button addButton;
     private Button mapButton;
     private Button friendButton;
+    private Database database;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,8 +44,12 @@ public class MainActivity extends AppCompatActivity implements AddMoodFragment.A
         friendButton = findViewById(R.id.friend_button);
 
         moodDataList = new ArrayList<>();
+        // TODO: Read username from login
+        database = new Database("Testing");
         moodAdapter = new CustomMoodList(this, moodDataList);
         moodList.setAdapter(moodAdapter);
+
+        addMoodListener();
 
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -55,18 +70,34 @@ public class MainActivity extends AppCompatActivity implements AddMoodFragment.A
 
     @Override
     public void onDonePressed(Mood mood){
-        moodAdapter.add(mood);
+        database.addMood(mood);
     }
 
     @Override
     public void onConfirmEditPressed(Mood mood, int position){
         Mood oldMood = moodAdapter.getItem(position);
-        oldMood.setDate(mood.getDate());
-        oldMood.setTime(mood.getTime());
-        oldMood.setEmotion(mood.getEmotion());
-        oldMood.setReason(mood.getReason());
-        oldMood.setSituation(mood.getSituation());
-        oldMood.setLocationPermission(mood.getLocationPermission());
-        moodList.setAdapter(moodAdapter);
+        database.deleteMood(Objects.requireNonNull(oldMood));
+        database.addMood(mood);
+    }
+
+    private void addMoodListener() {
+        CollectionReference userMoods = database.getUserMoods();
+        userMoods.addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
+                moodDataList.clear();
+                List<DocumentSnapshot> data;
+                if (queryDocumentSnapshots != null) {
+                    data = queryDocumentSnapshots.getDocuments();
+
+                    for (DocumentSnapshot d : data) {
+                        Mood mood = d.toObject(Mood.class);
+                        moodDataList.add(mood);
+                    }
+                    Collections.sort(moodDataList, Collections.<Mood>reverseOrder());
+                    moodAdapter.notifyDataSetChanged();
+                }
+            }
+        });
     }
 }

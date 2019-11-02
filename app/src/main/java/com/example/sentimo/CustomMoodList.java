@@ -37,8 +37,8 @@ public class CustomMoodList extends ArrayAdapter<Mood> {
         TextView time = view.findViewById(R.id.mood_time);
         //TextView emoji = view.findViewById(R.id.mood_emoji);
 
-        date.setText(mood.getDate());
-        time.setText(mood.getTime());
+        date.setText(mood.getTime().getDateString());
+        time.setText(mood.getTime().getTimeString());
         //image.setImage(mood.getEmoji());
 
         return view;

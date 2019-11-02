@@ -16,6 +16,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
+import java.text.ParseException;
+
 public class EditMoodFragment extends ChangeMoodFragment {
     private int position;
     private Mood initialMood;
@@ -28,8 +30,8 @@ public class EditMoodFragment extends ChangeMoodFragment {
         this.emotion = initialMood.getEmotion();
         this.situation = initialMood.getSituation();
 
-        dateTextView.setText(initialMood.getDate());
-        timeTextView.setText(initialMood.getTime());
+        dateTextView.setText(initialMood.getTime().getDateString());
+        timeTextView.setText(initialMood.getTime().getTimeString());
         reasonEditText.setText(initialMood.getReason());
         Situation moodSituation = initialMood.getSituation();
         if (moodSituation != null) {
@@ -89,7 +91,16 @@ public class EditMoodFragment extends ChangeMoodFragment {
                         String time = timeTextView.getText().toString();
                         String reason = reasonEditText.getText().toString();
                         Boolean locationPermission = locationCheckBox.isChecked();
-                        Mood mood = new Mood(date, time, EditMoodFragment.this.emotion, reason, EditMoodFragment.this.situation, locationPermission);
+
+                        // date string to formatted Date
+                        TimeFormatter timef = new TimeFormatter();
+                        try {
+                            timef.setTimeFormat(date, time);
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+
+                        Mood mood = new Mood(timef, EditMoodFragment.this.emotion, reason, EditMoodFragment.this.situation, locationPermission);
                         listener.onConfirmEditPressed(mood, position);
                     }
                 });

@@ -1,20 +1,11 @@
-package com.example.sentimo;
+package com.example.sentimo.Fragments;
 
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.os.Bundle;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.EditText;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.DialogFragment;
+import com.example.sentimo.Mood;
+import com.example.sentimo.Situations.Situation;
 
 public class EditMoodFragment extends ChangeMoodFragment {
     private int position;

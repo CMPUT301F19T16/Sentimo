@@ -1,4 +1,4 @@
-package com.example.sentimo;
+package com.example.sentimo.Emotions;
 
 
 public class Emotion {

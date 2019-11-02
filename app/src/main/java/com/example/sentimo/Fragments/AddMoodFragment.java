@@ -1,22 +1,10 @@
-package com.example.sentimo;
+package com.example.sentimo.Fragments;
 
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.os.Bundle;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.widget.AbsListView;
-import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.EditText;
-import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.DialogFragment;
+import com.example.sentimo.Mood;
 
 // The AddMoodFragment class is a fragment that creates a Mood object that is then displayed on
 // the main screen.

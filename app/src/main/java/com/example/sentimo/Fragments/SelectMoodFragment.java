@@ -1,17 +1,24 @@
-package com.example.sentimo;
+package com.example.sentimo.Fragments;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.Fragment;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+
+import com.example.sentimo.Emotions.Confident;
+import com.example.sentimo.Emotions.Embarrassed;
+import com.example.sentimo.Emotions.Emotion;
+import com.example.sentimo.Emotions.Happy;
+import com.example.sentimo.Emotions.Loved;
+import com.example.sentimo.Emotions.Mad;
+import com.example.sentimo.Emotions.Sad;
+import com.example.sentimo.Emotions.Tired;
+import com.example.sentimo.Emotions.Worried;
+import com.example.sentimo.R;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;

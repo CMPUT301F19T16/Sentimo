@@ -1,12 +1,6 @@
-package com.example.sentimo;
+package com.example.sentimo.Emotions;
 
 public class Embarrassed extends Emotion{
-
-    private String name;
-    private String colour;
-    //private Image emoji;
-
-
     public Embarrassed() {
         super("Embarrassed", "#F33EAB");
     }

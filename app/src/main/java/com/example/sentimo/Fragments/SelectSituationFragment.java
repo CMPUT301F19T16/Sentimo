@@ -1,4 +1,4 @@
-package com.example.sentimo;
+package com.example.sentimo.Fragments;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -8,6 +8,13 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+
+import com.example.sentimo.R;
+import com.example.sentimo.Situations.AloneSituation;
+import com.example.sentimo.Situations.CrowdSituation;
+import com.example.sentimo.Situations.OnePersonSituation;
+import com.example.sentimo.Situations.SeveralPeopleSituation;
+import com.example.sentimo.Situations.Situation;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;

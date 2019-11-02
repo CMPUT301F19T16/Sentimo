@@ -1,9 +1,7 @@
-package com.example.sentimo;
+package com.example.sentimo.Fragments;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +9,11 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
+
+import com.example.sentimo.Emotions.Emotion;
+import com.example.sentimo.Mood;
+import com.example.sentimo.R;
+import com.example.sentimo.Situations.Situation;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;

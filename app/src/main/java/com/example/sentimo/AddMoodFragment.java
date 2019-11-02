@@ -19,6 +19,8 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
 import java.text.ParseException;
+import java.util.Calendar;
+import java.util.Date;
 
 // The AddMoodFragment class is a fragment that creates a Mood object that is then displayed on
 // the main screen.
@@ -36,7 +38,12 @@ public class AddMoodFragment extends ChangeMoodFragment {
     protected void subclassInitialization() {
         this.emotion = null;
         this.situation = null;
-
+        TimeFormatter timef = new TimeFormatter();
+        Date time = new Date();
+        time.setTime(Calendar.getInstance().getTimeInMillis());
+        timef.setTime(time);
+        dateTextView.setText(timef.getDateString());
+        timeTextView.setText(timef.getTimeString());
     }
 
     // Subclass listener interfaces and methods

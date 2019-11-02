@@ -8,7 +8,7 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.Objects;
 
-class TimeFormatter implements Serializable, Comparable {
+class TimeFormatter{
     private Date time;
 
     public TimeFormatter() {
@@ -65,10 +65,5 @@ class TimeFormatter implements Serializable, Comparable {
         hash = 31 * hash + (timeString == null ? 0 : timeString.hashCode());
         hash = 31 * hash + (dateString == null ? 0 : dateString.hashCode());
         return hash;
-    }
-
-    @Override
-    public int compareTo(Object o) {
-        return this.time.compareTo(((TimeFormatter) o).getTime());
     }
 }

@@ -16,9 +16,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
-import java.util.Calendar;
-import java.util.Date;
-
 public abstract class ChangeMoodFragment extends DialogFragment implements SelectSituationFragment.SelectSituationListener, SelectMoodFragment.SelectMoodFragmentInteractionListener {
     protected TextView dateTextView;
     protected TextView timeTextView;
@@ -109,13 +106,6 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
         emojiImageButton.setOnClickListener(emotionClick);
 
         situationButton.setOnClickListener(situationClick);
-
-        TimeFormatter timef = new TimeFormatter();
-        Date time = new Date();
-        time.setTime(Calendar.getInstance().getTimeInMillis());
-        timef.setTime(time);
-        dateTextView.setText(timef.getDateString());
-        timeTextView.setText(timef.getTimeString());
     }
 
     protected abstract void subclassInitialization();

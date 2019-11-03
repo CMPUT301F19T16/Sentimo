@@ -6,10 +6,9 @@ import com.example.sentimo.Situations.Situation;
 import java.io.Serializable;
 import java.util.Objects;
 
-public class Mood implements Serializable {
+public class Mood implements Serializable, Comparable {
 
-    private String date;
-    private String time;
+    private TimeFormatter time;
     private Emotion emotion;
     private String reason;
     private Situation situation;
@@ -19,29 +18,19 @@ public class Mood implements Serializable {
 
     public Mood(){}
 
-    public Mood(String date, String time, Emotion emotion, String reason,
+    public Mood(TimeFormatter time, Emotion emotion, String reason,
                 Situation situation, Boolean locationPermission){
-        this.date = date;
         this.time = time;
         this.emotion = emotion;
         this.reason = reason;
         this.situation = situation;
         this.locationPermission = locationPermission;
     }
-
-    public String getDate() {
-        return date;
+    public TimeFormatter getTime() {
+        return this.time;
     }
 
-    public void setDate(String date) {
-        this.date = date;
-    }
-
-    public String getTime() {
-        return time;
-    }
-
-    public void setTime(String time) {
+    public void setTime(TimeFormatter time) {
         this.time = time;
     }
 
@@ -78,8 +67,7 @@ public class Mood implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Mood mood = (Mood) o;
-        return date.equals(mood.date) &&
-                time.equals(mood.time) &&
+        return  time.equals(mood.time) &&
                 emotion.equals(mood.emotion) &&
                 Objects.equals(reason, mood.reason) &&
                 Objects.equals(situation, mood.situation);
@@ -88,12 +76,16 @@ public class Mood implements Serializable {
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 31 * hash + (date == null ? 0 : date.hashCode());
         hash = 31 * hash + (time == null ? 0 : time.hashCode());
         hash = 31 * hash + (emotion.getColour() == null ? 0 : emotion.getColour().hashCode());
         hash = 31 * hash + (emotion.getName() == null ? 0 : emotion.getName().hashCode());
         hash = 31 * hash + (reason == null ? 0 : reason.hashCode());
         hash = 31 * hash + (situation == null ? 0 : situation.hashCode());
         return hash;
+    }
+
+    @Override
+    public int compareTo(Object o) {
+        return this.time.compareTo(((Mood) o).getTime());
     }
 }

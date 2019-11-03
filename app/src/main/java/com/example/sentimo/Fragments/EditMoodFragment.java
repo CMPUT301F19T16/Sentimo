@@ -7,6 +7,8 @@ import android.content.DialogInterface;
 import com.example.sentimo.Mood;
 import com.example.sentimo.Situations.Situation;
 
+import java.text.ParseException;
+
 public class EditMoodFragment extends ChangeMoodFragment {
     private int position;
     private Mood initialMood;
@@ -19,8 +21,8 @@ public class EditMoodFragment extends ChangeMoodFragment {
         this.emotion = initialMood.getEmotion();
         this.situation = initialMood.getSituation();
 
-        dateTextView.setText(initialMood.getDate());
-        timeTextView.setText(initialMood.getTime());
+        dateTextView.setText(initialMood.getTime().getDateString());
+        timeTextView.setText(initialMood.getTime().getTimeString());
         reasonEditText.setText(initialMood.getReason());
         Situation moodSituation = initialMood.getSituation();
         if (moodSituation != null) {

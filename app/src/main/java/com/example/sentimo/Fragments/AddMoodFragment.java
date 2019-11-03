@@ -6,6 +6,8 @@ import android.content.DialogInterface;
 
 import com.example.sentimo.Mood;
 
+import java.text.ParseException;
+
 // The AddMoodFragment class is a fragment that creates a Mood object that is then displayed on
 // the main screen.
 

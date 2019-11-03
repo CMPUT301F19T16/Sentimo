@@ -16,10 +16,15 @@ import com.example.sentimo.Emotions.Emotion;
 import com.example.sentimo.Mood;
 import com.example.sentimo.R;
 import com.example.sentimo.Situations.Situation;
+import com.example.sentimo.TimeFormatter;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
+
+import java.text.ParseException;
+import java.util.Calendar;
+import java.util.Date;
 
 public abstract class ChangeMoodFragment extends DialogFragment implements SelectSituationFragment.SelectSituationListener, SelectMoodFragment.SelectMoodFragmentInteractionListener {
     protected TextView dateTextView;
@@ -78,16 +83,42 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
                             displayWarning();
                             return;
                         }
+                        TimeFormatter timef = new TimeFormatter();
+                        try {
+                            timef.setTimeFormat(date, time);
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
                         String reason = reasonEditText.getText().toString();
                         Boolean location = locationCheckBox.isChecked();
                         // Need to add if statements for null date, time, or emotion
-                        Mood myMood = new Mood(date, time, ChangeMoodFragment.this.emotion, reason, ChangeMoodFragment.this.situation, location);
+//                        Mood myMood = new Mood(date, time, ChangeMoodFragment.this.emotion, reason, ChangeMoodFragment.this.situation, location);
+                        Mood myMood = new Mood(timef, ChangeMoodFragment.this.emotion, reason, ChangeMoodFragment.this.situation, location);
                         callListener(myMood);
                         ChangeMoodFragment.this.dismiss();
                     }
                 });
         return dialog;
     }
+
+//                        String date = dateTextView.getText().toString();
+//                        String time = timeTextView.getText().toString();
+////                        String emotionText = emojiImageButton.getText().toString();
+//                        if (AddMoodFragment.this.emotion == null) {
+//                            throw new RuntimeException("IMPLEMENT WARNING FOR NO EMOTION");
+//                        }
+//                        // date string to formatted Date
+//                        TimeFormatter timef = new TimeFormatter();
+//                        try {
+//                            timef.setTimeFormat(date, time);
+//                        } catch (ParseException e) {
+//                            e.printStackTrace();
+//                        }
+//                        String reason = reasonEditText.getText().toString();
+//                        Boolean location = locationCheckBox.isChecked();
+//                        // Need to add if statements for null date, time, or emotion
+//                        Mood myMood = new Mood(timef, AddMoodFragment.this.emotion, reason, AddMoodFragment.this.situation, location);
+//                        callListener(myMood);
 
     @Override
     public void MoodReturned(Emotion emotion) {
@@ -133,6 +164,13 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
         emojiImageButton.setOnClickListener(emotionClick);
 
         situationButton.setOnClickListener(situationClick);
+
+        TimeFormatter timef = new TimeFormatter();
+        Date time = new Date();
+        time.setTime(Calendar.getInstance().getTimeInMillis());
+        timef.setTime(time);
+        dateTextView.setText(timef.getDateString());
+        timeTextView.setText(timef.getTimeString());
     }
 
     public void displayWarning() {

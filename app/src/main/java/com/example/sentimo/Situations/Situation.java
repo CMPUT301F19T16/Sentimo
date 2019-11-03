@@ -1,4 +1,4 @@
-package com.example.sentimo;
+package com.example.sentimo.Situations;
 
 public class Situation {
     String name;

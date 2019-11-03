@@ -8,7 +8,7 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.Objects;
 
-class TimeFormatter implements Serializable, Comparable {
+public class TimeFormatter implements Serializable, Comparable {
     private Date time;
 
     public TimeFormatter() {

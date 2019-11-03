@@ -1,9 +1,8 @@
-package com.example.sentimo;
+package com.example.sentimo.Fragments;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.Context;
-import android.content.DialogInterface;
+import android.media.Image;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,24 +10,32 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.ImageView;
+
+import com.example.sentimo.Emotions.Emotion;
+import com.example.sentimo.Mood;
+import com.example.sentimo.R;
+import com.example.sentimo.Situations.Situation;
+import com.example.sentimo.TimeFormatter;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
+import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
 
 public abstract class ChangeMoodFragment extends DialogFragment implements SelectSituationFragment.SelectSituationListener, SelectMoodFragment.SelectMoodFragmentInteractionListener {
     protected TextView dateTextView;
     protected TextView timeTextView;
-    //private Image emojiImageView;
+    protected ImageView emojiImageView;
     protected Button emojiImageButton;
     protected EditText reasonEditText;
     protected Button reasonImageButton;
-    //private Image reasonImageView;
+    protected ImageView reasonImageView;
     protected Button situationButton;
-    protected TextView situationTextView;
+//    protected TextView situationTextView;
     protected CheckBox locationCheckBox;
     protected Emotion emotion;
     protected Situation situation;
@@ -38,6 +45,8 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
     protected View view;
 
 
+    // Method for reassigning positive button clicker found from
+    // StackOverflow post:https://stackoverflow.com/questions/2620444/how-to-prevent-a-dialog-from-closing-when-a-button-is-clicked
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState){
@@ -62,7 +71,33 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
         subclassInitialization();
 
         AlertDialog.Builder builder = returnBuilder();
-        return builder.create();
+        AlertDialog dialog = builder.create();
+        dialog.show();
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        String date = dateTextView.getText().toString();
+                        String time = timeTextView.getText().toString();
+//                        String emotionText = emojiImageButton.getText().toString();
+                        if (!isDataValid()) {
+                            displayWarning();
+                            return;
+                        }
+                        TimeFormatter timef = new TimeFormatter();
+                        try {
+                            timef.setTimeFormat(date, time);
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+                        String reason = reasonEditText.getText().toString();
+                        Boolean location = locationCheckBox.isChecked();
+                        // Need to add if statements for null date, time, or emotion
+                        Mood myMood = new Mood(timef, ChangeMoodFragment.this.emotion, reason, ChangeMoodFragment.this.situation, location);
+                        callListener(myMood);
+                        ChangeMoodFragment.this.dismiss();
+                    }
+                });
+        return dialog;
     }
 
     @Override
@@ -97,13 +132,13 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
 
         dateTextView = view.findViewById(R.id.date_text);
         timeTextView = view.findViewById(R.id.time_text);
-        //emojiImageView = view.findViewById(R.id.add_emotion_image);
+        emojiImageView = view.findViewById(R.id.emotion_image);
         emojiImageButton = view.findViewById(R.id.emotion_button);
         reasonEditText = view.findViewById(R.id.reason_editText);
         reasonImageButton = view.findViewById(R.id.reason_button);
-        //reasonImageView = view.findViewById(R.id.add_reason_image);
+        reasonImageView = view.findViewById(R.id.reason_image);
         situationButton = view.findViewById(R.id.situation_button);
-        situationTextView = view.findViewById(R.id.situation_text);
+//        situationTextView = view.findViewById(R.id.situation_text);
         locationCheckBox = view.findViewById(R.id.location_checkbox);
 
         emojiImageButton.setOnClickListener(emotionClick);
@@ -116,6 +151,17 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
         timef.setTime(time);
         dateTextView.setText(timef.getDateString());
         timeTextView.setText(timef.getTimeString());
+    }
+
+    public void displayWarning() {
+        new InvalidDataWarningFragment().show(getChildFragmentManager(), null);
+    }
+
+    public boolean isDataValid() {
+        if (ChangeMoodFragment.this.emotion != null) {
+            return true;
+        }
+        return false;
     }
 
     protected abstract void subclassInitialization();

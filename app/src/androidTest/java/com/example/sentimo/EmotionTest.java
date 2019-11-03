@@ -1,5 +1,8 @@
 package com.example.sentimo;
 
+import com.example.sentimo.Emotions.Emotion;
+import com.example.sentimo.Emotions.Happy;
+
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;

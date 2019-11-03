@@ -1,5 +1,8 @@
 package com.example.sentimo;
 
+import com.example.sentimo.Emotions.Emotion;
+import com.example.sentimo.Situations.Situation;
+
 import java.io.Serializable;
 import java.util.Objects;
 

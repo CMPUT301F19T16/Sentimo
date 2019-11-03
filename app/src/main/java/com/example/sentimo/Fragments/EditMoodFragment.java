@@ -1,20 +1,11 @@
-package com.example.sentimo;
+package com.example.sentimo.Fragments;
 
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.os.Bundle;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.EditText;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.DialogFragment;
+import com.example.sentimo.Mood;
+import com.example.sentimo.Situations.Situation;
 
 import java.text.ParseException;
 
@@ -84,27 +75,8 @@ public class EditMoodFragment extends ChangeMoodFragment {
                 .setView(view)
                 .setTitle("Mood")
                 .setNegativeButton("Back", null)
-                .setPositiveButton("Confirm Edit", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        String date = dateTextView.getText().toString();
-                        String time = timeTextView.getText().toString();
-                        String reason = reasonEditText.getText().toString();
-                        Boolean locationPermission = locationCheckBox.isChecked();
-
-                        // date string to formatted Date
-                        TimeFormatter timef = new TimeFormatter();
-                        try {
-                            timef.setTimeFormat(date, time);
-                        } catch (ParseException e) {
-                            e.printStackTrace();
-                        }
-
-                        Mood mood = new Mood(timef, EditMoodFragment.this.emotion, reason, EditMoodFragment.this.situation, locationPermission);
-                        listener.onConfirmEditPressed(mood, position);
-                    }
-                });
-
+                // Positive Button behaviour set in super class to override default dismissal behaviour
+                .setPositiveButton("Confirm Edit", null);
     }
 
 }

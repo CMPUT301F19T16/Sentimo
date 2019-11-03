@@ -3,6 +3,7 @@ package com.example.sentimo.Fragments;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.view.View;
 
 import com.example.sentimo.Mood;
 import com.example.sentimo.Situations.Situation;
@@ -32,6 +33,9 @@ public class EditMoodFragment extends ChangeMoodFragment {
         }
         locationCheckBox.setChecked(initialMood.getLocationPermission());
         emojiImageButton.setText(initialMood.getEmotion().getName());
+        emojiImageView.setImageResource(this.emotion.getImage());
+        emojiImageButton.setVisibility(View.INVISIBLE);
+        emojiImageView.setVisibility(View.VISIBLE);
         emotion = initialMood.getEmotion();
 
     }

@@ -1,16 +1,19 @@
 package com.example.sentimo.Emotions;
 
 
+import com.example.sentimo.R;
+
 public class Emotion {
     private String colour;
     private String name;
-    //private Image emotion;
+    private int image;
 
     public Emotion() {}
 
-    public Emotion(String name, String colour){
+    public Emotion(String name, String colour, int image){
         this.name = name;
         this.colour = colour;
+        this.image = image;
     }
 
     public String getColour(){
@@ -19,5 +22,6 @@ public class Emotion {
     public String getName(){
         return this.name;
     }
+    public int getImage() { return this.image; }
 
 }

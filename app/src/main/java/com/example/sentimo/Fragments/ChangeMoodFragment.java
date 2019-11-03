@@ -105,6 +105,9 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
         if (emotion != null) {
             this.emotion = emotion;
             emojiImageButton.setText(this.emotion.getName());
+            emojiImageButton.setVisibility(View.INVISIBLE);
+            emojiImageView.setVisibility(View.VISIBLE);
+            emojiImageView.setImageResource(emotion.getImage());
         }
     }
 
@@ -141,7 +144,9 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
 //        situationTextView = view.findViewById(R.id.situation_text);
         locationCheckBox = view.findViewById(R.id.location_checkbox);
 
+
         emojiImageButton.setOnClickListener(emotionClick);
+        emojiImageView.setOnClickListener(emotionClick);
 
         situationButton.setOnClickListener(situationClick);
 

@@ -92,7 +92,6 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
                         String reason = reasonEditText.getText().toString();
                         Boolean location = locationCheckBox.isChecked();
                         // Need to add if statements for null date, time, or emotion
-//                        Mood myMood = new Mood(date, time, ChangeMoodFragment.this.emotion, reason, ChangeMoodFragment.this.situation, location);
                         Mood myMood = new Mood(timef, ChangeMoodFragment.this.emotion, reason, ChangeMoodFragment.this.situation, location);
                         callListener(myMood);
                         ChangeMoodFragment.this.dismiss();
@@ -100,25 +99,6 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
                 });
         return dialog;
     }
-
-//                        String date = dateTextView.getText().toString();
-//                        String time = timeTextView.getText().toString();
-////                        String emotionText = emojiImageButton.getText().toString();
-//                        if (AddMoodFragment.this.emotion == null) {
-//                            throw new RuntimeException("IMPLEMENT WARNING FOR NO EMOTION");
-//                        }
-//                        // date string to formatted Date
-//                        TimeFormatter timef = new TimeFormatter();
-//                        try {
-//                            timef.setTimeFormat(date, time);
-//                        } catch (ParseException e) {
-//                            e.printStackTrace();
-//                        }
-//                        String reason = reasonEditText.getText().toString();
-//                        Boolean location = locationCheckBox.isChecked();
-//                        // Need to add if statements for null date, time, or emotion
-//                        Mood myMood = new Mood(timef, AddMoodFragment.this.emotion, reason, AddMoodFragment.this.situation, location);
-//                        callListener(myMood);
 
     @Override
     public void MoodReturned(Emotion emotion) {

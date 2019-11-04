@@ -1,6 +1,5 @@
 package com.example.sentimo;
 
-import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -8,7 +7,7 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.Objects;
 
-public class TimeFormatter implements Serializable, Comparable {
+public class TimeFormatter {
     private Date time;
 
     public TimeFormatter() {
@@ -67,8 +66,4 @@ public class TimeFormatter implements Serializable, Comparable {
         return hash;
     }
 
-    @Override
-    public int compareTo(Object o) {
-        return this.time.compareTo(((TimeFormatter) o).getTime());
-    }
 }

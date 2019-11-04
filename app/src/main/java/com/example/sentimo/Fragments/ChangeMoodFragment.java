@@ -152,12 +152,6 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
 
         situationButton.setOnClickListener(situationClick);
 
-        TimeFormatter timef = new TimeFormatter();
-        Date time = new Date();
-        time.setTime(Calendar.getInstance().getTimeInMillis());
-        timef.setTime(time);
-        dateTextView.setText(timef.getDateString());
-        timeTextView.setText(timef.getTimeString());
     }
 
     public void displayWarning() {

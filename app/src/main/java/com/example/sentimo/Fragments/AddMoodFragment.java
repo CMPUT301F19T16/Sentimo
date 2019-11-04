@@ -2,12 +2,12 @@ package com.example.sentimo.Fragments;
 
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.view.View;
-
 import com.example.sentimo.Mood;
+import com.example.sentimo.TimeFormatter;
 
-import java.text.ParseException;
+import java.util.Calendar;
+import java.util.Date;
 
 // The AddMoodFragment class is a fragment that creates a Mood object that is then displayed on
 // the main screen.
@@ -28,19 +28,26 @@ public class AddMoodFragment extends ChangeMoodFragment {
         emojiImageButton.setVisibility(View.VISIBLE);
         emojiImageView.setVisibility(View.INVISIBLE);
 
+        TimeFormatter timef = new TimeFormatter();
+        Date time = new Date();
+        time.setTime(Calendar.getInstance().getTimeInMillis());
+        timef.setTime(time);
+        dateTextView.setText(timef.getDateString());
+        timeTextView.setText(timef.getTimeString());
+
     }
 
     // Subclass listener interfaces and methods
-    public interface AddMoodListener{
+    public interface AddMoodListener {
         void onDonePressed(Mood newMood);
     }
 
     @Override
-    public void onAttach(Context context){
+    public void onAttach(Context context) {
         super.onAttach(context);
 
         // Attaching AddMoodListener from parent Activity
-        if (context instanceof AddMoodListener){
+        if (context instanceof AddMoodListener) {
             this.listener = (AddMoodFragment.AddMoodListener) context;
         } else {
             throw new RuntimeException(context.toString()

@@ -80,12 +80,13 @@ public class Mood implements Serializable, Comparable {
         hash = 31 * hash + (emotion.getColour() == null ? 0 : emotion.getColour().hashCode());
         hash = 31 * hash + (emotion.getName() == null ? 0 : emotion.getName().hashCode());
         hash = 31 * hash + (reason == null ? 0 : reason.hashCode());
-        hash = 31 * hash + (situation == null ? 0 : situation.hashCode());
+        if (situation != null)
+            hash = 31 * hash + (situation.getName() == null ? 0 : situation.getName().hashCode());
         return hash;
     }
 
     @Override
     public int compareTo(Object o) {
-        return this.time.compareTo(((Mood) o).getTime());
+        return this.time.getTime().compareTo(((Mood) o).getTime().getTime());
     }
 }

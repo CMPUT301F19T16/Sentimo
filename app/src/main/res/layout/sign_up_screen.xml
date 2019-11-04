@@ -1,55 +1,84 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/sign_up_screen"
     android:layout_width="match_parent"
-    android:gravity="right|center"
-    android:layout_height="match_parent">
-
-    <EditText
-        android:id="@+id/full_name_editText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:hint="Full Name"
-        android:inputType="textPersonName"
-        android:textStyle="bold"
-        android:textColor="@android:color/holo_green_dark" />
-    <EditText
-        android:id="@+id/userName_SP_editText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:hint="UserName"
-        android:inputType="textPersonName"
-        android:textStyle="bold"
-        android:textColor="@android:color/holo_green_dark" />
-    <EditText
-        android:id="@+id/password_SP_editText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:hint="Password"
-        android:inputType="textPersonName"
-        android:textStyle="bold"
-        android:textColor="@android:color/holo_green_dark" />
+    android:layout_height="match_parent"
+    android:paddingLeft="45dp"
+    android:paddingRight="45dp"
+    android:paddingTop="20dp"
+    android:paddingBottom="10dp"
+    tools:context="com.example.sentimo.MainActivity"
+    android:background="@drawable/image00"
+    android:orientation="vertical">
 
     <LinearLayout
+        android:paddingTop="100dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="vertical">
 
-        <Button
-            android:id="@+id/button_cancel"
-            android:layout_width="200dp"
+        <TextView
+            android:id="@+id/TextViewSignUpScreen"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:text="Cancel" />
+            android:gravity="center_horizontal"
+            android:text="Sentimo Sign-Up"
+            android:textAllCaps="false"
+            android:textColor="#E95384"
+            android:textSize="60sp" />
 
-        <Button
-            android:id="@+id/button_sign_up"
-            android:layout_width="200dp"
+        <TextView
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:text="Sign Up" />
+            android:gravity="top|center_horizontal"
+            android:text="Celebrate your Sentiments with Sentimo"
+            android:textAllCaps="false"
+            android:textColor="#1A1A1B"
+            android:textSize="20sp"
+            android:textStyle="italic|bold" />
+
+        <EditText
+            android:textColor="#fff"
+            android:gravity="left"
+            android:id="@+id/Fullname_SP_editText"
+            android:textColorHint="#fff"
+            android:background="@drawable/logintextstyle"
+            android:layout_width="300dp"
+            android:layout_height="60dp"
+            android:layout_gravity="center"
+            android:hint="Full Name" />
+        <EditText
+            android:textColor="#fff"
+            android:gravity="left"
+            android:id="@+id/Username_SP_editText"
+            android:textColorHint="#fff"
+            android:background="@drawable/logintextstyle"
+            android:layout_width="300dp"
+            android:layout_height="60dp"
+            android:layout_gravity="center"
+            android:hint="UserName" />
+        <EditText
+            android:textColor="#fff"
+            android:gravity="left"
+            android:id="@+id/Password_SP_editText"
+            android:textColorHint="#fff"
+            android:background="@drawable/logintextstyle"
+            android:layout_marginTop="10dp"
+            android:layout_width="300dp"
+            android:layout_height="60dp"
+            android:layout_gravity="center"
+            android:hint="Password" />
+        <Button
+            android:background="@drawable/buttonstyleselector"
+            android:textColor="#fff"
+            android:id="@+id/button_SignUpScreen"
+            android:layout_marginTop="50dp"
+            android:layout_height="60dp"
+            android:layout_width="match_parent"
+            android:text="Sign-Up" />
+
+
     </LinearLayout>
-</LinearLayout>
+</ScrollView>
 

@@ -46,6 +46,8 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
     protected View.OnClickListener situationClick;
     protected View view;
 
+    protected Button testButton;
+
 
     // Method for reassigning positive button clicker found from
     // StackOverflow post:https://stackoverflow.com/questions/2620444/how-to-prevent-a-dialog-from-closing-when-a-button-is-clicked

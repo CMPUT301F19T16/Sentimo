@@ -3,6 +3,7 @@ package com.example.sentimo.Fragments;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Color;
 import android.view.View;
 
 import com.example.sentimo.Mood;
@@ -36,6 +37,7 @@ public class EditMoodFragment extends ChangeMoodFragment {
         emojiImageView.setImageResource(this.emotion.getImage());
         emojiImageButton.setVisibility(View.INVISIBLE);
         emojiImageView.setVisibility(View.VISIBLE);
+        emojiImageView.setBackgroundColor(Color.parseColor(this.emotion.getColour()));
         emotion = initialMood.getEmotion();
 
     }

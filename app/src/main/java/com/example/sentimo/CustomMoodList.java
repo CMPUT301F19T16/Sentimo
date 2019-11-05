@@ -1,10 +1,13 @@
 package com.example.sentimo;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -35,11 +38,13 @@ public class CustomMoodList extends ArrayAdapter<Mood> {
         Mood mood = moods.get(position);
         TextView date = view.findViewById(R.id.mood_date);
         TextView time = view.findViewById(R.id.mood_time);
-        //TextView emoji = view.findViewById(R.id.mood_emoji);
+        ImageView emoji = view.findViewById(R.id.mood_emoji);
+        LinearLayout background = view.findViewById(R.id.mood_list_background);
 
         date.setText(mood.getTime().getDateString());
         time.setText(mood.getTime().getTimeString());
-        //image.setImage(mood.getEmoji());
+        emoji.setImageResource(mood.getEmotion().getImage());
+        background.setBackgroundColor(Color.parseColor(mood.getEmotion().getColour()));
 
         return view;
     }

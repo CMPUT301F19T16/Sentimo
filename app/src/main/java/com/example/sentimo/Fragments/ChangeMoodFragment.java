@@ -2,6 +2,7 @@ package com.example.sentimo.Fragments;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.graphics.Color;
 import android.media.Image;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -110,6 +111,7 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
             emojiImageButton.setVisibility(View.INVISIBLE);
             emojiImageView.setVisibility(View.VISIBLE);
             emojiImageView.setImageResource(emotion.getImage());
+            emojiImageView.setBackgroundColor(Color.parseColor(emotion.getColour()));
         }
     }
 

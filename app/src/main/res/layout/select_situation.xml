@@ -4,33 +4,73 @@
     android:layout_height="match_parent">
 
     <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:id="@+id/aloneButton"
-        android:text="Alone"></Button>
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_margin="4dp"
+        android:background="@drawable/image02"
+        android:paddingLeft="4dp"
+        android:paddingTop="4dp"
+        android:paddingRight="4dp"
+        android:text="Alone"
+        android:textAllCaps="false"
+        android:textColor="#FAF8F8"
+        android:textSize="25sp"
+        android:textStyle="bold|italic"></Button>
 
     <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:id="@+id/onePersonButton"
-        android:text="With One Person"></Button>
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_margin="4dp"
+        android:background="@drawable/image03"
+        android:paddingLeft="4dp"
+        android:paddingTop="4dp"
+        android:paddingRight="4dp"
+        android:text="With One Person"
+        android:textAllCaps="false"
+        android:textColor="#FAF8F8"
+        android:textStyle="bold|italic"></Button>
 
     <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:id="@+id/severalPeopleButton"
-        android:text="With Several People"></Button>
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_margin="4dp"
+        android:background="@drawable/image04"
+        android:paddingLeft="4dp"
+        android:paddingTop="4dp"
+        android:paddingRight="4dp"
+        android:text="With Several People"
+        android:textAllCaps="false"
+        android:textColor="#FAF8F8"
+        android:textStyle="bold|italic"></Button>
 
     <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:id="@+id/crowdButton"
-        android:text="With a Crowd"></Button>
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_margin="4dp"
+        android:background="@drawable/image05"
+        android:paddingLeft="4dp"
+        android:paddingTop="4dp"
+        android:paddingRight="4dp"
+        android:text="With a Crowd"
+        android:textAllCaps="false"
+        android:textColor="#FAF8F8"
+        android:textStyle="bold|italic"></Button>
 
     <Button
+        android:id="@+id/noSituationButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/noSituationButton"
-        android:text="(No situation NOT IMPLEMENTED)"></Button>
+        android:layout_margin="4dp"
+        android:background="#CDDC39"
+        android:paddingTop="4dp"
+        android:text="(Situation Not Specified)"
+        android:paddingLeft="4dp"
+        android:paddingRight="4dp"
+        android:textAllCaps="false"
+        android:textStyle="bold|italic"></Button>
 
 </LinearLayout>

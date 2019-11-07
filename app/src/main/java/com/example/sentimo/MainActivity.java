@@ -2,7 +2,10 @@ package com.example.sentimo;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.widget.AdapterView;
 
@@ -65,6 +68,26 @@ public class MainActivity extends AppCompatActivity implements AddMoodFragment.A
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Mood mood = moodAdapter.getItem(position);
                 new EditMoodFragment(mood, position).show(getSupportFragmentManager(), "EDIT_MOOD");
+            }
+        });
+
+        moodList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(final AdapterView<?> parent, View view, final int position, long id) {
+                AlertDialog.Builder alert = new AlertDialog.Builder(MainActivity.this);
+                alert.setMessage("Are you sure you want to delete this Mood?");
+                alert.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Mood mood = moodAdapter.getItem(position);
+                        database.deleteMood(mood);
+                        moodDataList.remove(mood);
+                        moodAdapter.notifyDataSetChanged();
+                    }
+                });
+                alert.setNegativeButton("NO", null);
+                alert.show();
+                return true;
             }
         });
 

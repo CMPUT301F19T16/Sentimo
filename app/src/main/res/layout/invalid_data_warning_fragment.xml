@@ -6,6 +6,20 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="WARNING INVALID DATA"></TextView>
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginBottom="20dp"
+        android:fontFamily="sans-serif-smallcaps"
+        android:paddingLeft="20dp"
+        android:paddingTop="20dp"
+        android:paddingRight="20dp"
+        android:paddingBottom="20dp"
+        android:text="WARNING INVALID DATA !!!"
+        android:textAlignment="center"
+        android:textAllCaps="true"
+        android:textColor="#F44336"
+        android:textSize="18sp"
+        android:textStyle="bold"></TextView>
 
 </LinearLayout>

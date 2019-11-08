@@ -74,5 +74,44 @@ public class MainActivityTest {
 
     }
 
+    @Test
+    public void editMood() {
+        solo.assertCurrentActivity("Wrong Activity", MainActivity.class);
+        // delete all existing moods for testing
+        ListView moodList = (ListView) solo.getView(R.id.mood_list);
+        int moodCount = moodList.getAdapter().getCount();
+        for (int i = 0; i < moodCount; ++i) {
+            solo.clickLongInList(0);
+            solo.clickOnButton("YES");
+            solo.waitForView(R.id.mood_list);
+        }
+        assertEquals(moodList.getAdapter().getCount(), 0);
+
+        // add a mood to edit
+        solo.clickOnButton("Add");
+        solo.clickOnButton("Add Emotion");
+        // click on sad button
+        solo.clickOnView(solo.getView(R.id.sadButton));
+        solo.enterText((EditText) solo.getView(R.id.reason_editText), "Sad");
+        // get current date and time to search for after adding
+        TextView dateTextView = (TextView) solo.getView(R.id.date_text);
+        TextView timeTextView = (TextView) solo.getView(R.id.time_text);
+        String date = dateTextView.getText().toString();
+        String time = timeTextView.getText().toString();
+
+        solo.clickOnButton("Done");
+        assertTrue(solo.waitForText(date, 1, 2000));
+        assertTrue(solo.waitForText(time, 1, 2000));
+
+        // now edit the mood
+        solo.clickInList(0);
+        solo.clearEditText((EditText) solo.getView(R.id.reason_editText));
+        solo.enterText((EditText) solo.getView(R.id.reason_editText), "Somewhat sad");
+        solo.clickOnButton("Confirm Edit");
+
+        solo.clickInList(0);
+        assertTrue(solo.waitForText("Somewhat sad", 1, 2000));
+    }
+
 }
 

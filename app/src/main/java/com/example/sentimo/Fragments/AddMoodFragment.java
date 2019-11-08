@@ -9,18 +9,23 @@ import com.example.sentimo.TimeFormatter;
 import java.util.Calendar;
 import java.util.Date;
 
-// The AddMoodFragment class is a fragment that creates a Mood object that is then displayed on
-// the main screen.
 
-//// This class is a modified version of the ListyCity demo in Lab 3 and uses a lot of resources
-//// from the AddCityFragment class.
-//// I don't know who wrote the ListyCity demo, but the Android Studio .zip file is on eclass at this URL
-//// Url == https://eclass.srv.ualberta.ca/course/view.php?id=54165
+/**
+ *
+ *The AddMoodFragment class is a fragment that creates a Mood object that is then sent to
+ *the main screen.
+ *This class is a modified version of the ListyCity demo in Lab 3 and uses a lot of resources
+ *from the AddCityFragment class.
+ *I don't know who wrote the ListyCity demo, but the Android Studio .zip file is on eclass at this URL
+ *Url == https://eclass.srv.ualberta.ca/course/view.php?id=54165
+ */
 public class AddMoodFragment extends ChangeMoodFragment {
     private AddMoodListener listener;
 
-    // Subclass UI initialization
 
+    /**
+     * Subclass specific initialization (required to ensure called after UI hookup)
+     */
     @Override
     protected void subclassInitialization() {
         this.emotion = null;
@@ -37,7 +42,9 @@ public class AddMoodFragment extends ChangeMoodFragment {
 
     }
 
-    // Subclass listener interfaces and methods
+    /**
+     * Listener for activity calling AddMoodFragment to receive a mood back
+     */
     public interface AddMoodListener {
         void onDonePressed(Mood newMood);
     }
@@ -55,13 +62,20 @@ public class AddMoodFragment extends ChangeMoodFragment {
         }
     }
 
+    /**
+     * Listener to return mood to parent activity
+     * @param mood: the mood created by the ChangeMoodFragment
+     */
     @Override
     public void callListener(Mood mood) {
         listener.onDonePressed(mood);
     }
 
-    // Alert dialog builder method
 
+    /**
+     * Dialog builder specific to AddMoodFragment
+     * @return the initialized AlertDialog.Builder
+     */
     @Override
     protected AlertDialog.Builder returnBuilder() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());

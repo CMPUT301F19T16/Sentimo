@@ -48,7 +48,7 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
     protected View view;
 
 
-    // Method for reassigning positive button clicker found from
+    // Method for reassigning positive button clicker to avoid automatic dismissal found at
     // StackOverflow post:https://stackoverflow.com/questions/2620444/how-to-prevent-a-dialog-from-closing-when-a-button-is-clicked
     @NonNull
     @Override
@@ -82,15 +82,16 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
                         String date = dateTextView.getText().toString();
                         String time = timeTextView.getText().toString();
 //                        String emotionText = emojiImageButton.getText().toString();
-                        if (!isDataValid()) {
-                            displayWarning();
+                        int errorCode = isDataValid();
+                        if (errorCode != 0) {
+                            displayWarning(errorCode);
                             return;
                         }
                         TimeFormatter timef = new TimeFormatter();
                         try {
                             timef.setTimeFormat(date, time);
                         } catch (ParseException e) {
-                            e.printStackTrace();
+                            return;
                         }
                         String reason = reasonEditText.getText().toString();
                         Boolean location = locationCheckBox.isChecked();
@@ -125,6 +126,12 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
         }
     }
 
+
+
+    /**
+     *Shared initialization between subclasses
+     *Separate non-constructor function required to allow hookup of UI before initialization
+     */
     private void sharedInitialization() {
         View view = null;
         if (ChangeMoodFragment.this instanceof AddMoodFragment) {
@@ -156,20 +163,61 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
 
     }
 
-    public void displayWarning() {
-        new InvalidDataWarningFragment().show(getChildFragmentManager(), null);
+    /**
+     * Displays a warning for invalid date of type specified by warningType
+     * @param warningType the code for the type of warning to display
+     */
+    public void displayWarning(int warningType) {
+        new InvalidDataWarningFragment(warningType).show(getChildFragmentManager(), null);
     }
 
-    public boolean isDataValid() {
-        if (ChangeMoodFragment.this.emotion != null) {
-            return true;
+    /**
+     * Checks if data is valid, returns and appropriate data invalid code if not
+     * @return integer code indication type of data invalidity, or 0 if data valid
+     */
+    public int isDataValid() {
+        if (!(ChangeMoodFragment.this.emotion != null)) {
+            return 1;
         }
-        return false;
+        String date = dateTextView.getText().toString();
+        String time = timeTextView.getText().toString();
+        TimeFormatter timef = new TimeFormatter();
+        try {
+            timef.setTimeFormat(date, time);
+        } catch (ParseException e) {
+            return 2;
+        }
+        String reason = reasonEditText.getText().toString();
+        if (reason.length() > 20) {
+            return 3;
+        }
+        int spaceCount = 0;
+        for (int i = 0; i < reason.length(); i++) {
+            if (reason.charAt(i) == ' ') {
+                spaceCount++;
+            }
+        }
+        if (spaceCount > 2) {
+            return 4;
+        }
+        return 0;
     }
 
+    /**
+     * Initialization specific to subclass
+     * Require separate function rather than constructor for ordering reasons
+     */
     protected abstract void subclassInitialization();
 
+    /**
+     * Listener for dismissing back to activity with a created Mood
+     * @param mood: the mood created by the ChangeMoodFragment
+     */
     protected abstract void callListener(Mood mood);
 
+    /**
+     * Returns a builder for the AlertDialog specific to the subclass
+     * @return
+     */
     protected abstract AlertDialog.Builder returnBuilder();
 }

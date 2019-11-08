@@ -6,6 +6,7 @@ import com.example.sentimo.Emotions.Happy;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 /**
  * Test class for creating emotions. Makes sure that creating an emotion object
@@ -19,10 +20,27 @@ public class EmotionTest {
     }
 
     @Test
-    public void testGetMethods(){
-        Emotion e = mockEmotion();
-        assertEquals("#23E775", e.getColour());
-        assertEquals("Happy", e.getName());
+    public void testEmotionConstructor(){
+        Emotion emotion = mockEmotion();
+        assertNotNull(emotion);
+    }
+
+    @Test
+    public void getEmotionName(){
+        Emotion emotion = mockEmotion();
+        assertEquals("Happy", emotion.getName());
+    }
+
+    @Test
+    public void getEmotionColour(){
+        Emotion emotion = mockEmotion();
+        assertEquals("#23E775", emotion.getColour());
+    }
+
+    @Test
+    public void getEmotionImage(){
+        Emotion emotion = mockEmotion();
+        assertEquals(R.drawable.happy, emotion.getImage());
     }
 
 }

@@ -11,6 +11,15 @@ import com.example.sentimo.Situations.Situation;
 
 import java.text.ParseException;
 
+/**
+ *
+ *The EditMoodFragment class is a fragment that edits a Mood object that is then sent to
+ *the main screen.
+ *This class is a modified version of the ListyCity demo in Lab 3 and uses a lot of resources
+ *from the AddCityFragment class.
+ *I don't know who wrote the ListyCity demo, but the Android Studio .zip file is on eclass at this URL
+ *Url == https://eclass.srv.ualberta.ca/course/view.php?id=54165
+ */
 public class EditMoodFragment extends ChangeMoodFragment {
     private int position;
     private Mood initialMood;
@@ -18,6 +27,9 @@ public class EditMoodFragment extends ChangeMoodFragment {
 
     // Subclass UI initialization
 
+    /**
+     * Subclass specific initialization (required to ensure called after UI hookup)
+     */
     @Override
     protected void subclassInitialization() {
         this.emotion = initialMood.getEmotion();
@@ -44,10 +56,18 @@ public class EditMoodFragment extends ChangeMoodFragment {
 
     // Subclass listener interfaces and methods
 
+    /**
+     * Listener for activity calling EditMoodFragment to receive a mood back
+     */
     public interface EditMoodListener{
         void onConfirmEditPressed(Mood mood, int position);
     }
 
+    /**
+     * Constructor to assign pre-existing mood and position in list
+     * @param mood The original mood
+     * @param position The position in the list
+     */
     public EditMoodFragment(Mood mood, int position){
         this.position = position;
         this.initialMood = mood;
@@ -64,15 +84,19 @@ public class EditMoodFragment extends ChangeMoodFragment {
         }
     }
 
+    /**
+     * Listener to return mood to parent activity
+     * @param mood: the mood created by the ChangeMoodFragment
+     */
     @Override
     public void callListener(Mood mood) {
         listener.onConfirmEditPressed(mood, position);
     }
 
-
-
-    // Alert dialog builder method
-
+    /**
+     * Dialog builder specific to AddMoodFragment
+     * @return the initialized AlertDialog.Builder
+     */
     @Override
     protected AlertDialog.Builder returnBuilder() {
 

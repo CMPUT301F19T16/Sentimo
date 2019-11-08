@@ -12,7 +12,7 @@ import java.util.Date;
 
 /**
  *
- *The AddMoodFragment class is a fragment that creates a Mood object that is then displayed on
+ *The AddMoodFragment class is a fragment that creates a Mood object that is then sent to
  *the main screen.
  *This class is a modified version of the ListyCity demo in Lab 3 and uses a lot of resources
  *from the AddCityFragment class.

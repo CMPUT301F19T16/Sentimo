@@ -4,6 +4,10 @@ import android.widget.BaseAdapter;
 import androidx.annotation.Nullable;
 import com.google.firebase.firestore.*;
 
+/**
+ * A class for keeping track of moods in a database including
+ * adding, editing, and deleting
+ */
 public class Database {
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
     private final CollectionReference users = db.collection("users");

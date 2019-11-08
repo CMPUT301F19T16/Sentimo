@@ -13,6 +13,7 @@ import org.junit.Test;
 
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
 public class MainActivityTest {
 
@@ -111,6 +112,43 @@ public class MainActivityTest {
 
         solo.clickInList(0);
         assertTrue(solo.waitForText("Somewhat sad", 1, 2000));
+    }
+
+    @Test
+    public void deleteMood() {
+        solo.assertCurrentActivity("Wrong Activity", MainActivity.class);
+        solo.waitForView(R.id.mood_list);
+        // delete all existing moods for testing
+        ListView moodList = (ListView) solo.getView(R.id.mood_list);
+        int moodCount = moodList.getAdapter().getCount();
+        for (int i = 0; i < moodCount; ++i) {
+            solo.clickLongInList(0);
+            solo.clickOnButton("YES");
+            solo.waitForView(R.id.mood_list);
+        }
+        assertEquals(moodList.getAdapter().getCount(), 0);
+
+        solo.clickOnButton("Add");
+        solo.clickOnButton("Add Emotion");
+        // click on happy button
+        solo.clickOnView(solo.getView(R.id.happyButton));
+        solo.enterText((EditText) solo.getView(R.id.reason_editText), "Happy");
+        // get current date and time to search for after adding
+        TextView dateTextView = (TextView) solo.getView(R.id.date_text);
+        TextView timeTextView = (TextView) solo.getView(R.id.time_text);
+        String date = dateTextView.getText().toString();
+        String time = timeTextView.getText().toString();
+
+        solo.clickOnButton("Done");
+        assertTrue(solo.waitForText(date, 1, 2000));
+        assertTrue(solo.waitForText(time, 1, 2000));
+
+        solo.clickLongInList(0);
+        solo.clickOnButton("YES");
+
+        assertFalse(solo.waitForText(date, 1, 2000));
+        assertFalse(solo.waitForText(time, 1, 2000));
+
     }
 
 }

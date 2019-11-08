@@ -82,15 +82,16 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
                         String date = dateTextView.getText().toString();
                         String time = timeTextView.getText().toString();
 //                        String emotionText = emojiImageButton.getText().toString();
-                        if (!isDataValid()) {
-                            displayWarning();
+                        int errorCode = isDataValid();
+                        if (errorCode != 0) {
+                            displayWarning(errorCode);
                             return;
                         }
                         TimeFormatter timef = new TimeFormatter();
                         try {
                             timef.setTimeFormat(date, time);
                         } catch (ParseException e) {
-                            e.printStackTrace();
+                            return;
                         }
                         String reason = reasonEditText.getText().toString();
                         Boolean location = locationCheckBox.isChecked();
@@ -156,15 +157,36 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
 
     }
 
-    public void displayWarning() {
-        new InvalidDataWarningFragment().show(getChildFragmentManager(), null);
+    public void displayWarning(int warningType) {
+        new InvalidDataWarningFragment(warningType).show(getChildFragmentManager(), null);
     }
 
-    public boolean isDataValid() {
-        if (ChangeMoodFragment.this.emotion != null) {
-            return true;
+    public int isDataValid() {
+        if (!(ChangeMoodFragment.this.emotion != null)) {
+            return 1;
         }
-        return false;
+        String date = dateTextView.getText().toString();
+        String time = timeTextView.getText().toString();
+        TimeFormatter timef = new TimeFormatter();
+        try {
+            timef.setTimeFormat(date, time);
+        } catch (ParseException e) {
+            return 2;
+        }
+        String reason = reasonEditText.getText().toString();
+        if (reason.length() > 20) {
+            return 3;
+        }
+        int spaceCount = 0;
+        for (int i = 0; i < reason.length(); i++) {
+            if (reason.charAt(i) == ' ') {
+                spaceCount++;
+            }
+        }
+        if (spaceCount > 2) {
+            return 4;
+        }
+        return 0;
     }
 
     protected abstract void subclassInitialization();

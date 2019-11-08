@@ -244,7 +244,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.8"></EditText>
+            app:layout_constraintVertical_bias="0.8"
+            android:maxLength="20"></EditText>
 
         <TextView
             android:layout_width="wrap_content"

@@ -30,7 +30,8 @@
             android:paddingBottom="10dp"
             android:paddingTop="10dp"
             android:background="@drawable/happy"
-            android:id="@+id/happyButton"></Button>
+            android:id="@+id/happyButton">
+        </Button>
 
         <TextView
             android:layout_width="fill_parent"
@@ -53,7 +54,8 @@
             android:paddingBottom="10dp"
             android:paddingTop="10dp"
             android:background="@drawable/sad"
-            android:id="@+id/sadButton"></Button>
+            android:id="@+id/sadButton">
+        </Button>
 
     </LinearLayout>
 
@@ -83,7 +85,8 @@
             android:paddingBottom="10dp"
             android:paddingTop="10dp"
             android:background="@drawable/mad"
-            android:id="@+id/madButton"></Button>
+            android:id="@+id/madButton">
+        </Button>
 
 
         <TextView
@@ -107,7 +110,8 @@
             android:paddingBottom="10dp"
             android:paddingTop="10dp"
             android:background="@drawable/loved"
-            android:id="@+id/lovedButton"></Button>
+            android:id="@+id/lovedButton">
+        </Button>
 
     </LinearLayout>
 
@@ -138,7 +142,8 @@
             android:paddingBottom="10dp"
             android:paddingTop="10dp"
             android:background="@drawable/embarrased"
-            android:id="@+id/embarassedButton"></Button>
+            android:id="@+id/embarassedButton">
+        </Button>
 
 
         <TextView
@@ -162,7 +167,8 @@
             android:paddingBottom="10dp"
             android:paddingTop="10dp"
             android:background="@drawable/tired"
-            android:id="@+id/tiredButton"></Button>
+            android:id="@+id/tiredButton">
+        </Button>
 
     </LinearLayout>
 
@@ -193,7 +199,8 @@
             android:paddingBottom="10dp"
             android:paddingTop="10dp"
             android:background="@drawable/confident"
-            android:id="@+id/confidentButton"></Button>
+            android:id="@+id/confidentButton">
+        </Button>
 
 
         <TextView
@@ -217,7 +224,8 @@
             android:paddingBottom="10dp"
             android:paddingTop="10dp"
             android:background="@drawable/worried"
-            android:id="@+id/worriedButton"></Button>
+            android:id="@+id/worriedButton">
+        </Button>
 
     </LinearLayout>
 

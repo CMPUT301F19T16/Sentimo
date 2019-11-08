@@ -33,13 +33,13 @@ public class TimeFormatter {
      */
     public void setTimeFormat(String date, String time) throws ParseException {
         Calendar cal = Calendar.getInstance();
-        SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy hh:mm", Locale.CANADA);
+        SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.CANADA);
         cal.setTime(Objects.requireNonNull(df.parse(date + " " + time)));
         this.time = new Date(cal.getTimeInMillis());
     }
 
     public String getTimeString() {
-        SimpleDateFormat df = new SimpleDateFormat("hh:mm", Locale.CANADA);
+        SimpleDateFormat df = new SimpleDateFormat("HH:mm", Locale.CANADA);
         Date cal = new Date();
         cal.setTime(this.time.getTime());
         final String format = df.format(cal);

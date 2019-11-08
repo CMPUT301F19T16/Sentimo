@@ -27,6 +27,20 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * This is the Main Screen of the Sentimo app. Has a ListView that displays
+ * the users current Moods and the dates, times, and emotions attached to them.
+ * Has several buttons that allow the user to add and edit their moods, see
+ * visually where these moods took place, and view their friends and their moods.
+ * It also allows the user to delete their moods if they press and hold on one
+ * of the moods in their ListView and select "yes" when prompted if they want
+ * to delete their selected mood.
+ * Currently, this is the first screen that shows up when the user opens the app,
+ * but this will change later in development. Implements functions that have to
+ * do with the add and edit mood fragments so that the Mood List gets changed and
+ * updated automatically. This class uses FireStore to store specific elements of
+ * the moods so that they are not deleted each time the user logs on.
+ */
 public class MainActivity extends AppCompatActivity implements AddMoodFragment.AddMoodListener,
                                                                EditMoodFragment.EditMoodListener {
 
@@ -38,6 +52,21 @@ public class MainActivity extends AppCompatActivity implements AddMoodFragment.A
     private Button friendButton;
     private Database database;
 
+    /**
+     * This is function that represents what happens when the Main Screen is
+     * first created. It makes sure that each of the buttons of the Main Screen
+     * have their own listeners and that the ListView has the Moods of the user.
+     * Currently,
+     *      Allows the user to create a new mood by pressing the add button,
+     *      Allows the user to edit a previously created mood by pressing on
+     *      one of the moods in their ListView,
+     *      and Allows the user to delete the moods that they wish by pressing
+     *      and holding on one of the moods in their ListView and selecting "yes"
+     *      when prompted
+     *
+     * @param savedInstanceState
+     *      This is the state of the Main Screen when created.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -93,18 +122,35 @@ public class MainActivity extends AppCompatActivity implements AddMoodFragment.A
 
     }
 
+    /**
+     * This is the function that is required for the addMoodFragment.
+     * Takes a mood and adds it to the database.
+     * Should then show up on the ListView.
+     * @param mood
+     *      This is the mood that the user created in the addMoodFragment.
+     */
     @Override
     public void onDonePressed(Mood mood){
         database.addMood(mood);
     }
 
+    /**
+     * This ist the function that is required for the editMoodFragment.
+     * Takes a mood previously in the ListView and updates it by deleting
+     * the old mood in the MoodList and replaces it with a new mood.
+     * Should then show up on the ListView.
+     * @param mood
+     *      This is the mood that the user edited from a previously known mood.
+     * @param position
+     *      This is the position of the old mood in the Mood List.
+     */
     @Override
     public void onConfirmEditPressed(Mood mood, int position){
         Mood oldMood = moodAdapter.getItem(position);
         database.deleteMood(Objects.requireNonNull(oldMood));
         database.addMood(mood);
     }
-
+    
     private void addMoodListener() {
         CollectionReference userMoods = database.getUserMoods();
         userMoods.addSnapshotListener(new EventListener<QuerySnapshot>() {

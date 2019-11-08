@@ -7,6 +7,9 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.Objects;
 
+/**
+ * A class for parsing a calendar date and time from user provided text fields
+ */
 public class TimeFormatter {
     private Date time;
 
@@ -22,6 +25,12 @@ public class TimeFormatter {
         this.time = time;
     }
 
+    /**
+     * Parses date and time from strings to a Date
+     * @param date User provided calendar date string
+     * @param time User provided time string
+     * @throws ParseException
+     */
     public void setTimeFormat(String date, String time) throws ParseException {
         Calendar cal = Calendar.getInstance();
         SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy hh:mm", Locale.CANADA);

@@ -14,9 +14,17 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
+/**
+ * This class displays an invalid data warning message, customized to the received
+ * errot type
+ */
 public class InvalidDataWarningFragment extends DialogFragment {
     int warningType;
 
+    /**
+     * Constructor for setting warning type
+     * @param warningType warning type to display
+     */
     public InvalidDataWarningFragment(int warningType) {
         this.warningType = warningType;
     }

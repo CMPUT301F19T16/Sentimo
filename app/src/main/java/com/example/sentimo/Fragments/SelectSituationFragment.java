@@ -20,6 +20,12 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
+/**
+ * This is a class that represents the fragment that occurs when the user
+ * presses the Situation button in either the add mood fragment or the edit
+ * mood fragment.
+ * Allows the user to select/deselect a situation associated with their mood.
+ */
 public class SelectSituationFragment extends DialogFragment {
     Button aloneButton;
     Button onePersonButton;
@@ -29,6 +35,19 @@ public class SelectSituationFragment extends DialogFragment {
     View view;
     SelectSituationListener listener;
 
+    /**
+     * This is the function that represents what happens when the fragment
+     * is created.
+     * It makes sure that each of the situation buttons have their own
+     * listeners and makes it so when you press a button, the fragment
+     * closes automatically.
+     * @param savedInstanceState
+     *      This is the state of the add/edit mood fragment that calls this
+     *      fragment.
+     * @return
+     *      Returns a builder that allows the user to pick a situation or cancel
+     *      out of the fragment.
+     */
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
@@ -90,12 +109,26 @@ public class SelectSituationFragment extends DialogFragment {
 
     }
 
+    /**
+     * Tells the Dialog fragment what is the context of this fragment and
+     * what is the listener of the fragment. In this case, it would either be
+     * the add mood fragment or the edit mood fragment.
+     * @param context
+     *      Context object that represents the state and attributes of the
+     *      listener and the fragment.
+     */
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         listener = (SelectSituationListener)getParentFragment();
     }
 
+    /**
+     * This is an interface that is implemented by the listener of the fragment,
+     * in this case, either the add mood fragment or the edit mood fragment.
+     * It makes sure that the situation that is passed back is parsed and
+     * that the appropriate actions are taken when this happens.
+     */
     public interface SelectSituationListener {
         public void SituationReturned(Situation situation);
     }

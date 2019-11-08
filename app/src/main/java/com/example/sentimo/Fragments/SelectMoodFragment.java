@@ -24,6 +24,11 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
+/**
+ * Class that represents the fragment that shows up after the user presses
+ * on the Button/ImageButton in the add/edit mood fragment.
+ * Closes automatically when the user presses on one of the Emotion buttons.
+ */
 public class SelectMoodFragment extends DialogFragment {
     SelectMoodFragmentInteractionListener listener;
     Emotion emotion;
@@ -38,6 +43,18 @@ public class SelectMoodFragment extends DialogFragment {
     View.OnClickListener buttonListener;
     View view;
 
+    /**
+     * This is a function that represents what happens when the fragment is
+     * created.
+     * Attaches all the buttons from the xml file and closes the fragment
+     * when the user presses on an emotion button or the cancel button.
+     * @param savedInstanceState
+     *      This is the state of the add/edit mood fragment that calls this
+     *      fragment.
+     * @return
+     *      Returns a builder that allows the user to pick an emotion or cancel
+     *      out of the fragment.
+     */
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
@@ -111,12 +128,26 @@ public class SelectMoodFragment extends DialogFragment {
                 }).create();
     }
 
+    /**
+     * Tells the Dialog fragment what is the context of this fragment and
+     * what is the listener of the fragment. In this case, it would either be
+     * the add mood fragment or the edit mood fragment.
+     * @param context
+     *      Context object that represents the state and attributes of the
+     *      listener and the fragment.
+     */
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         listener = (SelectMoodFragmentInteractionListener)getParentFragment();
     }
 
+    /**
+     * This is an interface that is implemented by the listener of this fragment,
+     * either the add mood fragment or the edit mood fragment. It makes sure that
+     * the listener of this fragment parses the emotion correctly and takes
+     * appropriate action.
+     */
     public interface SelectMoodFragmentInteractionListener {
         void MoodReturned(Emotion emotion);
     }

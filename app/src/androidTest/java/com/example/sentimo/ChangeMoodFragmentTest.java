@@ -1,34 +1,17 @@
 package com.example.sentimo;
 
-import android.app.AlertDialog;
-import android.os.SystemClock;
-import android.view.View;
-
-import org.hamcrest.Matcher;
+import androidx.test.espresso.assertion.ViewAssertions;
+import androidx.test.filters.LargeTest;
+import androidx.test.rule.ActivityTestRule;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-
-import androidx.test.espresso.Espresso;
-import androidx.test.espresso.ViewAssertion;
-import androidx.test.espresso.assertion.ViewAssertions;
-import androidx.test.espresso.matcher.ViewMatchers;
-import androidx.test.filters.LargeTest;
-import androidx.test.rule.ActivityTestRule;
-import androidx.test.runner.AndroidJUnit4;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
-import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
-import static androidx.test.espresso.matcher.ViewMatchers.withId;
-import static androidx.test.espresso.matcher.ViewMatchers.withTagValue;
-import static androidx.test.espresso.matcher.ViewMatchers.withText;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.core.IsNot.not;
+import static androidx.test.espresso.matcher.ViewMatchers.*;
 
-@RunWith(AndroidJUnit4.class)
 @LargeTest
 public class ChangeMoodFragmentTest {
     @Rule

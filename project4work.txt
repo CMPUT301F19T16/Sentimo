@@ -1,0 +1,12 @@
+Project Part 4 Remaining Work:
+Photo app screens/functionality
+Photo Firebase storage/retrieval
+Username/login app screens/functionality
+Username/login Firebase functionality/authentication
+Locations for mood in app
+Locations storage in Firebase
+Location map view for self
+Following/sharing app functionality (including friend recent moods list)
+Following/sharing Firebase functionality/authorization
+Location map view for friends
+UML screens for all of the above

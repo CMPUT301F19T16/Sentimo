@@ -5,5 +5,7 @@ public enum InputErrorType {
     CMFNullMoodError,
     CMFTimeParseError,
     CMFReasonTooLongError,
-    CMFReasonTooManyWordsError
+    CMFReasonTooManyWordsError,
+    LoginPasswordTooShortError,
+    LoginUsernameNotValidEmailError
 }

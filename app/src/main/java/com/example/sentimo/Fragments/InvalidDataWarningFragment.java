@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.example.sentimo.InputErrorType;
+import com.example.sentimo.LoginInfo;
 import com.example.sentimo.R;
 
 import androidx.annotation.NonNull;
@@ -37,16 +38,22 @@ public class InvalidDataWarningFragment extends DialogFragment {
         String warningMessage = null;
         switch (warningType) {
             case CMFNullMoodError:
-                warningMessage = "No emotion selected.";
+                warningMessage = getString(R.string.warning_CMFNullMoodError);
                 break;
             case CMFTimeParseError:
-                warningMessage = "Invalid date or time.";
+                warningMessage = getString(R.string.warning_CMFTimeParseError);
                 break;
             case CMFReasonTooLongError:
-                warningMessage = "Reason longer than 20 characters";
+                warningMessage = getString(R.string.warning_CMFReasonTooLongError);
                 break;
             case CMFReasonTooManyWordsError:
-                warningMessage = "Reason more than 3 words";
+                warningMessage = getString(R.string.warning_CMFReasonTooManyWordsError);
+                break;
+            case LoginPasswordTooShortError:
+                warningMessage = getString(R.string.warning_LoginPasswordTooShortError);
+                break;
+            case LoginUsernameNotValidEmailError:
+                warningMessage = getString(R.string.warning_LoginUsernameNotValidEmailError);
                 break;
             default:
                 new RuntimeException("Warning Type Not Supported");

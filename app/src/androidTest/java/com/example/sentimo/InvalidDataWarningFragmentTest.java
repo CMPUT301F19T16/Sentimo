@@ -1,6 +1,8 @@
 package com.example.sentimo;
 
 import android.app.AlertDialog;
+import android.content.Context;
+import android.util.Log;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -23,12 +25,15 @@ import static org.hamcrest.core.AllOf.allOf;
 
 // A class for testing data validation feature on ChangeMoodFragment
 public class InvalidDataWarningFragmentTest {
+    Context context;
+
+
     @Rule
     public ActivityTestRule<MainActivity> activityRule = new ActivityTestRule<>(MainActivity.class);
 
     @Before
     public void init() {
-
+        this.context = activityRule.getActivity().getApplicationContext();
     }
 
     @After
@@ -43,7 +48,7 @@ public class InvalidDataWarningFragmentTest {
     public void testNullEmotion() {
         onView(withId(R.id.add_button)).perform(click());
         onView(withId(R.id.change_mood_fragment_positive_button)).perform(click());
-        onView(allOf(withId(R.id.warning_text),withText("No emotion selected."))).check(ViewAssertions.matches(isDisplayed()));
+        onView(allOf(withId(R.id.warning_text),withText(context.getString(R.string.warning_CMFNullMoodError)))).check(ViewAssertions.matches(isDisplayed()));
     }
 
 
@@ -58,6 +63,6 @@ public class InvalidDataWarningFragmentTest {
         onView(withId(R.id.reason_editText)).perform(typeText("1 2 3 4"));
         onView(withId(R.id.reason_editText)).perform(closeSoftKeyboard());
         onView(withId(R.id.change_mood_fragment_positive_button)).perform(click());
-        onView(allOf(withId(R.id.warning_text),withText("Reason more than 3 words"))).check(ViewAssertions.matches(isDisplayed()));
+        onView(allOf(withId(R.id.warning_text),withText(context.getString(R.string.warning_CMFReasonTooManyWordsError)))).check(ViewAssertions.matches(isDisplayed()));
     }
 }

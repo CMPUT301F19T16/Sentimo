@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/sign_up_screen"
     android:layout_width="match_parent"
@@ -13,7 +13,6 @@
     android:orientation="vertical">
 
     <LinearLayout
-        android:paddingTop="100dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
@@ -68,11 +67,12 @@
             android:layout_width="300dp"
             android:layout_height="60dp"
             android:layout_gravity="center"
-            android:hint="Password" />
+            android:hint="Password"
+            android:inputType="textPassword"/>
         <Button
             android:background="@drawable/buttonstyleselector"
             android:textColor="#fff"
-            android:id="@+id/button_SignUpScreen"
+            android:id="@+id/submit_signup_button"
             android:layout_marginTop="50dp"
             android:layout_height="60dp"
             android:layout_width="match_parent"
@@ -80,5 +80,5 @@
 
 
     </LinearLayout>
-</ScrollView>
+</LinearLayout>
 

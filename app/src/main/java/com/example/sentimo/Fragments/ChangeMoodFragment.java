@@ -16,6 +16,7 @@ import android.widget.TextView;
 import android.widget.ImageView;
 
 import com.example.sentimo.Emotions.Emotion;
+import com.example.sentimo.InputErrorType;
 import com.example.sentimo.Mood;
 import com.example.sentimo.R;
 import com.example.sentimo.Situations.Situation;
@@ -82,8 +83,8 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
                         String date = dateTextView.getText().toString();
                         String time = timeTextView.getText().toString();
 //                        String emotionText = emojiImageButton.getText().toString();
-                        int errorCode = isDataValid();
-                        if (errorCode != 0) {
+                        InputErrorType errorCode = isDataValid();
+                        if (errorCode != InputErrorType.DataValid) {
                             displayWarning(errorCode);
                             return;
                         }
@@ -101,6 +102,7 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
                         ChangeMoodFragment.this.dismiss();
                     }
                 });
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setId(R.id.change_mood_fragment_positive_button);
         return dialog;
     }
 
@@ -167,7 +169,7 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
      * Displays a warning for invalid date of type specified by warningType
      * @param warningType the code for the type of warning to display
      */
-    public void displayWarning(int warningType) {
+    public void displayWarning(InputErrorType warningType) {
         new InvalidDataWarningFragment(warningType).show(getChildFragmentManager(), null);
     }
 
@@ -175,9 +177,9 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
      * Checks if data is valid, returns and appropriate data invalid code if not
      * @return integer code indication type of data invalidity, or 0 if data valid
      */
-    public int isDataValid() {
+    public InputErrorType isDataValid() {
         if (!(ChangeMoodFragment.this.emotion != null)) {
-            return 1;
+            return InputErrorType.CMFNullMoodError;
         }
         String date = dateTextView.getText().toString();
         String time = timeTextView.getText().toString();
@@ -185,11 +187,11 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
         try {
             timef.setTimeFormat(date, time);
         } catch (ParseException e) {
-            return 2;
+            return InputErrorType.CMFTimeParseError;
         }
         String reason = reasonEditText.getText().toString();
         if (reason.length() > 20) {
-            return 3;
+            return InputErrorType.CMFReasonTooLongError;
         }
         int spaceCount = 0;
         for (int i = 0; i < reason.length(); i++) {
@@ -198,9 +200,9 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
             }
         }
         if (spaceCount > 2) {
-            return 4;
+            return InputErrorType.CMFReasonTooManyWordsError;
         }
-        return 0;
+        return InputErrorType.DataValid;
     }
 
     /**

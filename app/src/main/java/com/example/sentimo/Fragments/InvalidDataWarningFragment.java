@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
 
+import com.example.sentimo.InputErrorType;
 import com.example.sentimo.R;
 
 import androidx.annotation.NonNull;
@@ -19,13 +20,13 @@ import androidx.fragment.app.DialogFragment;
  * errot type
  */
 public class InvalidDataWarningFragment extends DialogFragment {
-    int warningType;
+    InputErrorType warningType;
 
     /**
      * Constructor for setting warning type
      * @param warningType warning type to display
      */
-    public InvalidDataWarningFragment(int warningType) {
+    public InvalidDataWarningFragment(InputErrorType warningType) {
         this.warningType = warningType;
     }
 
@@ -35,17 +36,17 @@ public class InvalidDataWarningFragment extends DialogFragment {
         View view = LayoutInflater.from(getActivity()).inflate(R.layout.invalid_data_warning_fragment, null);
         String warningMessage = null;
         switch (warningType) {
-            case 1:
+            case CMFNullMoodError:
                 warningMessage = "No emotion selected.";
                 break;
-            case 2:
+            case CMFTimeParseError:
                 warningMessage = "Invalid date or time.";
                 break;
-            case 3:
+            case CMFReasonTooLongError:
                 warningMessage = "Reason longer than 20 characters";
                 break;
-            case 4:
-                warningMessage = "More than 3 words";
+            case CMFReasonTooManyWordsError:
+                warningMessage = "Reason more than 3 words";
                 break;
             default:
                 new RuntimeException("Warning Type Not Supported");

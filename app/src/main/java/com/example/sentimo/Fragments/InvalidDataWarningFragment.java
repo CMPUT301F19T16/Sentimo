@@ -49,6 +49,9 @@ public class InvalidDataWarningFragment extends DialogFragment {
             case CMFReasonTooManyWordsError:
                 warningMessage = getString(R.string.warning_CMFReasonTooManyWordsError);
                 break;
+            case CMFPictureAndReasonError:
+                warningMessage = getString(R.string.warning_CMFPictureAndReasonError);
+                break;
             case LoginPasswordTooShortError:
                 warningMessage = getString(R.string.warning_LoginPasswordTooShortError);
                 break;

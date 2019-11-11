@@ -8,6 +8,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
 
+import com.example.sentimo.InputErrorType;
+import com.example.sentimo.LoginInfo;
 import com.example.sentimo.R;
 
 import androidx.annotation.NonNull;
@@ -19,13 +21,13 @@ import androidx.fragment.app.DialogFragment;
  * errot type
  */
 public class InvalidDataWarningFragment extends DialogFragment {
-    int warningType;
+    InputErrorType warningType;
 
     /**
      * Constructor for setting warning type
      * @param warningType warning type to display
      */
-    public InvalidDataWarningFragment(int warningType) {
+    public InvalidDataWarningFragment(InputErrorType warningType) {
         this.warningType = warningType;
     }
 
@@ -35,17 +37,23 @@ public class InvalidDataWarningFragment extends DialogFragment {
         View view = LayoutInflater.from(getActivity()).inflate(R.layout.invalid_data_warning_fragment, null);
         String warningMessage = null;
         switch (warningType) {
-            case 1:
-                warningMessage = "No emotion selected.";
+            case CMFNullMoodError:
+                warningMessage = getString(R.string.warning_CMFNullMoodError);
                 break;
-            case 2:
-                warningMessage = "Invalid date or time.";
+            case CMFTimeParseError:
+                warningMessage = getString(R.string.warning_CMFTimeParseError);
                 break;
-            case 3:
-                warningMessage = "Reason longer than 20 characters";
+            case CMFReasonTooLongError:
+                warningMessage = getString(R.string.warning_CMFReasonTooLongError);
                 break;
-            case 4:
-                warningMessage = "More than 3 words";
+            case CMFReasonTooManyWordsError:
+                warningMessage = getString(R.string.warning_CMFReasonTooManyWordsError);
+                break;
+            case LoginPasswordTooShortError:
+                warningMessage = getString(R.string.warning_LoginPasswordTooShortError);
+                break;
+            case LoginUsernameNotValidEmailError:
+                warningMessage = getString(R.string.warning_LoginUsernameNotValidEmailError);
                 break;
             default:
                 new RuntimeException("Warning Type Not Supported");

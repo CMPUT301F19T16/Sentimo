@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">Sentimo</string>
+    <string name="warning_CMFNullMoodError">No emotion selected</string>
+    <string name="warning_CMFTimeParseError">Invalid date or time.</string>
+    <string name="warning_CMFReasonTooLongError">Reason longer than 20 characters.</string>
+    <string name="warning_CMFReasonTooManyWordsError">Reason more than 3 words.</string>
+    <string name="warning_LoginPasswordTooShortError">Password too short. Must be at least 6 characters.</string>
+    <string name="warning_LoginUsernameNotValidEmailError">Not a valid email.</string>
 </resources>

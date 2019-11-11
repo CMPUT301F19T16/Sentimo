@@ -4,6 +4,7 @@ import android.util.Patterns;
 
 public class LoginInfo {
     public static final int PASSWORD_MIN = 6;
+    public static final int USERNAME_MIN = 6;
     private String username;
     private String password;
 
@@ -30,9 +31,9 @@ public class LoginInfo {
 
     public static InputErrorType validUserNamePassword(String username, String password) {
         // Email validation method inspired by: https://stackoverflow.com/questions/12947620/email-address-validation-in-android-on-edittext
-        boolean isValidEmail = Patterns.EMAIL_ADDRESS.matcher(username).matches();
-        if (!isValidEmail) {
-            return InputErrorType.LoginUsernameNotValidEmailError;
+//        boolean isValidEmail = Patterns.EMAIL_ADDRESS.matcher(username).matches();
+        if (username.length() < USERNAME_MIN) {
+            return InputErrorType.LoginUsernameTooShortError;
         }
         if (password.length() < PASSWORD_MIN) {
             return InputErrorType.LoginPasswordTooShortError;

@@ -44,18 +44,18 @@ public class LoginActivityTest {
     @Test
     public void testNoUsername() {
         onView(withId(R.id.button_login)).perform(click());
-        onView(allOf(withId(R.id.warning_text),withText(context.getString(R.string.warning_LoginUsernameNotValidEmailError)))).check(ViewAssertions.matches(isDisplayed()));
+        onView(allOf(withId(R.id.warning_text),withText(context.getString(R.string.warning_LoginUsernameTooShortError)))).check(ViewAssertions.matches(isDisplayed()));
     }
 
     /**
-     * Tests rejection of a username that is not a valid email
+     * Tests rejection of a username that is too short
      */
     @Test
     public void testNotValidEmail() {
         onView(withId(R.id.Username_LS_editText)).perform(typeText("hello"));
         onView(withId(R.id.Username_LS_editText)).perform(closeSoftKeyboard());
         onView(withId(R.id.button_login)).perform(click());
-        onView(allOf(withId(R.id.warning_text),withText(context.getString(R.string.warning_LoginUsernameNotValidEmailError)))).check(ViewAssertions.matches(isDisplayed()));
+        onView(allOf(withId(R.id.warning_text),withText(context.getString(R.string.warning_LoginUsernameTooShortError)))).check(ViewAssertions.matches(isDisplayed()));
     }
 
     /**

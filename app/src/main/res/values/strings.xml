@@ -5,5 +5,6 @@
     <string name="warning_CMFReasonTooLongError">Reason longer than 20 characters.</string>
     <string name="warning_CMFReasonTooManyWordsError">Reason more than 3 words.</string>
     <string name="warning_LoginPasswordTooShortError">Password too short. Must be at least 6 characters.</string>
-    <string name="warning_LoginUsernameNotValidEmailError">Not a valid email.</string>
+    <string name="warning_LoginUsernameTooShortError">Username too short. Must be at least 6 characters.</string>
+    <string name="warning_CMFPictureAndReasonError">Text reason and picture reason provided. Only one or the other is allowed.</string>
 </resources>

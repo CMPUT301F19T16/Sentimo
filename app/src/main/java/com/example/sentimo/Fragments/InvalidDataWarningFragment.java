@@ -52,8 +52,8 @@ public class InvalidDataWarningFragment extends DialogFragment {
             case LoginPasswordTooShortError:
                 warningMessage = getString(R.string.warning_LoginPasswordTooShortError);
                 break;
-            case LoginUsernameNotValidEmailError:
-                warningMessage = getString(R.string.warning_LoginUsernameNotValidEmailError);
+            case LoginUsernameTooShortError:
+                warningMessage = getString(R.string.warning_LoginUsernameTooShortError);
                 break;
             default:
                 new RuntimeException("Warning Type Not Supported");

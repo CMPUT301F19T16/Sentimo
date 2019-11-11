@@ -7,5 +7,6 @@ public enum InputErrorType {
     CMFReasonTooLongError,
     CMFReasonTooManyWordsError,
     LoginPasswordTooShortError,
-    LoginUsernameNotValidEmailError
+    LoginUsernameTooShortError,
+    CMFPictureAndReasonError
 }

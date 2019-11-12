@@ -1,8 +1,8 @@
 package com.example.sentimo;
 
 import android.widget.BaseAdapter;
-import androidx.annotation.Nullable;
-import com.google.firebase.firestore.*;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 /**
  * A class for keeping track of moods in a database including

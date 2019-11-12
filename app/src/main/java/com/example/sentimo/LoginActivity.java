@@ -5,29 +5,34 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-
-import com.example.sentimo.Fragments.InvalidDataWarningFragment;
-
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import com.example.sentimo.Fragments.InvalidDataWarningFragment;
 
 // Class for displaying the login page and taking username and password
 // and sending it to the Firebase database for authentication
 public class LoginActivity extends AppCompatActivity {
-    EditText usernameEditText;
-    EditText passwordEditText;
-    Button loginSubmitButton;
-    Button signupButton;
-    Button skipButton;
+    private EditText usernameEditText;
+    private EditText passwordEditText;
+    private Button loginSubmitButton;
+    private Button signupButton;
+    private Button skipButton;
+    private Auth auth;
 
     /**
      * Initial activity setup
+     *
      * @param savedInstanceState
      */
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login_screen);
+        auth = new Auth(getApplicationContext());
+
+        if (auth.isLogin())
+            skipLogin();
+
         usernameEditText = findViewById(R.id.Username_LS_editText);
         passwordEditText = findViewById(R.id.Password_LS_editText);
         loginSubmitButton = findViewById(R.id.button_login);
@@ -55,30 +60,32 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-//        skipLogin();
 
     }
 
     /**
      * Returns a LoginInfo object with the EditText field values for username and password
      * if the provided data is valid, otherwise return null
+     *
      * @return LoginInfo indicating the provided username and password field values, or null if data invalid
      */
-    public LoginInfo returnLoginInfo() {
+    public void returnLoginInfo() {
         String username = usernameEditText.getText().toString();
         String password = passwordEditText.getText().toString();
         InputErrorType warningType = LoginInfo.validUserNamePassword(username, password);
-        if (warningType == InputErrorType.DataValid) {
-            return new LoginInfo(username, password);
-        } else {
+        if (warningType != InputErrorType.DataValid) {
             displayWarning(warningType);
-            return null;
+            return;
         }
+        Auth auth = new Auth(getApplicationContext());
+        auth.loginUser(new LoginInfo(username, password));
+
     }
 
     /**
      * Displays a warning message specific to the warningCode
-     * @param warningCode  The code for the warning message to be printed, specific to the data issue
+     *
+     * @param warningCode The code for the warning message to be printed, specific to the data issue
      */
     private void displayWarning(InputErrorType warningCode) {
         new InvalidDataWarningFragment(warningCode).show(getSupportFragmentManager(), null);

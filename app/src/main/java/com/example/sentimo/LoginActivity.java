@@ -14,11 +14,11 @@ import androidx.appcompat.app.AppCompatActivity;
 // Class for displaying the login page and taking username and password
 // and sending it to the Firebase database for authentication
 public class LoginActivity extends AppCompatActivity {
-    EditText usernameEditText;
-    EditText passwordEditText;
-    Button loginSubmitButton;
-    Button signupButton;
-    Button skipButton;
+    private EditText usernameEditText;
+    private EditText passwordEditText;
+    private Button loginSubmitButton;
+    private Button signupButton;
+    private Button skipButton;
 
     /**
      * Initial activity setup

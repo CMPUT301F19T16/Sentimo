@@ -40,13 +40,13 @@
         <EditText
             android:textColor="#fff"
             android:gravity="left"
-            android:id="@+id/Fullname_SP_editText"
+            android:id="@+id/Email_SP_editText"
             android:textColorHint="#fff"
             android:background="@drawable/logintextstyle"
             android:layout_width="300dp"
             android:layout_height="60dp"
             android:layout_gravity="center"
-            android:hint="Full Name" />
+            android:hint="Email" />
         <EditText
             android:textColor="#fff"
             android:gravity="left"

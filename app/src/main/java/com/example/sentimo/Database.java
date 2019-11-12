@@ -19,6 +19,15 @@ public class Database {
     }
 
     /**
+     * Returns the username of the user.
+     * @return
+     *  Returns a string that represents the username.
+     */
+    public String getUsername(){
+        return this.username;
+    }
+
+    /**
      * Add a mood to the history
      *
      * @param mood mood to be added

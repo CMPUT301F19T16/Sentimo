@@ -7,4 +7,5 @@
     <string name="warning_LoginPasswordTooShortError">Password too short. Must be at least 6 characters.</string>
     <string name="warning_LoginUsernameTooShortError">Username too short. Must be at least 6 characters.</string>
     <string name="warning_CMFPictureAndReasonError">Text reason and picture reason provided. Only one or the other is allowed.</string>
+    <string name="title_activity_display_map">Map</string>
 </resources>

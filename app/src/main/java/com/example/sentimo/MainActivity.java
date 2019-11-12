@@ -8,14 +8,24 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
+
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+
 import com.example.sentimo.Emotions.Emotion;
 import com.example.sentimo.Fragments.AddMoodFragment;
 import com.example.sentimo.Fragments.EditMoodFragment;
 import com.example.sentimo.Fragments.FilterFragment;
-import com.google.firebase.firestore.*;
+
+import com.example.sentimo.Fragments.MapSelectFragment;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QuerySnapshot;
+
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -37,8 +47,10 @@ import java.util.Objects;
  * the moods so that they are not deleted each time the user logs on.
  */
 public class MainActivity extends AppCompatActivity implements AddMoodFragment.AddMoodListener,
-        EditMoodFragment.EditMoodListener,
-        FilterFragment.OnFragmentInteractionListener {
+                                                               EditMoodFragment.EditMoodListener,
+                                                               FilterFragment.OnFragmentInteractionListener,
+                                                               MapSelectFragment.OnFragmentInteractionListener {
+
 
     private ListView moodList;
     private ArrayList<Mood> moodDataList;
@@ -50,6 +62,7 @@ public class MainActivity extends AppCompatActivity implements AddMoodFragment.A
     private Button friendButton;
     private Button filterButton;
     private Database database;
+    private TextView username;
     private Auth auth;
 
     /**
@@ -84,11 +97,13 @@ public class MainActivity extends AppCompatActivity implements AddMoodFragment.A
         mapButton = findViewById(R.id.map_button);
         friendButton = findViewById(R.id.friend_button);
         filterButton = findViewById(R.id.filter_button);
+        username = findViewById(R.id.main_screen_username);
 
         moodDataList = new ArrayList<>();
         partialDataList = new ArrayList<>();
 
         database = new Database(auth.getActiveUsername());
+        username.setText(database.getUsername());
         moodAdapter = new CustomMoodList(this, moodDataList);
         partialAdapter = new CustomMoodList(this, partialDataList);
         moodList.setAdapter(moodAdapter);
@@ -107,6 +122,13 @@ public class MainActivity extends AppCompatActivity implements AddMoodFragment.A
             @Override
             public void onClick(View v) {
                 new FilterFragment().show(getSupportFragmentManager(), "FILTER_LIST");
+            }
+        });
+
+        mapButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                new MapSelectFragment().show(getSupportFragmentManager(), "MAP_FRAGMENT");
             }
         });
 
@@ -205,6 +227,15 @@ public class MainActivity extends AppCompatActivity implements AddMoodFragment.A
                 }
             }
             moodList.setAdapter(partialAdapter);
+        }
+    }
+
+    @Override
+    public void onMapSelected(String button){
+        if (button != null){
+            Intent intent = new Intent(this, DisplayMapActivity.class);
+            intent.putExtra("mapName", button);
+            startActivity(intent);
         }
     }
 

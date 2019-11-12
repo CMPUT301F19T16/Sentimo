@@ -64,16 +64,16 @@ public class LoginActivity extends AppCompatActivity {
      * if the provided data is valid, otherwise return null
      * @return LoginInfo indicating the provided username and password field values, or null if data invalid
      */
-    public LoginInfo returnLoginInfo() {
+    public void returnLoginInfo() {
         String username = usernameEditText.getText().toString();
         String password = passwordEditText.getText().toString();
         InputErrorType warningType = LoginInfo.validUserNamePassword(username, password);
-        if (warningType == InputErrorType.DataValid) {
-            return new LoginInfo(username, password);
-        } else {
+        if (warningType != InputErrorType.DataValid) {
             displayWarning(warningType);
-            return null;
+            return;
         }
+        Auth auth = new Auth();
+        auth.loginUser(new LoginInfo(username, password));
     }
 
     /**

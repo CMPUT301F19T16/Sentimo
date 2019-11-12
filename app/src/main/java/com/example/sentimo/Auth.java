@@ -18,13 +18,19 @@ import java.util.HashMap;
 
 public class Auth {
     private Context context;
-    private final FirebaseAuth mAuth = FirebaseAuth.getInstance();
+    private FirebaseAuth mAuth = FirebaseAuth.getInstance();
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
     private FirebaseUser user;
 
     public Auth(Context context) {
         this.context = context;
         user = mAuth.getCurrentUser();
+    }
+
+    private void reloadUser() {
+        Intent intent = new Intent(context, MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        context.startActivity(intent);
     }
 
     public Boolean isLogin() {
@@ -42,45 +48,48 @@ public class Auth {
 
 
     public void createUser(final LoginInfo logininfo, final String email) {
-        mAuth.createUserWithEmailAndPassword(email, logininfo.getPassword())
-                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            // create user in database
-                            HashMap<String, String> userDocument = new HashMap<>();
-                            userDocument.put("email", email);
-                            db.collection("users").document(logininfo.getUsername()).set(userDocument);
-                            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        db.collection("users").document(logininfo.getUsername()).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                if (documentSnapshot.exists()) {
+                    Toast.makeText(context, "Username exists",
+                            Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                mAuth.createUserWithEmailAndPassword(email, logininfo.getPassword())
+                        .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                            @Override
+                            public void onComplete(@NonNull Task<AuthResult> task) {
+                                if (task.isSuccessful()) {
+                                    // create user in database
+                                    HashMap<String, String> userDocument = new HashMap<>();
+                                    userDocument.put("email", email);
+                                    db.collection("users").document(logininfo.getUsername()).set(userDocument);
+                                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
-                            UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
-                                    .setDisplayName(logininfo.getUsername())
-                                    .build();
+                                    UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                                            .setDisplayName(logininfo.getUsername())
+                                            .build();
 
-                            user.updateProfile(profileUpdates)
-                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                        @Override
-                                        public void onComplete(@NonNull Task<Void> task) {
-                                            if (task.isSuccessful()) {
-                                                Intent intent = new Intent(context, MainActivity.class);
-                                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                                context.startActivity(intent);
-                                            }
-                                        }
-                                    });
+                                    user.updateProfile(profileUpdates)
+                                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<Void> task) {
+                                                    if (task.isSuccessful()) {
+                                                        reloadUser();
+                                                    }
+                                                }
+                                            });
 
+                                } else {
+                                    Toast.makeText(context, "Registration failed. Email may be registered.",
+                                            Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
+            }
+        });
 
-                        } else {
-                            Toast.makeText(context, "Registration failed.",
-                                    Toast.LENGTH_SHORT).show();
-
-                        }
-
-
-                    }
-
-
-                });
     }
 
     public void loginUser(final LoginInfo loginInfo) {
@@ -99,18 +108,12 @@ public class Auth {
                             @Override
                             public void onComplete(@NonNull Task<AuthResult> task) {
                                 if (task.isSuccessful()) {
-                                    Intent intent = new Intent(context, MainActivity.class);
-                                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                    context.startActivity(intent);
-
+                                    reloadUser();
                                 } else {
 
                                     Toast.makeText(context, "Authorization failed.",
                                             Toast.LENGTH_SHORT).show();
-
                                 }
-
-
                             }
                         });
             }

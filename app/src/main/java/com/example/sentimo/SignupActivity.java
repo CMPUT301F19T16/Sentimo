@@ -29,7 +29,7 @@ public class SignupActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.sign_up_screen);
 
-        auth = new Auth();
+        auth = new Auth(getApplicationContext());
         submitSignup = findViewById(R.id.submit_signup_button);
         usernameEditText = findViewById(R.id.Username_SP_editText);
         passwordEditText = findViewById(R.id.Password_SP_editText);

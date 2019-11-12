@@ -6,6 +6,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.AdapterView;
 
@@ -14,11 +15,13 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.example.sentimo.Emotions.Emotion;
 import com.example.sentimo.Fragments.AddMoodFragment;
 import com.example.sentimo.Fragments.EditMoodFragment;
 import com.example.sentimo.Fragments.FilterFragment;
+import com.example.sentimo.Fragments.MapSelectFragment;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
@@ -45,7 +48,8 @@ import java.util.Objects;
  */
 public class MainActivity extends AppCompatActivity implements AddMoodFragment.AddMoodListener,
                                                                EditMoodFragment.EditMoodListener,
-                                                               FilterFragment.OnFragmentInteractionListener {
+                                                               FilterFragment.OnFragmentInteractionListener,
+                                                               MapSelectFragment.OnFragmentInteractionListener {
 
     private ListView moodList;
     private ArrayList<Mood> moodDataList;
@@ -57,6 +61,7 @@ public class MainActivity extends AppCompatActivity implements AddMoodFragment.A
     private Button friendButton;
     private Button filterButton;
     private Database database;
+    private TextView username;
 
     /**
      * This is function that represents what happens when the Main Screen is
@@ -83,11 +88,13 @@ public class MainActivity extends AppCompatActivity implements AddMoodFragment.A
         mapButton = findViewById(R.id.map_button);
         friendButton = findViewById(R.id.friend_button);
         filterButton = findViewById(R.id.filter_button);
+        username = findViewById(R.id.main_screen_username);
 
         moodDataList = new ArrayList<>();
         partialDataList = new ArrayList<>();
         // TODO: Read username from login
         database = new Database("Testing");
+        username.setText(database.getUsername());
         moodAdapter = new CustomMoodList(this, moodDataList);
         partialAdapter = new CustomMoodList(this, partialDataList);
         moodList.setAdapter(moodAdapter);
@@ -106,6 +113,13 @@ public class MainActivity extends AppCompatActivity implements AddMoodFragment.A
             @Override
             public void onClick(View v) {
                 new FilterFragment().show(getSupportFragmentManager(), "FILTER_LIST");
+            }
+        });
+
+        mapButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                new MapSelectFragment().show(getSupportFragmentManager(), "MAP_FRAGMENT");
             }
         });
 
@@ -206,6 +220,15 @@ public class MainActivity extends AppCompatActivity implements AddMoodFragment.A
                 }
             }
             moodList.setAdapter(partialAdapter);
+        }
+    }
+
+    @Override
+    public void onMapSelected(String button){
+        if (button != null){
+            Intent intent = new Intent(this, DisplayMapActivity.class);
+            intent.putExtra("mapName", button);
+            startActivity(intent);
         }
     }
     

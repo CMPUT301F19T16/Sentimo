@@ -20,16 +20,8 @@ import com.example.sentimo.Fragments.EditMoodFragment;
 import com.example.sentimo.Fragments.FilterFragment;
 
 import com.example.sentimo.Fragments.MapSelectFragment;
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
-import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.QuerySnapshot;
-
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import java.util.Objects;
 
 /**
@@ -99,16 +91,17 @@ public class MainActivity extends AppCompatActivity implements AddMoodFragment.A
         filterButton = findViewById(R.id.filter_button);
         username = findViewById(R.id.main_screen_username);
 
-        moodDataList = new ArrayList<>();
+        database = new Database(auth.getActiveUsername());
+
+        moodDataList = database.getMoodHistory();
         partialDataList = new ArrayList<>();
 
-        database = new Database(auth.getActiveUsername());
         username.setText(database.getUsername());
         moodAdapter = new CustomMoodList(this, moodDataList);
         partialAdapter = new CustomMoodList(this, partialDataList);
         moodList.setAdapter(moodAdapter);
 
-
+        setDatabaseListener();
         addMoodListener();
 
         addButton.setOnClickListener(new View.OnClickListener() {
@@ -239,23 +232,21 @@ public class MainActivity extends AppCompatActivity implements AddMoodFragment.A
         }
     }
 
+    /**
+     * listen to the cloud's change on moods
+     */
     private void addMoodListener() {
-        CollectionReference userMoods = database.getUserMoods();
-        userMoods.addSnapshotListener(new EventListener<QuerySnapshot>() {
-            @Override
-            public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
-                moodDataList.clear();
-                List<DocumentSnapshot> data;
-                if (queryDocumentSnapshots != null) {
-                    data = queryDocumentSnapshots.getDocuments();
+        database.addMoodListener();
+    }
 
-                    for (DocumentSnapshot d : data) {
-                        Mood mood = d.toObject(Mood.class);
-                        moodDataList.add(mood);
-                    }
-                    Collections.sort(moodDataList, Collections.<Mood>reverseOrder());
-                    moodAdapter.notifyDataSetChanged();
-                }
+    /**
+     * notify the adapter after reading from cloud
+     */
+    private void setDatabaseListener() {
+        database.setListener(new DatabaseListener() {
+            @Override
+            public void onSuccess() {
+                moodAdapter.notifyDataSetChanged();
             }
         });
     }

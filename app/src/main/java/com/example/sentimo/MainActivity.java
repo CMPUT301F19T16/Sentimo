@@ -9,6 +9,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
@@ -101,7 +102,6 @@ public class MainActivity extends AppCompatActivity implements AddMoodFragment.A
         partialAdapter = new CustomMoodList(this, partialDataList);
         moodList.setAdapter(moodAdapter);
 
-        setDatabaseListener();
         addMoodListener();
 
         addButton.setOnClickListener(new View.OnClickListener() {
@@ -244,17 +244,15 @@ public class MainActivity extends AppCompatActivity implements AddMoodFragment.A
      * listen to the cloud's change on moods
      */
     private void addMoodListener() {
-        database.addMoodListener();
-    }
-
-    /**
-     * notify the adapter after reading from cloud
-     */
-    private void setDatabaseListener() {
-        database.setListener(new DatabaseListener() {
+        database.addMoodListener(new DatabaseListener() {
             @Override
             public void onSuccess() {
                 moodAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onFailure() {
+                Toast.makeText(MainActivity.this, "fail to get moods", Toast.LENGTH_SHORT).show();
             }
         });
     }

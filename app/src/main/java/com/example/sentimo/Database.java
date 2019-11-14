@@ -136,11 +136,21 @@ public class Database {
     /**
      * get the follow list from cloud
      */
-    public void getFollowList() {
+    public void getFollowList(final DatabaseListener listener) {
         users.document(this.username).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 userFollowing = (ArrayList<String>) documentSnapshot.get("followList");
+            }
+        }).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                listener.onSuccess();
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                listener.onFailure();
             }
         });
     }

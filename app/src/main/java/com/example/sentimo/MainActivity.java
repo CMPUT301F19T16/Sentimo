@@ -125,6 +125,14 @@ public class MainActivity extends AppCompatActivity implements AddMoodFragment.A
             }
         });
 
+        friendButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, FriendActivity.class);
+                startActivity(intent);
+            }
+        });
+
         moodList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {

@@ -30,7 +30,8 @@
             android:layout_height="wrap_content"
             android:text="Filter"
             android:textSize="15dp"
-            android:visibility="visible"></Button>
+            android:visibility="invisible">
+        </Button>
 
         <TextView
             android:id="@+id/main_screen_username"
@@ -39,7 +40,8 @@
             android:layout_gravity="center"
             android:text="USERNAME"
             android:textAlignment="viewEnd"
-            android:textSize="20dp"></TextView>
+            android:textSize="20dp">
+        </TextView>
     </LinearLayout>
 
 

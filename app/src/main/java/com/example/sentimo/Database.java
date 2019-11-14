@@ -1,8 +1,12 @@
 package com.example.sentimo;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -11,6 +15,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -22,11 +27,12 @@ public class Database {
     private final CollectionReference users = db.collection("users");
     private String username;
     private ArrayList<Mood> moodHistory;
-    private DatabaseListener listener;
+    private ArrayList<String> userFollowing;
 
     Database(String username) {
         this.username = username;
         this.moodHistory = new ArrayList<>();
+        this.userFollowing = new ArrayList<>();
     }
 
     /**
@@ -77,18 +83,9 @@ public class Database {
     }
 
     /**
-     * set the listener after successfully read from cloud
-     * @param listener
-     *      custom listener called after reading from cloud successfully
-     */
-    public void setListener(DatabaseListener listener) {
-        this.listener = listener;
-    }
-
-    /**
      * listen to the mood list from cloud, sorted by reverse chronological order
      */
-    public void addMoodListener() {
+    public void addMoodListener(final DatabaseListener moodListener) {
         CollectionReference userMoods = this.getUserMoods();
         userMoods.addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
@@ -103,8 +100,66 @@ public class Database {
                         moodHistory.add(mood);
                     }
                     Collections.sort(moodHistory, Collections.<Mood>reverseOrder());
-                    listener.onSuccess();
+                    if (moodListener != null)
+                        moodListener.onSuccess();
                 }
+            }
+        });
+    }
+
+    public ArrayList<String> getUserFollowing() {
+        return userFollowing;
+    }
+
+    /**
+     * check if user exist
+     * @param listener
+     *      custom listener
+     * @param username
+     *      the user being checked
+     */
+    public void isUserExist(final DatabaseListener listener, String username) {
+        users.document(username).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                if (listener != null) {
+                    if (documentSnapshot.exists()) {
+                        listener.onSuccess();
+                    } else {
+                        listener.onFailure();
+                    }
+                }
+            }
+        });
+    }
+
+    /**
+     * get the follow list from cloud
+     */
+    public void getFollowList() {
+        users.document(this.username).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                userFollowing = (ArrayList<String>) documentSnapshot.get("followList");
+            }
+        });
+    }
+
+    /**
+     * update follow list to cloud
+     * @param list
+     *      a list of username that the user  follows
+     */
+    public void setFollowList(ArrayList<String> list, final DatabaseListener listener) {
+        users.document(this.username).update("followList", list).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                listener.onSuccess();
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                listener.onFailure();
             }
         });
     }

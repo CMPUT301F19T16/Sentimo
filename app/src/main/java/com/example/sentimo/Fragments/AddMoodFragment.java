@@ -1,13 +1,26 @@
 package com.example.sentimo.Fragments;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.os.Looper;
 import android.view.View;
 import com.example.sentimo.Mood;
 import com.example.sentimo.TimeFormatter;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnSuccessListener;
 
 import java.util.Calendar;
 import java.util.Date;
+
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 
 /**
@@ -21,6 +34,9 @@ import java.util.Date;
  */
 public class AddMoodFragment extends ChangeMoodFragment {
     private AddMoodListener listener;
+    private FusedLocationProviderClient fusedLocationClient;
+    private Location locationForListener;
+    private LocationCallback locationCallback;
 
 
     /**
@@ -40,6 +56,41 @@ public class AddMoodFragment extends ChangeMoodFragment {
         dateTextView.setText(timef.getDateString());
         timeTextView.setText(timef.getTimeString());
 
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this.getContext());
+        if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+        }
+        fusedLocationClient.getLastLocation().addOnSuccessListener( new OnSuccessListener<Location>() {
+            @Override
+            public void onSuccess(Location location) {
+                if (location != null) {
+                    AddMoodFragment.this.locationForListener = location;
+                }
+            }
+        });
+
+        // Adapted from Google's example found here: https://developer.android.com/training/location/receive-location-updates.html
+        locationCallback = new LocationCallback() {
+            @Override
+            public void onLocationResult(LocationResult locationResult) {
+                if (locationResult == null) {
+                    return;
+                }
+                for (Location location : locationResult.getLocations()) {
+                    locationForListener = location;
+                    break;
+                }
+            }
+        };
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        LocationRequest locationRequest = new LocationRequest()
+                .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
+                .setInterval(1000);
+        fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper());
     }
 
     /**
@@ -60,6 +111,12 @@ public class AddMoodFragment extends ChangeMoodFragment {
             throw new RuntimeException(context.toString()
                     + "must implement AddMoodListener");
         }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        fusedLocationClient.removeLocationUpdates(locationCallback);
     }
 
     /**
@@ -87,4 +144,8 @@ public class AddMoodFragment extends ChangeMoodFragment {
                 .setPositiveButton("Done", null);
     }
 
+    @Override
+    protected Location subclassLocationReturnBehaviour() {
+        return locationForListener;
+    }
 }

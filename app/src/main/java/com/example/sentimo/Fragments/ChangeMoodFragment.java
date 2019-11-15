@@ -1,12 +1,13 @@
 package com.example.sentimo.Fragments;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
-import android.media.Image;
-import android.content.Context;
-import android.content.DialogInterface;
+import android.location.Location;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -24,11 +25,10 @@ import com.example.sentimo.TimeFormatter;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.DialogFragment;
 
 import java.text.ParseException;
-import java.util.Calendar;
-import java.util.Date;
 
 public abstract class ChangeMoodFragment extends DialogFragment implements SelectSituationFragment.SelectSituationListener, SelectMoodFragment.SelectMoodFragmentInteractionListener {
     protected TextView dateTextView;
@@ -39,7 +39,6 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
     protected Button reasonImageButton;
     protected ImageView reasonImageView;
     protected Button situationButton;
-//    protected TextView situationTextView;
     protected CheckBox locationCheckBox;
     protected Emotion emotion;
     protected Situation situation;
@@ -71,38 +70,51 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
         };
 
         sharedInitialization();
-
         subclassInitialization();
 
         AlertDialog.Builder builder = returnBuilder();
         AlertDialog dialog = builder.create();
         dialog.show();
         dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        String date = dateTextView.getText().toString();
-                        String time = timeTextView.getText().toString();
-//                        String emotionText = emojiImageButton.getText().toString();
-                        InputErrorType errorCode = isDataValid();
-                        if (errorCode != InputErrorType.DataValid) {
-                            displayWarning(errorCode);
-                            return;
-                        }
-                        TimeFormatter timef = new TimeFormatter();
-                        try {
-                            timef.setTimeFormat(date, time);
-                        } catch (ParseException e) {
-                            return;
-                        }
-                        String reason = reasonEditText.getText().toString();
-                        Boolean location = locationCheckBox.isChecked();
-                        // Need to add if statements for null date, time, or emotion
-                        Mood myMood = new Mood(timef, ChangeMoodFragment.this.emotion, reason, ChangeMoodFragment.this.situation, location);
-                        callListener(myMood);
-                        ChangeMoodFragment.this.dismiss();
-                    }
-                });
+            @Override
+            public void onClick(View v) {
+                String date = dateTextView.getText().toString();
+                String time = timeTextView.getText().toString();
+                InputErrorType errorCode = isDataValid();
+                if (errorCode != InputErrorType.DataValid) {
+                    displayWarning(errorCode);
+                    return;
+                }
+                TimeFormatter timef = new TimeFormatter();
+                try {
+                    timef.setTimeFormat(date, time);
+                } catch (ParseException e) {
+                    return;
+                }
+                String reason = reasonEditText.getText().toString();
+                Location location = null;
+                location = subclassLocationReturnBehaviour();
+//              location = ((EditMoodFragment)ChangeMoodFragment.this).initialMood.getLocation();
+                if (locationCheckBox.isChecked()) {
+                    location = subclassLocationReturnBehaviour();
+                }
+                if (location != null) {
+                    Log.d("LATITUDE", Double.toString(location.getLatitude()));
+                    Log.d("LONGITUDE", Double.toString(location.getLongitude()));
+                } else {
+                    Log.d("LATLONG", "No Location");
+                }
+                if (true) {
+                    return;
+                }
+                // Need to add if statements for null date, time, or emotion
+                Mood myMood = new Mood(timef, ChangeMoodFragment.this.emotion, reason, ChangeMoodFragment.this.situation, location);
+                callListener(myMood);
+                ChangeMoodFragment.this.dismiss();
+            }
+        });
         dialog.getButton(AlertDialog.BUTTON_POSITIVE).setId(R.id.change_mood_fragment_positive_button);
+
         return dialog;
     }
 
@@ -202,6 +214,12 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
         if (spaceCount > 2) {
             return InputErrorType.CMFReasonTooManyWordsError;
         }
+        if (locationCheckBox.isChecked() & ChangeMoodFragment.this instanceof AddMoodFragment) {
+            if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                return InputErrorType.CMFNoLocationPermission;
+            }
+
+        }
         return InputErrorType.DataValid;
     }
 
@@ -222,4 +240,10 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
      * @return
      */
     protected abstract AlertDialog.Builder returnBuilder();
+
+    /**
+     * Returns the location for the mood to be created
+     * @return
+     */
+    protected abstract Location subclassLocationReturnBehaviour();
 }

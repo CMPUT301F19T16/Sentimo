@@ -1,5 +1,8 @@
 package com.example.sentimo;
 
+import android.location.Location;
+import android.util.Log;
+
 import com.example.sentimo.Emotions.Emotion;
 import com.example.sentimo.Situations.Situation;
 
@@ -16,8 +19,7 @@ public class Mood implements Serializable, Comparable {
     private Emotion emotion;
     private String reason;
     private Situation situation;
-    private Boolean locationPermission;
-    //private Location location
+    private Location location;
     //private Photo photo;
 
     public Mood(){}
@@ -28,15 +30,15 @@ public class Mood implements Serializable, Comparable {
      * @param emotion the emotion of the mood as a Emotion object
      * @param reason the reason for the mood as a String
      * @param situation the situation of the mood as a Situation object
-     * @param locationPermission whether the location permission has been granted as a Boolean
+     * @param location the location of a Mood (optional)
      */
     public Mood(TimeFormatter time, Emotion emotion, String reason,
-                Situation situation, Boolean locationPermission){
+                Situation situation, Location location){
         this.time = time;
         this.emotion = emotion;
         this.reason = reason;
         this.situation = situation;
-        this.locationPermission = locationPermission;
+        this.location = location;
     }
 
     /**
@@ -104,16 +106,16 @@ public class Mood implements Serializable, Comparable {
     }
 
     /**
-     * Get the location permission for this mood
+     * Get the Location for this mood
      * @return true if the mood has location permission granted, false if not
      */
-    public Boolean getLocationPermission() {return locationPermission;}
+    public Location getLocation() {return location;}
 
     /**
-     * Set the location permission for this mood
-     * @param locationPermission true to grant the mood location permission, false to deny
+     * Set the Location for this mood
+     * @param location true to grant the mood location permission, false to deny
      */
-    public void setLocationPermission(Boolean locationPermission){this.locationPermission = locationPermission;}
+    public void setLocation(Location location){this.location = location;}
 
     @Override
     public boolean equals(Object o) {
@@ -123,7 +125,7 @@ public class Mood implements Serializable, Comparable {
         return  time.equals(mood.time) &&
                 emotion.equals(mood.emotion) &&
                 Objects.equals(reason, mood.reason) &&
-                Objects.equals(situation, mood.situation);
+                Objects.equals(situation, mood.situation) && Objects.equals(location, mood.location);
     }
 
     @Override
@@ -135,6 +137,10 @@ public class Mood implements Serializable, Comparable {
         hash = 31 * hash + (reason == null ? 0 : reason.hashCode());
         if (situation != null)
             hash = 31 * hash + (situation.getName() == null ? 0 : situation.getName().hashCode());
+        if (location != null) {
+            hash = 31 * hash + (location.hashCode());
+
+        }
         return hash;
     }
 

@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
+import android.location.Location;
 import android.view.View;
 
 import com.example.sentimo.Mood;
@@ -25,6 +26,16 @@ public class EditMoodFragment extends ChangeMoodFragment {
     private Mood initialMood;
     private EditMoodListener listener;
 
+    /**
+     * Constructor to assign pre-existing mood and position in list
+     * @param mood The original mood
+     * @param position The position in the list
+     */
+    public EditMoodFragment(Mood mood, int position){
+        this.position = position;
+        this.initialMood = mood;
+    }
+
     // Subclass UI initialization
 
     /**
@@ -44,7 +55,9 @@ public class EditMoodFragment extends ChangeMoodFragment {
         } else {
             situationButton.setText("(Optional)");
         }
-        locationCheckBox.setChecked(initialMood.getLocationPermission());
+        if (initialMood.getLocation() != null) {
+            locationCheckBox.setChecked(true);
+        } else locationCheckBox.setChecked(false);
         emojiImageButton.setText(initialMood.getEmotion().getName());
         emojiImageView.setImageResource(this.emotion.getImage());
         emojiImageButton.setVisibility(View.INVISIBLE);
@@ -52,6 +65,7 @@ public class EditMoodFragment extends ChangeMoodFragment {
         emojiImageView.setBackgroundColor(Color.parseColor(this.emotion.getColour()));
         emotion = initialMood.getEmotion();
 
+        locationCheckBox.setEnabled(false);
     }
 
     // Subclass listener interfaces and methods
@@ -63,15 +77,6 @@ public class EditMoodFragment extends ChangeMoodFragment {
         void onConfirmEditPressed(Mood mood, int position);
     }
 
-    /**
-     * Constructor to assign pre-existing mood and position in list
-     * @param mood The original mood
-     * @param position The position in the list
-     */
-    public EditMoodFragment(Mood mood, int position){
-        this.position = position;
-        this.initialMood = mood;
-    }
 
     @Override
     public void onAttach(Context context){
@@ -109,4 +114,8 @@ public class EditMoodFragment extends ChangeMoodFragment {
                 .setPositiveButton("Confirm Edit", null);
     }
 
+    @Override
+    protected Location subclassLocationReturnBehaviour() {
+        return initialMood.getLocation();
+    }
 }

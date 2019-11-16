@@ -3,10 +3,14 @@ package com.example.sentimo.Fragments;
 import android.Manifest;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.location.Location;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,6 +32,7 @@ import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.DialogFragment;
 
+import java.io.IOException;
 import java.text.ParseException;
 
 public abstract class ChangeMoodFragment extends DialogFragment implements SelectSituationFragment.SelectSituationListener, SelectMoodFragment.SelectMoodFragmentInteractionListener {
@@ -42,6 +47,12 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
     protected CheckBox locationCheckBox;
     protected Emotion emotion;
     protected Situation situation;
+    protected Uri localPathToImage;
+    protected String onlinePathToImage;
+
+
+    final int SUCCESSFUL_PICTURE_RETURN = 71;
+
 
     protected View.OnClickListener emotionClick;
     protected View.OnClickListener situationClick;
@@ -101,14 +112,12 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
                 if (location != null) {
                     Log.d("LATITUDE", Double.toString(location.getLatitude()));
                     Log.d("LONGITUDE", Double.toString(location.getLongitude()));
+                    Log.d("PHOTO", localPathToImage.toString());
                 } else {
                     Log.d("LATLONG", "No Location");
                 }
-                if (true) {
-                    return;
-                }
                 // Need to add if statements for null date, time, or emotion
-                Mood myMood = new Mood(timef, ChangeMoodFragment.this.emotion, reason, ChangeMoodFragment.this.situation, location);
+                Mood myMood = new Mood(timef, ChangeMoodFragment.this.emotion, reason, ChangeMoodFragment.this.situation, location.getLongitude(), location.getLatitude(), localPathToImage.toString(), onlinePathToImage);
                 callListener(myMood);
                 ChangeMoodFragment.this.dismiss();
             }
@@ -163,7 +172,7 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
         emojiImageView = view.findViewById(R.id.emotion_image);
         emojiImageButton = view.findViewById(R.id.emotion_button);
         reasonEditText = view.findViewById(R.id.reason_editText);
-        reasonImageButton = view.findViewById(R.id.reason_button);
+        reasonImageButton = view.findViewById(R.id.reason_image_button);
         reasonImageView = view.findViewById(R.id.reason_image);
         situationButton = view.findViewById(R.id.situation_button);
 //        situationTextView = view.findViewById(R.id.situation_text);
@@ -174,6 +183,21 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
         emojiImageView.setOnClickListener(emotionClick);
 
         situationButton.setOnClickListener(situationClick);
+
+        reasonImageButton = view.findViewById(R.id.reason_image_button);
+        reasonImageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Inspired by https://code.tutsplus.com/tutorials/image-upload-to-firebase-in-android-application--cms-29934
+                Intent intent = new Intent();
+                intent.setType("image/*");
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+                startActivityForResult(Intent.createChooser(intent, "Select Photograph for Reason"), SUCCESSFUL_PICTURE_RETURN);
+            }
+        });
+
+        localPathToImage = null;
+        onlinePathToImage = null;
 
     }
 
@@ -223,6 +247,15 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
         return InputErrorType.DataValid;
     }
 
+    // Inspired by https://code.tutsplus.com/tutorials/image-upload-to-firebase-in-android-application--cms-29934
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == SUCCESSFUL_PICTURE_RETURN && resultCode == -1 && data != null && data.getData() != null ) {
+            localPathToImage = data.getData();
+        }
+    }
+
     /**
      * Initialization specific to subclass
      * Require separate function rather than constructor for ordering reasons
@@ -241,6 +274,8 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
      */
     protected abstract AlertDialog.Builder returnBuilder();
 
+
+    // Should get rid of method, no longer use Location
     /**
      * Returns the location for the mood to be created
      * @return

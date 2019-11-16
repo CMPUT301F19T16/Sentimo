@@ -1,6 +1,7 @@
 package com.example.sentimo;
 
 import android.location.Location;
+import android.net.Uri;
 import android.util.Log;
 
 import com.example.sentimo.Emotions.Emotion;
@@ -19,8 +20,10 @@ public class Mood implements Serializable, Comparable {
     private Emotion emotion;
     private String reason;
     private Situation situation;
-    private Location location;
-    //private Photo photo;
+    private Double longitude;
+    private Double latitude;
+    private String onlinePath;
+    private String localPath;
 
     public Mood(){}
 
@@ -30,15 +33,19 @@ public class Mood implements Serializable, Comparable {
      * @param emotion the emotion of the mood as a Emotion object
      * @param reason the reason for the mood as a String
      * @param situation the situation of the mood as a Situation object
-     * @param location the location of a Mood (optional)
+     * @param longitude the longitude of a Mood (optional)
+     * @param latitude the latitude of a Mood (optional)
      */
     public Mood(TimeFormatter time, Emotion emotion, String reason,
-                Situation situation, Location location){
+                Situation situation, double longitude, double latitude, String localPath, String onlinePath){
         this.time = time;
         this.emotion = emotion;
         this.reason = reason;
         this.situation = situation;
-        this.location = location;
+        this.longitude = new Double(longitude);
+        this.latitude = new Double(latitude);
+        this.localPath = localPath;
+        this.onlinePath = onlinePath;
     }
 
     /**
@@ -105,17 +112,47 @@ public class Mood implements Serializable, Comparable {
         this.situation = situation;
     }
 
-    /**
-     * Get the Location for this mood
-     * @return true if the mood has location permission granted, false if not
-     */
-    public Location getLocation() {return location;}
+//    /**
+//     * Get the Location for this mood
+//     * @return true if the mood has location permission granted, false if not
+//     */
+//    public Location getLocation() {return location;}
+//
+//    /**
+//     * Set the Location for this mood
+//     * @param location true to grant the mood location permission, false to deny
+//     */
+//    public void setLocation(Location location){this.location = location;}
 
-    /**
-     * Set the Location for this mood
-     * @param location true to grant the mood location permission, false to deny
-     */
-    public void setLocation(Location location){this.location = location;}
+
+    public Double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitudeLatitude(double longitude, double latitude) {
+        this.longitude = new Double(longitude);
+        this.latitude = new Double(latitude);
+    }
+
+    public Double getLatitude() {
+        return latitude;
+    }
+
+    public String getLocalPath() {
+        return localPath;
+    }
+
+    public void setLocalPath(String localPath) {
+        this.localPath = localPath;
+    }
+
+    public String getOnlinePath() {
+        return onlinePath;
+    }
+
+    public void setOnlinePath(String onlinePath) {
+        this.onlinePath = onlinePath;
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -125,7 +162,8 @@ public class Mood implements Serializable, Comparable {
         return  time.equals(mood.time) &&
                 emotion.equals(mood.emotion) &&
                 Objects.equals(reason, mood.reason) &&
-                Objects.equals(situation, mood.situation) && Objects.equals(location, mood.location);
+                Objects.equals(situation, mood.situation) && Objects.equals(longitude, mood.longitude)
+                && Objects.equals(latitude, mood.latitude);
     }
 
     @Override
@@ -137,10 +175,16 @@ public class Mood implements Serializable, Comparable {
         hash = 31 * hash + (reason == null ? 0 : reason.hashCode());
         if (situation != null)
             hash = 31 * hash + (situation.getName() == null ? 0 : situation.getName().hashCode());
-        if (location != null) {
-            hash = 31 * hash + (location.hashCode());
-
+        if (longitude != null) {
+            hash = 31 * hash + (longitude.hashCode());
         }
+        if (latitude != null) {
+            hash = 31 * hash + (longitude.hashCode());
+        }
+        if (onlinePath != null) {
+            hash = 31 * hash + (onlinePath.hashCode());
+        }
+        // Exclude local path from hashCode, since will only be used to upload local file
         return hash;
     }
 

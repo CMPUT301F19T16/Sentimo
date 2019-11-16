@@ -2,7 +2,9 @@ package com.example.sentimo;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -22,6 +24,7 @@ import com.example.sentimo.Fragments.FilterFragment;
 
 import com.example.sentimo.Fragments.MapSelectFragment;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -175,8 +178,10 @@ public class MainActivity extends AppCompatActivity implements AddMoodFragment.A
      */
     @Override
     public void onDonePressed(Mood mood) {
-        database.addMood(mood);
+        //Start progress bar, with timeout
+        database.uploadPhoto(mood);
         filterButton.setVisibility(View.VISIBLE);
+        //End progress bar
     }
 
     /**
@@ -190,6 +195,7 @@ public class MainActivity extends AppCompatActivity implements AddMoodFragment.A
      */
     @Override
     public void onConfirmEditPressed(Mood mood, int position) {
+        // Should make this only delete the photo if it's not being reused by the new mood
         Mood oldMood = moodAdapter.getItem(position);
         database.deleteMood(Objects.requireNonNull(oldMood));
         database.addMood(mood);
@@ -256,4 +262,5 @@ public class MainActivity extends AppCompatActivity implements AddMoodFragment.A
             }
         });
     }
+
 }

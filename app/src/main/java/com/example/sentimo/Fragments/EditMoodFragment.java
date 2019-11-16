@@ -55,7 +55,7 @@ public class EditMoodFragment extends ChangeMoodFragment {
         } else {
             situationButton.setText("(Optional)");
         }
-        if (initialMood.getLocation() != null) {
+        if (initialMood.getLatitude() != null) {
             locationCheckBox.setChecked(true);
         } else locationCheckBox.setChecked(false);
         emojiImageButton.setText(initialMood.getEmotion().getName());
@@ -116,6 +116,9 @@ public class EditMoodFragment extends ChangeMoodFragment {
 
     @Override
     protected Location subclassLocationReturnBehaviour() {
-        return initialMood.getLocation();
+        Location newLocation = new Location("");
+        newLocation.setLongitude(initialMood.getLongitude());
+        newLocation.setLatitude(initialMood.getLatitude());
+        return newLocation;
     }
 }

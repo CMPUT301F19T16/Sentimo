@@ -1,10 +1,16 @@
 package com.example.sentimo;
 
+import android.net.Uri;
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.google.android.gms.tasks.Continuation;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -12,11 +18,15 @@ import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Random;
 
 /**
  * A class for keeping track of moods in a database including
@@ -28,6 +38,7 @@ public class Database {
     private String username;
     private ArrayList<Mood> moodHistory;
     private ArrayList<String> userFollowing;
+    private FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
 
     Database(String username) {
         this.username = username;
@@ -62,6 +73,24 @@ public class Database {
         CollectionReference userMoods = getUserMoods();
         String hashcode = Integer.toString(mood.hashCode());
         userMoods.document(hashcode).delete();
+        if (mood.getOnlinePath() != null) {
+            deletePhoto(mood.getOnlinePath());
+        }
+    }
+
+    public void deletePhoto(String onlinePath) {
+        StorageReference storageLocation = firebaseStorage.getReferenceFromUrl(onlinePath);
+        storageLocation.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                Log.d("SUCCESS","DELETED IMAGE");
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.d("SUCCESS","DELETED IMAGE");
+            }
+        });
     }
 
     /**
@@ -172,5 +201,39 @@ public class Database {
                 listener.onFailure();
             }
         });
+    }
+
+    // Upload method uses information from Google's Firebase storage upload example: https://firebase.google.com/docs/storage/android/upload-files
+    public Uri uploadPhoto(final Mood incompleteMood) {
+        Uri localPath = Uri.parse(incompleteMood.getLocalPath());
+        final StorageReference reference = firebaseStorage.getReference();
+        Random rng = new Random();
+        final StorageReference storageLocation = reference.child("images/" + rng.nextInt(1000000));
+        UploadTask uploadTask = storageLocation.putFile(localPath);
+        Task<Uri> urlTask = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+            @Override
+            public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                if (!task.isSuccessful()) {
+                    throw task.getException();
+                }
+                return storageLocation.getDownloadUrl();
+            }
+        }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+            @Override
+            public void onComplete(@NonNull Task<Uri> task) {
+                if (task.isSuccessful()) {
+                    Uri downloadUri = task.getResult();
+                    Log.d("SUCCESS", downloadUri.getPath());
+                    Mood completeMood = incompleteMood;
+                    completeMood.setOnlinePath(downloadUri.getPath());
+                    completeMood.setLocalPath(null);
+                    addMood(completeMood);
+                }
+                else {
+                    throw new RuntimeException("MUST DEAL WITH ERROR CASES");
+                }
+            }
+        });
+        return null;
     }
 }

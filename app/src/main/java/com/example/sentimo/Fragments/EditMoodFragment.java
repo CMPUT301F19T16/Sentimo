@@ -8,6 +8,7 @@ import android.location.Location;
 import android.view.View;
 
 import com.example.sentimo.Mood;
+import com.example.sentimo.R;
 import com.example.sentimo.Situations.Situation;
 
 import java.text.ParseException;
@@ -23,7 +24,6 @@ import java.text.ParseException;
  */
 public class EditMoodFragment extends ChangeMoodFragment {
     private int position;
-    private Mood initialMood;
     private EditMoodListener listener;
 
     /**
@@ -33,7 +33,8 @@ public class EditMoodFragment extends ChangeMoodFragment {
      */
     public EditMoodFragment(Mood mood, int position){
         this.position = position;
-        this.initialMood = mood;
+//        this.initialMood = mood;
+        this.initialMood = new Mood(mood);
     }
 
     // Subclass UI initialization
@@ -43,8 +44,8 @@ public class EditMoodFragment extends ChangeMoodFragment {
      */
     @Override
     protected void subclassInitialization() {
-        this.emotion = initialMood.getEmotion();
-        this.situation = initialMood.getSituation();
+//        this.emotion = initialMood.getEmotion();
+//        this.situation = initialMood.getSituation();
 
         dateTextView.setText(initialMood.getTime().getDateString());
         timeTextView.setText(initialMood.getTime().getTimeString());
@@ -53,17 +54,17 @@ public class EditMoodFragment extends ChangeMoodFragment {
         if (moodSituation != null) {
             situationButton.setText(moodSituation.getName());
         } else {
-            situationButton.setText("(Optional)");
+            situationButton.setText(R.string.no_situation_text);
         }
         if (initialMood.getLatitude() != null) {
             locationCheckBox.setChecked(true);
         } else locationCheckBox.setChecked(false);
         emojiImageButton.setText(initialMood.getEmotion().getName());
-        emojiImageView.setImageResource(this.emotion.getImage());
+        emojiImageView.setImageResource(initialMood.getEmotion().getImage());
         emojiImageButton.setVisibility(View.INVISIBLE);
         emojiImageView.setVisibility(View.VISIBLE);
-        emojiImageView.setBackgroundColor(Color.parseColor(this.emotion.getColour()));
-        emotion = initialMood.getEmotion();
+        emojiImageView.setBackgroundColor(Color.parseColor(initialMood.getEmotion().getColour()));
+//        emotion = initialMood.getEmotion();
 
         locationCheckBox.setEnabled(false);
     }
@@ -74,7 +75,7 @@ public class EditMoodFragment extends ChangeMoodFragment {
      * Listener for activity calling EditMoodFragment to receive a mood back
      */
     public interface EditMoodListener{
-        void onConfirmEditPressed(Mood mood, int position);
+        void onConfirmEditPressed(Mood mood, int position, String localPath);
     }
 
 
@@ -95,7 +96,7 @@ public class EditMoodFragment extends ChangeMoodFragment {
      */
     @Override
     public void callListener(Mood mood) {
-        listener.onConfirmEditPressed(mood, position);
+        listener.onConfirmEditPressed(mood, position, localPath);
     }
 
     /**

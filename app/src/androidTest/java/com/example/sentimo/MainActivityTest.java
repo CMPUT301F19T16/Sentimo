@@ -112,7 +112,7 @@ public class MainActivityTest {
      * Test if deleting a mood works
      */
     @Test
-    public void deleteMood() {
+    public void deleteMoodAndPicture() {
         solo.assertCurrentActivity("Wrong Activity", MainActivity.class);
         removeOldMoods();
 

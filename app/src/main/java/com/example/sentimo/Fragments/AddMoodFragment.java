@@ -39,13 +39,17 @@ public class AddMoodFragment extends ChangeMoodFragment {
     private LocationCallback locationCallback;
 
 
+    public AddMoodFragment() {
+        this.initialMood = new Mood();
+    }
+
+
+
     /**
      * Subclass specific initialization (required to ensure called after UI hookup)
      */
     @Override
     protected void subclassInitialization() {
-        this.emotion = null;
-        this.situation = null;
         emojiImageButton.setVisibility(View.VISIBLE);
         emojiImageView.setVisibility(View.INVISIBLE);
 
@@ -84,22 +88,17 @@ public class AddMoodFragment extends ChangeMoodFragment {
         };
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        LocationRequest locationRequest = new LocationRequest()
-                .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
-                .setInterval(1000);
-        fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper());
-    }
-
     /**
      * Listener for activity calling AddMoodFragment to receive a mood back
      */
     public interface AddMoodListener {
-        void onDonePressed(Mood newMood);
+        void onDonePressed(Mood newMood, String localPath);
     }
 
+    /**
+     * Attach behaviour, including hooking up the appropriate listener
+     * @param context
+     */
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -113,11 +112,6 @@ public class AddMoodFragment extends ChangeMoodFragment {
         }
     }
 
-    @Override
-    public void onPause() {
-        super.onPause();
-        fusedLocationClient.removeLocationUpdates(locationCallback);
-    }
 
     /**
      * Listener to return mood to parent activity
@@ -125,7 +119,7 @@ public class AddMoodFragment extends ChangeMoodFragment {
      */
     @Override
     public void callListener(Mood mood) {
-        listener.onDonePressed(mood);
+        listener.onDonePressed(mood, localPath);
     }
 
 
@@ -143,6 +137,28 @@ public class AddMoodFragment extends ChangeMoodFragment {
                 // Positive Button behaviour set in super class to override default dismissal behaviour
                 .setPositiveButton("Done", null);
     }
+
+    /**
+     * Resume behaviour, including reattaching the location client
+     */
+    @Override
+    public void onResume() {
+        super.onResume();
+        LocationRequest locationRequest = new LocationRequest()
+                .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
+                .setInterval(1000);
+        fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper());
+    }
+
+    /**
+     * Pause behaviour, including de-attaching the location client
+     */
+    @Override
+    public void onPause() {
+        super.onPause();
+        fusedLocationClient.removeLocationUpdates(locationCallback);
+    }
+
 
     @Override
     protected Location subclassLocationReturnBehaviour() {

@@ -5,12 +5,9 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.location.Location;
-import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,7 +29,6 @@ import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.DialogFragment;
 
-import java.io.IOException;
 import java.text.ParseException;
 
 public abstract class ChangeMoodFragment extends DialogFragment implements SelectSituationFragment.SelectSituationListener, SelectMoodFragment.SelectMoodFragmentInteractionListener {
@@ -45,13 +41,12 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
     protected ImageView reasonImageView;
     protected Button situationButton;
     protected CheckBox locationCheckBox;
-    protected Emotion emotion;
-    protected Situation situation;
-    protected Uri localPathToImage;
-    protected String onlinePathToImage;
+
+    protected Mood initialMood;
+    protected String localPath;
 
 
-    final int SUCCESSFUL_PICTURE_RETURN = 71;
+    final int SUCCESSFUL_PICTURE_RETURN_CODE = 71;
 
 
     protected View.OnClickListener emotionClick;
@@ -59,8 +54,11 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
     protected View view;
 
 
-    // Method for reassigning positive button clicker to avoid automatic dismissal found at
-    // StackOverflow post:https://stackoverflow.com/questions/2620444/how-to-prevent-a-dialog-from-closing-when-a-button-is-clicked
+    /**
+     * Initialization for ChangeMoodFragment dialog
+     * @param savedInstanceState
+     * @return
+     */
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState){
@@ -83,9 +81,18 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
         sharedInitialization();
         subclassInitialization();
 
+        TextView testTextView = view.findViewById(R.id.emotion_textview);
+        if (initialMood.getOnlinePath() != null) {
+            testTextView.setText(initialMood.getOnlinePath());
+        } else {
+            testTextView.setText("!ONLINE");
+        }
+
         AlertDialog.Builder builder = returnBuilder();
         AlertDialog dialog = builder.create();
         dialog.show();
+        // Method for reassigning positive button clicker to avoid automatic dismissal found at
+        // StackOverflow post:https://stackoverflow.com/questions/2620444/how-to-prevent-a-dialog-from-closing-when-a-button-is-clicked
         dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -104,20 +111,18 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
                 }
                 String reason = reasonEditText.getText().toString();
                 Location location = null;
-                location = subclassLocationReturnBehaviour();
-//              location = ((EditMoodFragment)ChangeMoodFragment.this).initialMood.getLocation();
                 if (locationCheckBox.isChecked()) {
                     location = subclassLocationReturnBehaviour();
                 }
+                Double longitude = null;
+                Double latitude = null;
                 if (location != null) {
-                    Log.d("LATITUDE", Double.toString(location.getLatitude()));
-                    Log.d("LONGITUDE", Double.toString(location.getLongitude()));
-                    Log.d("PHOTO", localPathToImage.toString());
-                } else {
-                    Log.d("LATLONG", "No Location");
+                    longitude = location.getLongitude();
+                    latitude = location.getLatitude();
                 }
-                // Need to add if statements for null date, time, or emotion
-                Mood myMood = new Mood(timef, ChangeMoodFragment.this.emotion, reason, ChangeMoodFragment.this.situation, location.getLongitude(), location.getLatitude(), localPathToImage.toString(), onlinePathToImage);
+                Mood myMood = new Mood(timef, ChangeMoodFragment.this.initialMood.getEmotion(),
+                        reason, ChangeMoodFragment.this.initialMood.getSituation(), longitude,
+                        latitude, ChangeMoodFragment.this.initialMood.getOnlinePath());
                 callListener(myMood);
                 ChangeMoodFragment.this.dismiss();
             }
@@ -127,11 +132,15 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
         return dialog;
     }
 
+    /**
+     * Method for receiving an Emotion back from an emotion selection fragment
+     * @param emotion the Emotion to receive and process, if any
+     */
     @Override
-    public void MoodReturned(Emotion emotion) {
+    public void EmotionReturned(Emotion emotion) {
         if (emotion != null) {
-            this.emotion = emotion;
-            emojiImageButton.setText(this.emotion.getName());
+            initialMood.setEmotion(emotion);
+            emojiImageButton.setText(initialMood.getEmotion().getName());
             emojiImageButton.setVisibility(View.INVISIBLE);
             emojiImageView.setVisibility(View.VISIBLE);
             emojiImageView.setImageResource(emotion.getImage());
@@ -139,13 +148,17 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
         }
     }
 
+    /**
+     * Method for receiving a Situation back from a situation selection fragment
+     * @param situation the Situation to receive and process, if any
+     */
     @Override
     public void SituationReturned(Situation situation) {
-        this.situation = situation;
+        initialMood.setSituation(situation);
         if (situation != null) {
             situationButton.setText(situation.getName());
         } else {
-            situationButton.setText("(Optional)");
+            situationButton.setText(R.string.no_situation_text);
         }
     }
 
@@ -156,7 +169,8 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
      *Separate non-constructor function required to allow hookup of UI before initialization
      */
     private void sharedInitialization() {
-        View view = null;
+        localPath = null;
+
         if (ChangeMoodFragment.this instanceof AddMoodFragment) {
             view = LayoutInflater.from(getActivity()).inflate(R.layout.add_mood_fragment, null);
         } else if (ChangeMoodFragment.this instanceof EditMoodFragment) {
@@ -165,7 +179,12 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
             throw new RuntimeException("CHANGE MOOD FRAGMENT RECEIVED UNKNOWN SUBCLASS");
         }
 
-        this.view = view;
+        TextView testTextView = view.findViewById(R.id.emotion_textview);
+        if (initialMood.getOnlinePath() != null) {
+            testTextView.setText(initialMood.getOnlinePath());
+        } else {
+            testTextView.setText("!ONLINE");
+        }
 
         dateTextView = view.findViewById(R.id.date_text);
         timeTextView = view.findViewById(R.id.time_text);
@@ -188,17 +207,13 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
         reasonImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Inspired by https://code.tutsplus.com/tutorials/image-upload-to-firebase-in-android-application--cms-29934
+                // Photo selection launch inspired by: https://code.tutsplus.com/tutorials/image-upload-to-firebase-in-android-application--cms-29934
                 Intent intent = new Intent();
                 intent.setType("image/*");
                 intent.setAction(Intent.ACTION_GET_CONTENT);
-                startActivityForResult(Intent.createChooser(intent, "Select Photograph for Reason"), SUCCESSFUL_PICTURE_RETURN);
+                startActivityForResult(Intent.createChooser(intent, "Select Photograph for Reason"), SUCCESSFUL_PICTURE_RETURN_CODE);
             }
         });
-
-        localPathToImage = null;
-        onlinePathToImage = null;
-
     }
 
     /**
@@ -214,7 +229,7 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
      * @return integer code indication type of data invalidity, or 0 if data valid
      */
     public InputErrorType isDataValid() {
-        if (!(ChangeMoodFragment.this.emotion != null)) {
+        if (initialMood.getEmotion() == null) {
             return InputErrorType.CMFNullMoodError;
         }
         String date = dateTextView.getText().toString();
@@ -244,15 +259,21 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
             }
 
         }
+        if (initialMood.getOnlinePath() != null && (reasonEditText.getText().toString().length() != 0)) {
+            return InputErrorType.CMFPictureAndReasonError;
+        }
         return InputErrorType.DataValid;
     }
 
-    // Inspired by https://code.tutsplus.com/tutorials/image-upload-to-firebase-in-android-application--cms-29934
+    // Data processing of returned image inspired by: https://code.tutsplus.com/tutorials/image-upload-to-firebase-in-android-application--cms-29934
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == SUCCESSFUL_PICTURE_RETURN && resultCode == -1 && data != null && data.getData() != null ) {
-            localPathToImage = data.getData();
+        if(requestCode == SUCCESSFUL_PICTURE_RETURN_CODE && resultCode == -1 && data != null && data.getData() != null ) {
+            this.localPath = data.getData().toString();
+            this.initialMood.setOnlinePath(null);
+        } else {
+            displayWarning(InputErrorType.CMFPhotoReturnError);
         }
     }
 
@@ -275,7 +296,6 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
     protected abstract AlertDialog.Builder returnBuilder();
 
 
-    // Should get rid of method, no longer use Location
     /**
      * Returns the location for the mood to be created
      * @return

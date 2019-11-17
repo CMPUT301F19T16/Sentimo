@@ -153,12 +153,7 @@ public class MainActivity extends AppCompatActivity implements AddMoodFragment.A
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         Mood mood = moodAdapter.getItem(position);
-                        database.deleteMood(mood);
-                        moodDataList.remove(mood);
-                        moodAdapter.notifyDataSetChanged();
-                        if (moodDataList.size() == 0) {
-                            filterButton.setVisibility(View.INVISIBLE);
-                        }
+                        deleteMood(mood, true);
                     }
                 });
                 alert.setNegativeButton("NO", null);
@@ -175,13 +170,15 @@ public class MainActivity extends AppCompatActivity implements AddMoodFragment.A
      * Should then show up on the ListView.
      *
      * @param mood This is the mood that the user created in the AddMoodFragment.
+     * @param localPath This is the local path to a stored image associated with the Mood, if any
      */
     @Override
-    public void onDonePressed(Mood mood) {
-        //Start progress bar, with timeout
-        database.uploadPhoto(mood);
+    public void onDonePressed(Mood mood, String localPath) {
+        // Start progress bar, with timeout
+        uploadMood(mood, localPath);
         filterButton.setVisibility(View.VISIBLE);
-        //End progress bar
+        // End progress bar
+        // Timeout on network failure
     }
 
     /**
@@ -192,13 +189,51 @@ public class MainActivity extends AppCompatActivity implements AddMoodFragment.A
      *
      * @param mood     This is the mood that the user edited from a previously known mood.
      * @param position This is the position of the old mood in the Mood List.
+     * @param localPath This is the local path to a stored image associated with the Mood, if any
      */
     @Override
-    public void onConfirmEditPressed(Mood mood, int position) {
-        // Should make this only delete the photo if it's not being reused by the new mood
+    public void onConfirmEditPressed(Mood mood, int position, String localPath) {
+        // Start progress bar
         Mood oldMood = moodAdapter.getItem(position);
-        database.deleteMood(Objects.requireNonNull(oldMood));
-        database.addMood(mood);
+        Boolean isDeletePicture = false;
+        if (localPath != null || mood.getOnlinePath() == null) {
+            isDeletePicture = true;
+        }
+        deleteMood(oldMood, isDeletePicture);
+        uploadMood(mood, localPath);
+        // End progress bar
+        // Timeout on network failure
+    }
+
+    /**
+     * Method for uploading a Mood to the Firebase database
+     * @param mood the Mood to be uploaded
+     * @param localPath a localPath to an image to be uploaded, if any
+     */
+    private void uploadMood(Mood mood, String localPath) {
+        if (localPath != null) {
+            database.addPhotoAndMood(mood, localPath);
+        } else {
+            database.addMood(mood);
+        }
+    }
+
+    /**
+     * Method for deleting a Mood from the Firebase database
+     * @param mood the Mood to be deleted
+     */
+    private void deleteMood(Mood mood, Boolean deletePicture) {
+        if (deletePicture) {
+            database.deleteMoodAndPicture(mood);
+        } else {
+            database.deleteMoodOnly(mood);
+        }
+        // Is the line below necessary?
+        moodDataList.remove(mood);
+        moodAdapter.notifyDataSetChanged();
+        if (moodDataList.size() == 0) {
+            filterButton.setVisibility(View.INVISIBLE);
+        }
     }
 
     /**

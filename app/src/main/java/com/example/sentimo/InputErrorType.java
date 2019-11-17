@@ -8,6 +8,7 @@ public enum InputErrorType {
     CMFReasonTooManyWordsError,
     CMFPictureAndReasonError,
     CMFNoLocationPermission,
+    CMFPhotoReturnError,
     LoginPasswordTooShortError,
     LoginUsernameTooShortError
 }

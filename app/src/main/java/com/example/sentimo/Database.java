@@ -69,17 +69,21 @@ public class Database {
      *
      * @param mood mood to be deleted
      */
-    public void deleteMood(Mood mood) {
-        CollectionReference userMoods = getUserMoods();
-        String hashcode = Integer.toString(mood.hashCode());
-        userMoods.document(hashcode).delete();
+    public void deleteMoodAndPicture(Mood mood) {
+        deleteMoodOnly(mood);
         if (mood.getOnlinePath() != null) {
             deletePhoto(mood.getOnlinePath());
         }
     }
 
+    public void deleteMoodOnly(Mood mood) {
+        CollectionReference userMoods = getUserMoods();
+        String hashcode = Integer.toString(mood.hashCode());
+        userMoods.document(hashcode).delete();
+    }
+
     public void deletePhoto(String onlinePath) {
-        StorageReference storageLocation = firebaseStorage.getReferenceFromUrl(onlinePath);
+        StorageReference storageLocation = firebaseStorage.getReference(onlinePath);
         storageLocation.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
@@ -204,8 +208,8 @@ public class Database {
     }
 
     // Upload method uses information from Google's Firebase storage upload example: https://firebase.google.com/docs/storage/android/upload-files
-    public Uri uploadPhoto(final Mood incompleteMood) {
-        Uri localPath = Uri.parse(incompleteMood.getLocalPath());
+    public Uri addPhotoAndMood(final Mood incompleteMood, String stringPath) {
+        Uri localPath = Uri.parse(stringPath);
         final StorageReference reference = firebaseStorage.getReference();
         Random rng = new Random();
         final StorageReference storageLocation = reference.child("images/" + rng.nextInt(1000000));
@@ -223,10 +227,9 @@ public class Database {
             public void onComplete(@NonNull Task<Uri> task) {
                 if (task.isSuccessful()) {
                     Uri downloadUri = task.getResult();
-                    Log.d("SUCCESS", downloadUri.getPath());
-                    Mood completeMood = incompleteMood;
-                    completeMood.setOnlinePath(downloadUri.getPath());
-                    completeMood.setLocalPath(null);
+                    Log.d("SUCCESS", storageLocation.getPath());
+                    Mood completeMood = new Mood(incompleteMood);
+                    completeMood.setOnlinePath(storageLocation.getPath());
                     addMood(completeMood);
                 }
                 else {

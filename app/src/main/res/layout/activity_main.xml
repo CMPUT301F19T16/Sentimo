@@ -30,7 +30,7 @@
             android:layout_height="wrap_content"
             android:text="Filter"
             android:textSize="15dp"
-            android:visibility="invisible">
+            android:visibility="visible">
         </Button>
 
         <TextView

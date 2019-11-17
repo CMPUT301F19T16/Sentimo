@@ -22,6 +22,7 @@ import com.example.sentimo.Fragments.FilterFragment;
 
 import com.example.sentimo.Fragments.MapSelectFragment;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -136,7 +137,7 @@ public class MainActivity extends AppCompatActivity implements AddMoodFragment.A
         moodList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Mood mood = moodAdapter.getItem(position);
+                Mood mood = (Mood)moodList.getItemAtPosition(position);
                 new EditMoodFragment(mood, position).show(getSupportFragmentManager(), "EDIT_MOOD");
             }
         });
@@ -149,13 +150,14 @@ public class MainActivity extends AppCompatActivity implements AddMoodFragment.A
                 alert.setPositiveButton("YES", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        Mood mood = moodAdapter.getItem(position);
+                        Mood mood = (Mood)moodList.getItemAtPosition(position);
+                        if(moodList.getAdapter() == partialAdapter) {
+                            partialDataList.remove(mood);
+                            partialAdapter.notifyDataSetChanged();
+                        }
                         database.deleteMood(mood);
                         moodDataList.remove(mood);
                         moodAdapter.notifyDataSetChanged();
-                        if (moodDataList.size() == 0) {
-                            filterButton.setVisibility(View.INVISIBLE);
-                        }
                     }
                 });
                 alert.setNegativeButton("NO", null);
@@ -176,7 +178,17 @@ public class MainActivity extends AppCompatActivity implements AddMoodFragment.A
     @Override
     public void onDonePressed(Mood mood) {
         database.addMood(mood);
-        filterButton.setVisibility(View.VISIBLE);
+        if(moodList.getAdapter() == partialAdapter) {
+            if(!partialDataList.isEmpty()){
+                if(partialDataList.get(0).getEmotion().getName().equals(mood.getEmotion().getName())){
+                    partialDataList.add(0, mood);
+                    partialAdapter.notifyDataSetChanged();
+                }
+            } else if(filterButton.getText().toString().equals(mood.getEmotion().getName())){
+                partialDataList.add(mood);
+                partialAdapter.notifyDataSetChanged();
+            }
+        }
     }
 
     /**
@@ -190,7 +202,7 @@ public class MainActivity extends AppCompatActivity implements AddMoodFragment.A
      */
     @Override
     public void onConfirmEditPressed(Mood mood, int position) {
-        Mood oldMood = moodAdapter.getItem(position);
+        Mood oldMood = (Mood)moodList.getItemAtPosition(position);
         database.deleteMood(Objects.requireNonNull(oldMood));
         database.addMood(mood);
     }
@@ -215,19 +227,23 @@ public class MainActivity extends AppCompatActivity implements AddMoodFragment.A
             // get old list back
             partialDataList.clear();
             moodList.setAdapter(moodAdapter);
+            filterButton.setText("FILTER");
         } else if (emotion != null) {
             // make new list
             // set moodList
             partialDataList.clear();
             String name = emotion.getName();
             String oldName;
+            filterButton.setText(name);
             for (int i = 0; i < moodDataList.size(); i++) {
+                System.out.println(i);
                 oldName = moodDataList.get(i).getEmotion().getName();
                 if (oldName.equals(name)) {
                     partialDataList.add(moodDataList.get(i));
                 }
             }
             moodList.setAdapter(partialAdapter);
+            partialAdapter.notifyDataSetChanged();
         }
     }
 

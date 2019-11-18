@@ -10,5 +10,6 @@ public enum InputErrorType {
     CMFNoLocationPermission,
     CMFPhotoReturnError,
     LoginPasswordTooShortError,
-    LoginUsernameTooShortError
+    LoginUsernameTooShortError,
+    ImageDisplayError
 }

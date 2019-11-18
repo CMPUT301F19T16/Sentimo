@@ -68,6 +68,9 @@ public class InvalidDataWarningFragment extends DialogFragment {
             case CMFPhotoReturnError:
                 warningMessage = getString(R.string.warning_CMFPhotoReturnError);
                 break;
+            case ImageDisplayError:
+                warningMessage = getString(R.string.warning_ImageDisplayError);
+                break;
             default:
                 new RuntimeException("Warning Type Not Supported");
         }

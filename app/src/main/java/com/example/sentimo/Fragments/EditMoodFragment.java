@@ -33,7 +33,6 @@ public class EditMoodFragment extends ChangeMoodFragment {
      */
     public EditMoodFragment(Mood mood, int position){
         this.position = position;
-//        this.initialMood = mood;
         this.initialMood = new Mood(mood);
     }
 
@@ -44,9 +43,6 @@ public class EditMoodFragment extends ChangeMoodFragment {
      */
     @Override
     protected void subclassInitialization() {
-//        this.emotion = initialMood.getEmotion();
-//        this.situation = initialMood.getSituation();
-
         dateTextView.setText(initialMood.getTime().getDateString());
         timeTextView.setText(initialMood.getTime().getTimeString());
         reasonEditText.setText(initialMood.getReason());
@@ -64,7 +60,6 @@ public class EditMoodFragment extends ChangeMoodFragment {
         emojiImageButton.setVisibility(View.INVISIBLE);
         emojiImageView.setVisibility(View.VISIBLE);
         emojiImageView.setBackgroundColor(Color.parseColor(initialMood.getEmotion().getColour()));
-//        emotion = initialMood.getEmotion();
 
         locationCheckBox.setEnabled(false);
     }
@@ -96,7 +91,7 @@ public class EditMoodFragment extends ChangeMoodFragment {
      */
     @Override
     public void callListener(Mood mood) {
-        listener.onConfirmEditPressed(mood, position, localPath);
+        listener.onConfirmEditPressed(mood, position, uploadLocalImagePath);
     }
 
     /**

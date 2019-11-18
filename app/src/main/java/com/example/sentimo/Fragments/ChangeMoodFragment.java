@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -17,8 +18,10 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.ImageView;
 
+import com.example.sentimo.DisplayActivity;
 import com.example.sentimo.Emotions.Emotion;
 import com.example.sentimo.InputErrorType;
+import com.example.sentimo.MainActivity;
 import com.example.sentimo.Mood;
 import com.example.sentimo.R;
 import com.example.sentimo.Situations.Situation;
@@ -26,9 +29,11 @@ import com.example.sentimo.TimeFormatter;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.DialogFragment;
 
+import java.io.File;
 import java.text.ParseException;
 
 public abstract class ChangeMoodFragment extends DialogFragment implements SelectSituationFragment.SelectSituationListener, SelectMoodFragment.SelectMoodFragmentInteractionListener {
@@ -41,9 +46,11 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
     protected ImageView reasonImageView;
     protected Button situationButton;
     protected CheckBox locationCheckBox;
+    protected Button displayPhotoButton;
 
     protected Mood initialMood;
-    protected String localPath;
+    protected String uploadLocalImagePath;
+    protected String displayOnlyLocalImagePath;
 
 
     final int SUCCESSFUL_PICTURE_RETURN_CODE = 71;
@@ -162,14 +169,13 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
         }
     }
 
-
-
     /**
      *Shared initialization between subclasses
      *Separate non-constructor function required to allow hookup of UI before initialization
      */
     private void sharedInitialization() {
-        localPath = null;
+        uploadLocalImagePath = null;
+        displayOnlyLocalImagePath = null;
 
         if (ChangeMoodFragment.this instanceof AddMoodFragment) {
             view = LayoutInflater.from(getActivity()).inflate(R.layout.add_mood_fragment, null);
@@ -194,7 +200,6 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
         reasonImageButton = view.findViewById(R.id.reason_image_button);
         reasonImageView = view.findViewById(R.id.reason_image);
         situationButton = view.findViewById(R.id.situation_button);
-//        situationTextView = view.findViewById(R.id.situation_text);
         locationCheckBox = view.findViewById(R.id.location_checkbox);
 
 
@@ -214,6 +219,26 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
                 startActivityForResult(Intent.createChooser(intent, "Select Photograph for Reason"), SUCCESSFUL_PICTURE_RETURN_CODE);
             }
         });
+
+        displayPhotoButton = view.findViewById(R.id.displayPhoto);
+        displayPhotoButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                displayPhotoForMood();
+            }
+        });
+    }
+
+    // Data processing of returned image inspired by: https://code.tutsplus.com/tutorials/image-upload-to-firebase-in-android-application--cms-29934
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == SUCCESSFUL_PICTURE_RETURN_CODE && resultCode == -1 && data != null && data.getData() != null ) {
+            uploadLocalImagePath = data.getData().toString();
+            this.initialMood.setOnlinePath(null);
+        } else {
+            displayWarning(InputErrorType.CMFPhotoReturnError);
+        }
     }
 
     /**
@@ -259,22 +284,38 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
             }
 
         }
-        if (initialMood.getOnlinePath() != null && (reasonEditText.getText().toString().length() != 0)) {
+        if ((initialMood.getOnlinePath() != null || uploadLocalImagePath != null) && (reasonEditText.getText().toString().length() != 0)) {
             return InputErrorType.CMFPictureAndReasonError;
         }
         return InputErrorType.DataValid;
     }
 
-    // Data processing of returned image inspired by: https://code.tutsplus.com/tutorials/image-upload-to-firebase-in-android-application--cms-29934
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == SUCCESSFUL_PICTURE_RETURN_CODE && resultCode == -1 && data != null && data.getData() != null ) {
-            this.localPath = data.getData().toString();
-            this.initialMood.setOnlinePath(null);
-        } else {
-            displayWarning(InputErrorType.CMFPhotoReturnError);
+
+    public void displayPhotoForMood() {
+        if (uploadLocalImagePath != null) {
+            displayLocalImage(uploadLocalImagePath, "local");
+        } else if (displayOnlyLocalImagePath != null) {
+            displayLocalImage(displayOnlyLocalImagePath, "download");
         }
+        else if (initialMood.getOnlinePath() != null) {
+            // Start progress bar with timeout
+            MainActivity act = (MainActivity)getContext();
+            act.database.downloadPhotoForDisplay(initialMood.getOnlinePath(), this);
+            // End progress bar with timeout
+        }
+    }
+
+    public void setLocalImageFileAndDisplay(String filePath) {
+        this.displayOnlyLocalImagePath = filePath;
+        displayLocalImage(displayOnlyLocalImagePath, "download");
+    }
+
+    public void displayLocalImage(String localPath, String type) {
+        MainActivity mainActivity = (MainActivity)getActivity();
+        Intent intent = new Intent(mainActivity, DisplayActivity.class);
+        intent.putExtra("localPath", localPath);
+        intent.putExtra("type", type);
+        mainActivity.startActivity(intent);
     }
 
     /**

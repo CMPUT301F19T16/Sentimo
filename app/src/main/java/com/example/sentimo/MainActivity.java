@@ -57,7 +57,7 @@ public class MainActivity extends AppCompatActivity implements AddMoodFragment.A
     private Button mapButton;
     private Button friendButton;
     private Button filterButton;
-    private Database database;
+    public Database database;
     private TextView username;
     private Auth auth;
 
@@ -175,7 +175,11 @@ public class MainActivity extends AppCompatActivity implements AddMoodFragment.A
     @Override
     public void onDonePressed(Mood mood, String localPath) {
         // Start progress bar, with timeout
-        uploadMood(mood, localPath);
+        if (mood.getOnlinePath() == null) {
+            uploadMood(mood, localPath);
+        } else {
+            uploadMood(mood, null);
+        }
         filterButton.setVisibility(View.VISIBLE);
         // End progress bar
         // Timeout on network failure
@@ -196,7 +200,7 @@ public class MainActivity extends AppCompatActivity implements AddMoodFragment.A
         // Start progress bar
         Mood oldMood = moodAdapter.getItem(position);
         Boolean isDeletePicture = false;
-        if (localPath != null || mood.getOnlinePath() == null) {
+        if (mood.getOnlinePath() == null && oldMood.getOnlinePath() != null) {
             isDeletePicture = true;
         }
         deleteMood(oldMood, isDeletePicture);

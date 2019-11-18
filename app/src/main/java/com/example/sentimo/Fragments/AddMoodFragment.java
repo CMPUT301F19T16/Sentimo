@@ -119,7 +119,7 @@ public class AddMoodFragment extends ChangeMoodFragment {
      */
     @Override
     public void callListener(Mood mood) {
-        listener.onDonePressed(mood, localPath);
+        listener.onDonePressed(mood, uploadLocalImagePath);
     }
 
 

@@ -1,11 +1,15 @@
 package com.example.sentimo;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.net.Uri;
+import android.os.Environment;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.example.sentimo.Fragments.ChangeMoodFragment;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -18,10 +22,13 @@ import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import java.io.File;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -207,10 +214,18 @@ public class Database {
         });
     }
 
+    /**
+     * Method for adding a Mood and corresponding photo
+     * @param incompleteMood Mood to be added, without its onlinePath initially
+     * @param stringPath Local path to photo file to be uploaded
+     * @return
+     */
     // Upload method uses information from Google's Firebase storage upload example: https://firebase.google.com/docs/storage/android/upload-files
     public Uri addPhotoAndMood(final Mood incompleteMood, String stringPath) {
         Uri localPath = Uri.parse(stringPath);
         final StorageReference reference = firebaseStorage.getReference();
+        // MUST CHANGE THIS TO USE HASH
+        Log.d("TODO", "CHANGE STORAGE NAME TO USE HASH");
         Random rng = new Random();
         final StorageReference storageLocation = reference.child("images/" + rng.nextInt(1000000));
         UploadTask uploadTask = storageLocation.putFile(localPath);
@@ -238,5 +253,39 @@ public class Database {
             }
         });
         return null;
+    }
+
+    /**
+     * Method for downloading a photo file from Firebase Storage
+     * @param onlinePath Database path to the file to be downloaded
+     */
+    // Uses elements of Google's Firebase Storage examples found here: https://firebase.google.com/docs/storage/web/download-files
+    // Inspired by elements of StackOverflow post: https://stackoverflow.com/questions/39905719/how-to-download-a-file-from-firebase-storage-to-the-external-storage-of-android
+    public void downloadPhotoForDisplay(String onlinePath, final ChangeMoodFragment changeMoodFragment) {
+        Log.d("TEST", onlinePath);
+        StorageReference storedAt = firebaseStorage.getReference(onlinePath);
+
+        final MainActivity mainActivity = (MainActivity)changeMoodFragment.getActivity();
+        File path = new File(mainActivity.getApplicationContext().getFilesDir(), "file_name");
+        if (!path.exists()) {
+            path.mkdirs();
+        }
+
+        String[] splitString = onlinePath.split("/");
+        String filename = splitString[splitString.length - 1];
+        final File newFile = new File(path, filename);
+
+        storedAt.getFile(newFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                Log.d("Success", "Success");
+                changeMoodFragment.setLocalImageFileAndDisplay(newFile.getPath());
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.d("FAILURE","FAILURE");
+            }
+        });
     }
 }

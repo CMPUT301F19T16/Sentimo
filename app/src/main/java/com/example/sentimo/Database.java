@@ -33,7 +33,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Random;
 
 /**
  * A class for keeping track of moods in a database including
@@ -224,10 +223,7 @@ public class Database {
     public Uri addPhotoAndMood(final Mood incompleteMood, String stringPath) {
         Uri localPath = Uri.parse(stringPath);
         final StorageReference reference = firebaseStorage.getReference();
-        // MUST CHANGE THIS TO USE HASH
-        Log.d("TODO", "CHANGE STORAGE NAME TO USE HASH");
-        Random rng = new Random();
-        final StorageReference storageLocation = reference.child("images/" + rng.nextInt(1000000));
+        final StorageReference storageLocation = reference.child("images/" + incompleteMood.hashCode());
         UploadTask uploadTask = storageLocation.putFile(localPath);
         Task<Uri> urlTask = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
             @Override

@@ -1,12 +1,8 @@
 package com.example.sentimo;
 
-import android.Manifest;
-
 import androidx.test.espresso.assertion.ViewAssertions;
 import androidx.test.filters.LargeTest;
 import androidx.test.rule.ActivityTestRule;
-import androidx.test.rule.GrantPermissionRule;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -20,18 +16,16 @@ import static androidx.test.espresso.matcher.ViewMatchers.*;
 public class ChangeMoodFragmentTest {
     @Rule
     public ActivityTestRule<MainActivity> activityRule = new ActivityTestRule<>(MainActivity.class);
-    @Rule
-    public GrantPermissionRule permissionRule = GrantPermissionRule.grant(Manifest.permission.ACCESS_FINE_LOCATION);
 
     @Before
     public void init() {
+
     }
 
     @After
     public void cleanUp() {
 
     }
-
 
     @Test
     public void testAddFragmentLaunch() {
@@ -42,6 +36,11 @@ public class ChangeMoodFragmentTest {
     @Test
     public void testDismissAddFragment() {
         onView(withId(R.id.add_button)).perform(click());
+//        try {
+//            Thread.sleep(3000);
+//        } catch (InterruptedException e) {
+//
+//        }
         onView(withText("Back")).perform(click());
         onView(withId(R.id.add_mood_fragment)).check(ViewAssertions.doesNotExist());
     }
@@ -61,9 +60,4 @@ public class ChangeMoodFragmentTest {
         onView(withText("Cancel")).perform(click());
         onView(withId(R.id.select_emoji_layout)).check(ViewAssertions.doesNotExist());
     }
-
-//    @Test
-//    public void testNoLocationPermissionWarningAddMoodFragment() {
-//        onView(withId(R.id.add_button)).perform(click());
-//    }
 }

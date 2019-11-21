@@ -1,9 +1,5 @@
 package com.example.sentimo;
 
-import android.location.Location;
-import android.net.Uri;
-import android.util.Log;
-
 import com.example.sentimo.Emotions.Emotion;
 import com.example.sentimo.Situations.Situation;
 
@@ -20,56 +16,27 @@ public class Mood implements Serializable, Comparable {
     private Emotion emotion;
     private String reason;
     private Situation situation;
-    private Double longitude;
-    private Double latitude;
-    private String onlinePath;
+    private Boolean locationPermission;
+    //private Location location
+    //private Photo photo;
+
+    public Mood(){}
 
     /**
-     * Constructor for a null Mood object
-     */
-    public Mood(){
-        time = null;
-        emotion = null;
-        reason = null;
-        situation = null;
-        longitude = null;
-        latitude = null;
-        onlinePath = null;
-    }
-
-    /**
-     * The constructor to create a copy of a mood object
-     * @param mood the Mood to be copied
-     */
-    public Mood(Mood mood) {
-        time = mood.getTime();
-        emotion = mood.getEmotion();
-        reason = mood.getReason();
-        situation = mood.getSituation();
-        longitude = mood.getLongitude();
-        latitude = mood.getLatitude();
-        onlinePath = mood.getOnlinePath();
-    }
-
-    /**
-     * The constructor to create a mood object
-     * @param time the time of the Mood as a TimeFormatter object
-     * @param emotion the emotion of the mood as an Emotion object
-     * @param reason the text reason for the mood as a String (optional)
-     * @param situation the situation of the mood as a Situation object (optional)
-     * @param longitude the longitude of a Mood, as a Double object (optional)
-     * @param latitude the latitude of a Mood, as a Double object (optional)
-     * @param onlinePath the database path to a cloud stored image (optional)
+     * Create a mood object
+     * @param time the time of the mood as a TimeFormatter object
+     * @param emotion the emotion of the mood as a Emotion object
+     * @param reason the reason for the mood as a String
+     * @param situation the situation of the mood as a Situation object
+     * @param locationPermission whether the location permission has been granted as a Boolean
      */
     public Mood(TimeFormatter time, Emotion emotion, String reason,
-                Situation situation, Double longitude, Double latitude, String onlinePath){
+                Situation situation, Boolean locationPermission){
         this.time = time;
         this.emotion = emotion;
         this.reason = reason;
         this.situation = situation;
-        this.longitude = longitude;
-        this.latitude = latitude;
-        this.onlinePath = onlinePath;
+        this.locationPermission = locationPermission;
     }
 
     /**
@@ -136,48 +103,17 @@ public class Mood implements Serializable, Comparable {
         this.situation = situation;
     }
 
+    /**
+     * Get the location permission for this mood
+     * @return true if the mood has location permission granted, false if not
+     */
+    public Boolean getLocationPermission() {return locationPermission;}
 
     /**
-     * Get the longitude for this mood
-     * @return a Double object representing longitude in degrees
+     * Set the location permission for this mood
+     * @param locationPermission true to grant the mood location permission, false to deny
      */
-    public Double getLongitude() {
-        return longitude;
-    }
-
-    /**
-     * A setter for longitude and latitude together, since both are required if either is present
-     * @param longitude
-     * @param latitude
-     */
-    public void setLongitudeLatitude(double longitude, double latitude) {
-        this.longitude = new Double(longitude);
-        this.latitude = new Double(latitude);
-    }
-
-    /**
-     * Get the latitude for this mood
-     * @return a Double object representing latitude in degrees
-     */
-    public Double getLatitude() {
-        return latitude;
-    }
-
-    /**
-     * Get the database path for an image associated with a Mood
-     * @return the Firebase cloud storage path for the image associated with the Mood
-     */
-    public String getOnlinePath() {
-        return onlinePath;
-    }
-
-    /**
-     * Set the database path for an image associated with a Mood
-     * @param onlinePath the new Firebase cloud storage path for the image associated with the Mood
-     */
-    public void setOnlinePath(String onlinePath) {
-        this.onlinePath = onlinePath;
-    }
+    public void setLocationPermission(Boolean locationPermission){this.locationPermission = locationPermission;}
 
     @Override
     public boolean equals(Object o) {
@@ -187,8 +123,7 @@ public class Mood implements Serializable, Comparable {
         return  time.equals(mood.time) &&
                 emotion.equals(mood.emotion) &&
                 Objects.equals(reason, mood.reason) &&
-                Objects.equals(situation, mood.situation) && Objects.equals(longitude, mood.longitude)
-                && Objects.equals(latitude, mood.latitude) && Objects.equals(onlinePath, mood.getOnlinePath());
+                Objects.equals(situation, mood.situation);
     }
 
     @Override
@@ -200,13 +135,6 @@ public class Mood implements Serializable, Comparable {
         hash = 31 * hash + (reason == null ? 0 : reason.hashCode());
         if (situation != null)
             hash = 31 * hash + (situation.getName() == null ? 0 : situation.getName().hashCode());
-        if (longitude != null && latitude != null) {
-            hash = 31 * hash + (longitude.hashCode());
-            hash = 31 * hash + (longitude.hashCode());
-        }
-        if (onlinePath != null) {
-            hash = 31 * hash + (onlinePath.hashCode());
-        }
         return hash;
     }
 

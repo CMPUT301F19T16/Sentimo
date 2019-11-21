@@ -2,9 +2,7 @@ package com.example.sentimo;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -23,7 +21,7 @@ import com.example.sentimo.Fragments.EditMoodFragment;
 import com.example.sentimo.Fragments.FilterFragment;
 
 import com.example.sentimo.Fragments.MapSelectFragment;
-import java.io.File;
+
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Objects;
@@ -57,7 +55,7 @@ public class MainActivity extends AppCompatActivity implements AddMoodFragment.A
     private Button mapButton;
     private Button friendButton;
     private Button filterButton;
-    public Database database;
+    private Database database;
     private TextView username;
     private Auth auth;
 
@@ -152,8 +150,14 @@ public class MainActivity extends AppCompatActivity implements AddMoodFragment.A
                 alert.setPositiveButton("YES", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        Mood mood = moodAdapter.getItem(position);
-                        deleteMood(mood, true);
+                        Mood mood = (Mood)moodList.getItemAtPosition(position);
+                        if(moodList.getAdapter() == partialAdapter) {
+                            partialDataList.remove(mood);
+                            partialAdapter.notifyDataSetChanged();
+                        }
+                        database.deleteMood(mood);
+                        moodDataList.remove(mood);
+                        moodAdapter.notifyDataSetChanged();
                     }
                 });
                 alert.setNegativeButton("NO", null);
@@ -170,29 +174,21 @@ public class MainActivity extends AppCompatActivity implements AddMoodFragment.A
      * Should then show up on the ListView.
      *
      * @param mood This is the mood that the user created in the AddMoodFragment.
-     * @param localPath This is the local path to a stored image associated with the Mood, if any
      */
     @Override
-    public void onDonePressed(Mood mood, String localPath) {
-        // Start progress bar, with timeout
-        if (mood.getOnlinePath() == null) {
-            uploadMood(mood, localPath);
-        } else {
-            uploadMood(mood, null);
+    public void onDonePressed(Mood mood) {
+        database.addMood(mood);
+        if(moodList.getAdapter() == partialAdapter) {
+            if(!partialDataList.isEmpty()){
+                if(partialDataList.get(0).getEmotion().getName().equals(mood.getEmotion().getName())){
+                    partialDataList.add(0, mood);
+                    partialAdapter.notifyDataSetChanged();
+                }
+            } else if(filterButton.getText().toString().equals(mood.getEmotion().getName())){
+                partialDataList.add(mood);
+                partialAdapter.notifyDataSetChanged();
+            }
         }
-    if(moodList.getAdapter() == partialAdapter) {
-              if(!partialDataList.isEmpty()){
-                  if(partialDataList.get(0).getEmotion().getName().equals(mood.getEmotion().getName())){
-                      partialDataList.add(0, mood);
-                      partialAdapter.notifyDataSetChanged();
-                  }
-              } else if(filterButton.getText().toString().equals(mood.getEmotion().getName())){
-                  partialDataList.add(mood);
-                  partialAdapter.notifyDataSetChanged();
-              }
-          }
-        // End progress bar
-        // Timeout on network failure
     }
 
     /**
@@ -203,51 +199,12 @@ public class MainActivity extends AppCompatActivity implements AddMoodFragment.A
      *
      * @param mood     This is the mood that the user edited from a previously known mood.
      * @param position This is the position of the old mood in the Mood List.
-     * @param localPath This is the local path to a stored image associated with the Mood, if any
      */
     @Override
-    public void onConfirmEditPressed(Mood mood, int position, String localPath) {
-        // Start progress bar
-        Mood oldMood = moodAdapter.getItem(position);
-        Boolean isDeletePicture = false;
-        if (mood.getOnlinePath() == null && oldMood.getOnlinePath() != null) {
-            isDeletePicture = true;
-        }
-        deleteMood(oldMood, isDeletePicture);
-        uploadMood(mood, localPath);
-        // End progress bar
-        // Timeout on network failure
-    }
-
-    /**
-     * Method for uploading a Mood to the Firebase database
-     * @param mood the Mood to be uploaded
-     * @param localPath a localPath to an image to be uploaded, if any
-     */
-    private void uploadMood(Mood mood, String localPath) {
-        if (localPath != null) {
-            database.addPhotoAndMood(mood, localPath);
-        } else {
-            database.addMood(mood);
-        }
-    }
-
-    /**
-     * Method for deleting a Mood from the Firebase database
-     * @param mood the Mood to be deleted
-     */
-    private void deleteMood(Mood mood, Boolean deletePicture) {
-        if (deletePicture) {
-            database.deleteMoodAndPicture(mood);
-        } else {
-            database.deleteMoodOnly(mood);
-        }
-        // Is the line below necessary?
-        moodDataList.remove(mood);
-        moodAdapter.notifyDataSetChanged();
-        if (moodDataList.size() == 0) {
-            filterButton.setVisibility(View.INVISIBLE);
-        }
+    public void onConfirmEditPressed(Mood mood, int position) {
+        Mood oldMood = (Mood)moodList.getItemAtPosition(position);
+        database.deleteMood(Objects.requireNonNull(oldMood));
+        database.addMood(mood);
     }
 
     /**
@@ -315,5 +272,4 @@ public class MainActivity extends AppCompatActivity implements AddMoodFragment.A
             }
         });
     }
-
 }

@@ -1,20 +1,10 @@
 package com.example.sentimo;
 
-import android.app.Activity;
-import android.content.Intent;
-import android.net.Uri;
-import android.os.Environment;
-import android.util.Log;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.example.sentimo.Fragments.ChangeMoodFragment;
-import com.google.android.gms.tasks.Continuation;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -22,13 +12,7 @@ import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.google.firebase.storage.FileDownloadTask;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
 
-import java.io.File;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -44,7 +28,6 @@ public class Database {
     private String username;
     private ArrayList<Mood> moodHistory;
     private ArrayList<String> userFollowing;
-    private FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
 
     Database(String username) {
         this.username = username;
@@ -75,32 +58,10 @@ public class Database {
      *
      * @param mood mood to be deleted
      */
-    public void deleteMoodAndPicture(Mood mood) {
-        deleteMoodOnly(mood);
-        if (mood.getOnlinePath() != null) {
-            deletePhoto(mood.getOnlinePath());
-        }
-    }
-
-    public void deleteMoodOnly(Mood mood) {
+    public void deleteMood(Mood mood) {
         CollectionReference userMoods = getUserMoods();
         String hashcode = Integer.toString(mood.hashCode());
         userMoods.document(hashcode).delete();
-    }
-
-    public void deletePhoto(String onlinePath) {
-        StorageReference storageLocation = firebaseStorage.getReference(onlinePath);
-        storageLocation.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void aVoid) {
-                Log.d("SUCCESS","DELETED IMAGE");
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Log.d("SUCCESS","DELETED IMAGE");
-            }
-        });
     }
 
     /**
@@ -209,78 +170,6 @@ public class Database {
             @Override
             public void onFailure(@NonNull Exception e) {
                 listener.onFailure();
-            }
-        });
-    }
-
-    /**
-     * Method for adding a Mood and corresponding photo
-     * @param incompleteMood Mood to be added, without its onlinePath initially
-     * @param stringPath Local path to photo file to be uploaded
-     * @return
-     */
-    // Upload method uses information from Google's Firebase storage upload example: https://firebase.google.com/docs/storage/android/upload-files
-    public Uri addPhotoAndMood(final Mood incompleteMood, String stringPath) {
-        Uri localPath = Uri.parse(stringPath);
-        final StorageReference reference = firebaseStorage.getReference();
-        final StorageReference storageLocation = reference.child("images/" + incompleteMood.hashCode());
-        UploadTask uploadTask = storageLocation.putFile(localPath);
-        Task<Uri> urlTask = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
-            @Override
-            public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
-                if (!task.isSuccessful()) {
-                    throw task.getException();
-                }
-                return storageLocation.getDownloadUrl();
-            }
-        }).addOnCompleteListener(new OnCompleteListener<Uri>() {
-            @Override
-            public void onComplete(@NonNull Task<Uri> task) {
-                if (task.isSuccessful()) {
-                    Uri downloadUri = task.getResult();
-                    Log.d("SUCCESS", storageLocation.getPath());
-                    Mood completeMood = new Mood(incompleteMood);
-                    completeMood.setOnlinePath(storageLocation.getPath());
-                    addMood(completeMood);
-                }
-                else {
-                    throw new RuntimeException("MUST DEAL WITH ERROR CASES");
-                }
-            }
-        });
-        return null;
-    }
-
-    /**
-     * Method for downloading a photo file from Firebase Storage
-     * @param onlinePath Database path to the file to be downloaded
-     */
-    // Uses elements of Google's Firebase Storage examples found here: https://firebase.google.com/docs/storage/web/download-files
-    // Inspired by elements of StackOverflow post: https://stackoverflow.com/questions/39905719/how-to-download-a-file-from-firebase-storage-to-the-external-storage-of-android
-    public void downloadPhotoForDisplay(String onlinePath, final ChangeMoodFragment changeMoodFragment) {
-        Log.d("TEST", onlinePath);
-        StorageReference storedAt = firebaseStorage.getReference(onlinePath);
-
-        final MainActivity mainActivity = (MainActivity)changeMoodFragment.getActivity();
-        File path = new File(mainActivity.getApplicationContext().getFilesDir(), "file_name");
-        if (!path.exists()) {
-            path.mkdirs();
-        }
-
-        String[] splitString = onlinePath.split("/");
-        String filename = splitString[splitString.length - 1];
-        final File newFile = new File(path, filename);
-
-        storedAt.getFile(newFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
-            @Override
-            public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
-                Log.d("Success", "Success");
-                changeMoodFragment.setLocalImageFileAndDisplay(newFile.getPath());
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Log.d("FAILURE","FAILURE");
             }
         });
     }

@@ -23,8 +23,8 @@ import com.example.sentimo.Fragments.EditMoodFragment;
 import com.example.sentimo.Fragments.FilterFragment;
 
 import com.example.sentimo.Fragments.MapSelectFragment;
-
 import java.io.File;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -139,7 +139,7 @@ public class MainActivity extends AppCompatActivity implements AddMoodFragment.A
         moodList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Mood mood = moodAdapter.getItem(position);
+                Mood mood = (Mood)moodList.getItemAtPosition(position);
                 new EditMoodFragment(mood, position).show(getSupportFragmentManager(), "EDIT_MOOD");
             }
         });
@@ -180,7 +180,17 @@ public class MainActivity extends AppCompatActivity implements AddMoodFragment.A
         } else {
             uploadMood(mood, null);
         }
-        filterButton.setVisibility(View.VISIBLE);
+    if(moodList.getAdapter() == partialAdapter) {
+              if(!partialDataList.isEmpty()){
+                  if(partialDataList.get(0).getEmotion().getName().equals(mood.getEmotion().getName())){
+                      partialDataList.add(0, mood);
+                      partialAdapter.notifyDataSetChanged();
+                  }
+              } else if(filterButton.getText().toString().equals(mood.getEmotion().getName())){
+                  partialDataList.add(mood);
+                  partialAdapter.notifyDataSetChanged();
+              }
+          }
         // End progress bar
         // Timeout on network failure
     }
@@ -260,19 +270,23 @@ public class MainActivity extends AppCompatActivity implements AddMoodFragment.A
             // get old list back
             partialDataList.clear();
             moodList.setAdapter(moodAdapter);
+            filterButton.setText("FILTER");
         } else if (emotion != null) {
             // make new list
             // set moodList
             partialDataList.clear();
             String name = emotion.getName();
             String oldName;
+            filterButton.setText(name);
             for (int i = 0; i < moodDataList.size(); i++) {
+                System.out.println(i);
                 oldName = moodDataList.get(i).getEmotion().getName();
                 if (oldName.equals(name)) {
                     partialDataList.add(moodDataList.get(i));
                 }
             }
             moodList.setAdapter(partialAdapter);
+            partialAdapter.notifyDataSetChanged();
         }
     }
 

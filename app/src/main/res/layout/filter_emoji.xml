@@ -68,7 +68,7 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
-            android:text="            Angry "
+            android:text="               Mad "
             android:textAllCaps="false"
             android:textColor="#8D2017" />
 

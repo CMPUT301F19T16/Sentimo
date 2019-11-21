@@ -1,12 +1,15 @@
 package com.example.sentimo.Fragments;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
-import android.media.Image;
-import android.content.Context;
-import android.content.DialogInterface;
+import android.location.Location;
+import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -15,8 +18,10 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.ImageView;
 
+import com.example.sentimo.DisplayActivity;
 import com.example.sentimo.Emotions.Emotion;
 import com.example.sentimo.InputErrorType;
+import com.example.sentimo.MainActivity;
 import com.example.sentimo.Mood;
 import com.example.sentimo.R;
 import com.example.sentimo.Situations.Situation;
@@ -24,11 +29,12 @@ import com.example.sentimo.TimeFormatter;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.DialogFragment;
 
+import java.io.File;
 import java.text.ParseException;
-import java.util.Calendar;
-import java.util.Date;
 
 public abstract class ChangeMoodFragment extends DialogFragment implements SelectSituationFragment.SelectSituationListener, SelectMoodFragment.SelectMoodFragmentInteractionListener {
     protected TextView dateTextView;
@@ -39,18 +45,27 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
     protected Button reasonImageButton;
     protected ImageView reasonImageView;
     protected Button situationButton;
-//    protected TextView situationTextView;
     protected CheckBox locationCheckBox;
-    protected Emotion emotion;
-    protected Situation situation;
+    protected Button displayPhotoButton;
+
+    protected Mood initialMood;
+    protected String uploadLocalImagePath;
+    protected String displayOnlyLocalImagePath;
+
+
+    final int SUCCESSFUL_PICTURE_RETURN_CODE = 71;
+
 
     protected View.OnClickListener emotionClick;
     protected View.OnClickListener situationClick;
     protected View view;
 
 
-    // Method for reassigning positive button clicker to avoid automatic dismissal found at
-    // StackOverflow post:https://stackoverflow.com/questions/2620444/how-to-prevent-a-dialog-from-closing-when-a-button-is-clicked
+    /**
+     * Initialization for ChangeMoodFragment dialog
+     * @param savedInstanceState
+     * @return
+     */
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState){
@@ -71,46 +86,68 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
         };
 
         sharedInitialization();
-
         subclassInitialization();
+
+        TextView testTextView = view.findViewById(R.id.emotion_textview);
+        if (initialMood.getOnlinePath() != null) {
+            testTextView.setText(initialMood.getOnlinePath());
+        } else {
+            testTextView.setText("!ONLINE");
+        }
 
         AlertDialog.Builder builder = returnBuilder();
         AlertDialog dialog = builder.create();
         dialog.show();
+        // Method for reassigning positive button clicker to avoid automatic dismissal found at
+        // StackOverflow post:https://stackoverflow.com/questions/2620444/how-to-prevent-a-dialog-from-closing-when-a-button-is-clicked
         dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        String date = dateTextView.getText().toString();
-                        String time = timeTextView.getText().toString();
-//                        String emotionText = emojiImageButton.getText().toString();
-                        InputErrorType errorCode = isDataValid();
-                        if (errorCode != InputErrorType.DataValid) {
-                            displayWarning(errorCode);
-                            return;
-                        }
-                        TimeFormatter timef = new TimeFormatter();
-                        try {
-                            timef.setTimeFormat(date, time);
-                        } catch (ParseException e) {
-                            return;
-                        }
-                        String reason = reasonEditText.getText().toString();
-                        Boolean location = locationCheckBox.isChecked();
-                        // Need to add if statements for null date, time, or emotion
-                        Mood myMood = new Mood(timef, ChangeMoodFragment.this.emotion, reason, ChangeMoodFragment.this.situation, location);
-                        callListener(myMood);
-                        ChangeMoodFragment.this.dismiss();
-                    }
-                });
+            @Override
+            public void onClick(View v) {
+                String date = dateTextView.getText().toString();
+                String time = timeTextView.getText().toString();
+                InputErrorType errorCode = isDataValid();
+                if (errorCode != InputErrorType.DataValid) {
+                    displayWarning(errorCode);
+                    return;
+                }
+                TimeFormatter timef = new TimeFormatter();
+                try {
+                    timef.setTimeFormat(date, time);
+                } catch (ParseException e) {
+                    return;
+                }
+                String reason = reasonEditText.getText().toString();
+                Location location = null;
+                if (locationCheckBox.isChecked()) {
+                    location = subclassLocationReturnBehaviour();
+                }
+                Double longitude = null;
+                Double latitude = null;
+                if (location != null) {
+                    longitude = location.getLongitude();
+                    latitude = location.getLatitude();
+                }
+                Mood myMood = new Mood(timef, ChangeMoodFragment.this.initialMood.getEmotion(),
+                        reason, ChangeMoodFragment.this.initialMood.getSituation(), longitude,
+                        latitude, ChangeMoodFragment.this.initialMood.getOnlinePath());
+                callListener(myMood);
+                ChangeMoodFragment.this.dismiss();
+            }
+        });
         dialog.getButton(AlertDialog.BUTTON_POSITIVE).setId(R.id.change_mood_fragment_positive_button);
+
         return dialog;
     }
 
+    /**
+     * Method for receiving an Emotion back from an emotion selection fragment
+     * @param emotion the Emotion to receive and process, if any
+     */
     @Override
-    public void MoodReturned(Emotion emotion) {
+    public void EmotionReturned(Emotion emotion) {
         if (emotion != null) {
-            this.emotion = emotion;
-            emojiImageButton.setText(this.emotion.getName());
+            initialMood.setEmotion(emotion);
+            emojiImageButton.setText(initialMood.getEmotion().getName());
             emojiImageButton.setVisibility(View.INVISIBLE);
             emojiImageView.setVisibility(View.VISIBLE);
             emojiImageView.setImageResource(emotion.getImage());
@@ -118,24 +155,28 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
         }
     }
 
+    /**
+     * Method for receiving a Situation back from a situation selection fragment
+     * @param situation the Situation to receive and process, if any
+     */
     @Override
     public void SituationReturned(Situation situation) {
-        this.situation = situation;
+        initialMood.setSituation(situation);
         if (situation != null) {
             situationButton.setText(situation.getName());
         } else {
-            situationButton.setText("(Optional)");
+            situationButton.setText(R.string.no_situation_text);
         }
     }
-
-
 
     /**
      *Shared initialization between subclasses
      *Separate non-constructor function required to allow hookup of UI before initialization
      */
     private void sharedInitialization() {
-        View view = null;
+        uploadLocalImagePath = null;
+        displayOnlyLocalImagePath = null;
+
         if (ChangeMoodFragment.this instanceof AddMoodFragment) {
             view = LayoutInflater.from(getActivity()).inflate(R.layout.add_mood_fragment, null);
         } else if (ChangeMoodFragment.this instanceof EditMoodFragment) {
@@ -144,17 +185,21 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
             throw new RuntimeException("CHANGE MOOD FRAGMENT RECEIVED UNKNOWN SUBCLASS");
         }
 
-        this.view = view;
+        TextView testTextView = view.findViewById(R.id.emotion_textview);
+        if (initialMood.getOnlinePath() != null) {
+            testTextView.setText(initialMood.getOnlinePath());
+        } else {
+            testTextView.setText("!ONLINE");
+        }
 
         dateTextView = view.findViewById(R.id.date_text);
         timeTextView = view.findViewById(R.id.time_text);
         emojiImageView = view.findViewById(R.id.emotion_image);
         emojiImageButton = view.findViewById(R.id.emotion_button);
         reasonEditText = view.findViewById(R.id.reason_editText);
-        reasonImageButton = view.findViewById(R.id.reason_button);
+        reasonImageButton = view.findViewById(R.id.reason_image_button);
         reasonImageView = view.findViewById(R.id.reason_image);
         situationButton = view.findViewById(R.id.situation_button);
-//        situationTextView = view.findViewById(R.id.situation_text);
         locationCheckBox = view.findViewById(R.id.location_checkbox);
 
 
@@ -163,6 +208,37 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
 
         situationButton.setOnClickListener(situationClick);
 
+        reasonImageButton = view.findViewById(R.id.reason_image_button);
+        reasonImageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Photo selection launch inspired by: https://code.tutsplus.com/tutorials/image-upload-to-firebase-in-android-application--cms-29934
+                Intent intent = new Intent();
+                intent.setType("image/*");
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+                startActivityForResult(Intent.createChooser(intent, "Select Photograph for Reason"), SUCCESSFUL_PICTURE_RETURN_CODE);
+            }
+        });
+
+        displayPhotoButton = view.findViewById(R.id.displayPhoto);
+        displayPhotoButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                displayPhotoForMood();
+            }
+        });
+    }
+
+    // Data processing of returned image inspired by: https://code.tutsplus.com/tutorials/image-upload-to-firebase-in-android-application--cms-29934
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == SUCCESSFUL_PICTURE_RETURN_CODE && resultCode == -1 && data != null && data.getData() != null ) {
+            uploadLocalImagePath = data.getData().toString();
+            this.initialMood.setOnlinePath(null);
+        } else {
+            displayWarning(InputErrorType.CMFPhotoReturnError);
+        }
     }
 
     /**
@@ -178,7 +254,7 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
      * @return integer code indication type of data invalidity, or 0 if data valid
      */
     public InputErrorType isDataValid() {
-        if (!(ChangeMoodFragment.this.emotion != null)) {
+        if (initialMood.getEmotion() == null) {
             return InputErrorType.CMFNullMoodError;
         }
         String date = dateTextView.getText().toString();
@@ -202,7 +278,44 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
         if (spaceCount > 2) {
             return InputErrorType.CMFReasonTooManyWordsError;
         }
+        if (locationCheckBox.isChecked() & ChangeMoodFragment.this instanceof AddMoodFragment) {
+            if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                return InputErrorType.CMFNoLocationPermission;
+            }
+
+        }
+        if ((initialMood.getOnlinePath() != null || uploadLocalImagePath != null) && (reasonEditText.getText().toString().length() != 0)) {
+            return InputErrorType.CMFPictureAndReasonError;
+        }
         return InputErrorType.DataValid;
+    }
+
+
+    public void displayPhotoForMood() {
+        if (uploadLocalImagePath != null) {
+            displayLocalImage(uploadLocalImagePath, "local");
+        } else if (displayOnlyLocalImagePath != null) {
+            displayLocalImage(displayOnlyLocalImagePath, "download");
+        }
+        else if (initialMood.getOnlinePath() != null) {
+            // Start progress bar with timeout
+            MainActivity act = (MainActivity)getContext();
+            act.database.downloadPhotoForDisplay(initialMood.getOnlinePath(), this);
+            // End progress bar with timeout
+        }
+    }
+
+    public void setLocalImageFileAndDisplay(String filePath) {
+        this.displayOnlyLocalImagePath = filePath;
+        displayLocalImage(displayOnlyLocalImagePath, "download");
+    }
+
+    public void displayLocalImage(String localPath, String type) {
+        MainActivity mainActivity = (MainActivity)getActivity();
+        Intent intent = new Intent(mainActivity, DisplayActivity.class);
+        intent.putExtra("localPath", localPath);
+        intent.putExtra("type", type);
+        mainActivity.startActivity(intent);
     }
 
     /**
@@ -222,4 +335,11 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
      * @return
      */
     protected abstract AlertDialog.Builder returnBuilder();
+
+
+    /**
+     * Returns the location for the mood to be created
+     * @return
+     */
+    protected abstract Location subclassLocationReturnBehaviour();
 }

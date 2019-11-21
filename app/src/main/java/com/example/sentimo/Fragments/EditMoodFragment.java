@@ -4,9 +4,11 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
+import android.location.Location;
 import android.view.View;
 
 import com.example.sentimo.Mood;
+import com.example.sentimo.R;
 import com.example.sentimo.Situations.Situation;
 
 import java.text.ParseException;
@@ -22,46 +24,7 @@ import java.text.ParseException;
  */
 public class EditMoodFragment extends ChangeMoodFragment {
     private int position;
-    private Mood initialMood;
     private EditMoodListener listener;
-
-    // Subclass UI initialization
-
-    /**
-     * Subclass specific initialization (required to ensure called after UI hookup)
-     */
-    @Override
-    protected void subclassInitialization() {
-        this.emotion = initialMood.getEmotion();
-        this.situation = initialMood.getSituation();
-
-        dateTextView.setText(initialMood.getTime().getDateString());
-        timeTextView.setText(initialMood.getTime().getTimeString());
-        reasonEditText.setText(initialMood.getReason());
-        Situation moodSituation = initialMood.getSituation();
-        if (moodSituation != null) {
-            situationButton.setText(moodSituation.getName());
-        } else {
-            situationButton.setText("(Optional)");
-        }
-        locationCheckBox.setChecked(initialMood.getLocationPermission());
-        emojiImageButton.setText(initialMood.getEmotion().getName());
-        emojiImageView.setImageResource(this.emotion.getImage());
-        emojiImageButton.setVisibility(View.INVISIBLE);
-        emojiImageView.setVisibility(View.VISIBLE);
-        emojiImageView.setBackgroundColor(Color.parseColor(this.emotion.getColour()));
-        emotion = initialMood.getEmotion();
-
-    }
-
-    // Subclass listener interfaces and methods
-
-    /**
-     * Listener for activity calling EditMoodFragment to receive a mood back
-     */
-    public interface EditMoodListener{
-        void onConfirmEditPressed(Mood mood, int position);
-    }
 
     /**
      * Constructor to assign pre-existing mood and position in list
@@ -70,8 +33,46 @@ public class EditMoodFragment extends ChangeMoodFragment {
      */
     public EditMoodFragment(Mood mood, int position){
         this.position = position;
-        this.initialMood = mood;
+        this.initialMood = new Mood(mood);
     }
+
+    // Subclass UI initialization
+
+    /**
+     * Subclass specific initialization (required to ensure called after UI hookup)
+     */
+    @Override
+    protected void subclassInitialization() {
+        dateTextView.setText(initialMood.getTime().getDateString());
+        timeTextView.setText(initialMood.getTime().getTimeString());
+        reasonEditText.setText(initialMood.getReason());
+        Situation moodSituation = initialMood.getSituation();
+        if (moodSituation != null) {
+            situationButton.setText(moodSituation.getName());
+        } else {
+            situationButton.setText(R.string.no_situation_text);
+        }
+        if (initialMood.getLatitude() != null) {
+            locationCheckBox.setChecked(true);
+        } else locationCheckBox.setChecked(false);
+        emojiImageButton.setText(initialMood.getEmotion().getName());
+        emojiImageView.setImageResource(initialMood.getEmotion().getImage());
+        emojiImageButton.setVisibility(View.INVISIBLE);
+        emojiImageView.setVisibility(View.VISIBLE);
+        emojiImageView.setBackgroundColor(Color.parseColor(initialMood.getEmotion().getColour()));
+
+        locationCheckBox.setEnabled(false);
+    }
+
+    // Subclass listener interfaces and methods
+
+    /**
+     * Listener for activity calling EditMoodFragment to receive a mood back
+     */
+    public interface EditMoodListener{
+        void onConfirmEditPressed(Mood mood, int position, String localPath);
+    }
+
 
     @Override
     public void onAttach(Context context){
@@ -90,7 +91,7 @@ public class EditMoodFragment extends ChangeMoodFragment {
      */
     @Override
     public void callListener(Mood mood) {
-        listener.onConfirmEditPressed(mood, position);
+        listener.onConfirmEditPressed(mood, position, uploadLocalImagePath);
     }
 
     /**
@@ -109,4 +110,11 @@ public class EditMoodFragment extends ChangeMoodFragment {
                 .setPositiveButton("Confirm Edit", null);
     }
 
+    @Override
+    protected Location subclassLocationReturnBehaviour() {
+        Location newLocation = new Location("");
+        newLocation.setLongitude(initialMood.getLongitude());
+        newLocation.setLatitude(initialMood.getLatitude());
+        return newLocation;
+    }
 }

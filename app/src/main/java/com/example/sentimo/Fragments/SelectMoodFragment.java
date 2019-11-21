@@ -101,7 +101,7 @@ public class SelectMoodFragment extends DialogFragment {
                     default:
                         throw new RuntimeException("Unknown emotion case");
                 }
-                listener.MoodReturned(SelectMoodFragment.this.emotion);
+                listener.EmotionReturned(SelectMoodFragment.this.emotion);
                 SelectMoodFragment.this.dismiss();
             }
         };
@@ -123,7 +123,7 @@ public class SelectMoodFragment extends DialogFragment {
                 .setPositiveButton("Cancel", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        listener.MoodReturned(null);
+                        listener.EmotionReturned(null);
                     }
                 }).create();
     }
@@ -149,7 +149,7 @@ public class SelectMoodFragment extends DialogFragment {
      * appropriate action.
      */
     public interface SelectMoodFragmentInteractionListener {
-        void MoodReturned(Emotion emotion);
+        void EmotionReturned(Emotion emotion);
     }
 
 }

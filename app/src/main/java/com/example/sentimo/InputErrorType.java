@@ -6,7 +6,10 @@ public enum InputErrorType {
     CMFTimeParseError,
     CMFReasonTooLongError,
     CMFReasonTooManyWordsError,
+    CMFPictureAndReasonError,
+    CMFNoLocationPermission,
+    CMFPhotoReturnError,
     LoginPasswordTooShortError,
     LoginUsernameTooShortError,
-    CMFPictureAndReasonError
+    ImageDisplayError
 }

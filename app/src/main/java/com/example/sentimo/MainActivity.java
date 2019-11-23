@@ -152,7 +152,11 @@ public class MainActivity extends AppCompatActivity implements AddMoodFragment.A
                 alert.setPositiveButton("YES", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        Mood mood = moodAdapter.getItem(position);
+                        Mood mood = (Mood)moodList.getItemAtPosition(position);
+                        if(moodList.getAdapter() == partialAdapter){
+                            partialDataList.remove(mood);
+                            partialAdapter.notifyDataSetChanged();
+                        }
                         deleteMood(mood, true);
                     }
                 });
@@ -180,7 +184,7 @@ public class MainActivity extends AppCompatActivity implements AddMoodFragment.A
         } else {
             uploadMood(mood, null);
         }
-    if(moodList.getAdapter() == partialAdapter) {
+        if(moodList.getAdapter() == partialAdapter) {
               if(!partialDataList.isEmpty()){
                   if(partialDataList.get(0).getEmotion().getName().equals(mood.getEmotion().getName())){
                       partialDataList.add(0, mood);
@@ -243,11 +247,8 @@ public class MainActivity extends AppCompatActivity implements AddMoodFragment.A
             database.deleteMoodOnly(mood);
         }
         // Is the line below necessary?
-        moodDataList.remove(mood);
-        moodAdapter.notifyDataSetChanged();
-        if (moodDataList.size() == 0) {
-            filterButton.setVisibility(View.INVISIBLE);
-        }
+        //        moodDataList.remove(mood);
+        //        moodAdapter.notifyDataSetChanged();
     }
 
     /**

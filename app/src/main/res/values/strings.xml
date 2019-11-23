@@ -8,8 +8,12 @@
     <string name="warning_LoginUsernameTooShortError">Username too short. Must be at least 6 characters.</string>
     <string name="warning_CMFPictureAndReasonError">Text reason and picture reason provided. Only one or the other is allowed.</string>
     <string name="warning_CMFNoLocationPermission">Location permission required.</string>
+    <string name="warning_CMFNoCameraPermission">No camera permission.</string>
     <string name="warning_CMFPhotoReturnError">Error getting photo, please try again.</string>
     <string name="warning_ImageDisplayError">Error displaying image, please try again.</string>
     <string name="title_activity_display_map">Map</string>
     <string name="no_situation_text">(Optional)</string>
+    <string name="take_picture_option">Take Picture</string>
+    <string name="select_picture_gallery_option">Select picture from Gallery</string>
+    <string name="use_online_picture_option">Use pre-existing online picture.</string>
 </resources>

@@ -3,12 +3,14 @@ package com.example.sentimo.Fragments;
 import android.Manifest;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -53,7 +55,8 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
     protected String displayOnlyLocalImagePath;
 
 
-    final int SUCCESSFUL_PICTURE_RETURN_CODE = 71;
+    final int SUCCESSFUL_GALLERY_RETURN_CODE = 71;
+    final int SUCCESSFUL_CAMERA_RETURN_CODE = 1;
 
 
     protected View.OnClickListener emotionClick;
@@ -212,14 +215,9 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
         reasonImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Photo selection launch inspired by: https://code.tutsplus.com/tutorials/image-upload-to-firebase-in-android-application--cms-29934
-                Intent intent = new Intent();
-                intent.setType("image/*");
-                intent.setAction(Intent.ACTION_GET_CONTENT);
-                startActivityForResult(Intent.createChooser(intent, "Select Photograph for Reason"), SUCCESSFUL_PICTURE_RETURN_CODE);
+                selectImage();
             }
         });
-
         displayPhotoButton = view.findViewById(R.id.displayPhoto);
         displayPhotoButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -229,15 +227,87 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
         });
     }
 
+    private void selectImage() {
+        // Method inspired by this Stack Overflow post: https://stackoverflow.com/questions/5991319/capture-image-from-camera-and-display-in-activity
+        AlertDialog.Builder menuDialogBuilder = new AlertDialog.Builder((MainActivity)getContext());
+        menuDialogBuilder.setTitle("Select Photo");
+        final String[] menuOptionsTitles = {getString(R.string.take_picture_option), getString(R.string.select_picture_gallery_option), getString(R.string.use_online_picture_option) };
+        menuDialogBuilder.setItems(menuOptionsTitles, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int item) {
+                if (menuOptionsTitles[item].equals(getString(R.string.select_picture_gallery_option))) {
+                    //Photo selection launch inspired by: https://code.tutsplus.com/tutorials/image-upload-to-firebase-in-android-application--cms-29934
+                    Intent intent = new Intent();
+                    intent.setType("image/*");
+                    intent.setAction(Intent.ACTION_PICK);
+                    startActivityForResult(Intent.createChooser(intent, "Select Photograph for Reason"), SUCCESSFUL_GALLERY_RETURN_CODE);
+                    Log.d("test", "should not get here");
+                } else if (menuOptionsTitles[item].equals(getString(R.string.take_picture_option))) {
+                    if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                        ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.CAMERA}, 1);
+                    }
+                    if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
+                        Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                        File myFile = new File(android.os.Environment.getExternalStorageDirectory(), "cameraImage");
+                        cameraIntent.putExtra("filename", Uri.fromFile(myFile));
+                        startActivityForResult(cameraIntent, 1);
+                    } else {
+                        displayWarning(InputErrorType.CMFNoCameraPermission);
+                    }
+                } else if (menuOptionsTitles[item].equals(getString(R.string.use_online_picture_option))) {
+                    Log.d("test", "NOT IMPLEMENTED");
+                }
+            }
+        });
+        AlertDialog myAlert = menuDialogBuilder.show();
+    }
+
+//        reasonImageButton.setOnClickListener(new View.OnClickListener() { @Override
+//            public void onClick(View v) {
+//                // Method inspired by this Stack Overflow post: https://stackoverflow.com/questions/5991319/capture-image-from-camera-and-display-in-activity
+//                AlertDialog.Builder menuDialogBuilder = new AlertDialog.Builder((MainActivity)getContext());
+//                menuDialogBuilder.setTitle("Select Photo");
+//                final String[] menuOptionsTitles = { "Take picture", "Select Existing Picture", "Use Online Picture" };
+//                menuDialogBuilder.setItems(menuDialogBuilder, new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int which) {
+//                        if (menuOptionsTitles[which].equals("Select Photo")) {
+//                            //Photo selection launch inspired by: https://code.tutsplus.com/tutorials/image-upload-to-firebase-in-android-application--cms-29934
+//                            Intent intent = new Intent();
+//                            intent.setType("image/*");
+//                            intent.setAction(Intent.ACTION_PICK);
+//                            startActivityForResult(Intent.createChooser(intent, "Select Photograph for Reason"), SUCCESSFUL_GALLERY_RETURN_CODE);
+//                        }
+//                    });
+//                });
+
+
+
+
+                // Photo selection launch inspired by: https://code.tutsplus.com/tutorials/image-upload-to-firebase-in-android-application--cms-29934
+//                Intent intent = new Intent();
+//                intent.setType("image/*");
+//                intent.setAction(Intent.ACTION_PICK);
+////                intent.setAction(Intent.ACTION_GET_CONTENT);
+//                startActivityForResult(Intent.createChooser(intent, "Select Photograph for Reason"), SUCCESSFUL_GALLERY_RETURN_CODE);
+//            }
+//        });
+
+
     // Data processing of returned image inspired by: https://code.tutsplus.com/tutorials/image-upload-to-firebase-in-android-application--cms-29934
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == SUCCESSFUL_PICTURE_RETURN_CODE && resultCode == -1 && data != null && data.getData() != null ) {
+        if(requestCode == SUCCESSFUL_GALLERY_RETURN_CODE && resultCode == -1 && data != null && data.getData() != null ) {
             uploadLocalImagePath = data.getData().toString();
+            Log.d("TEST", uploadLocalImagePath);
+            this.initialMood.setOnlinePath(null);
+        } else if (requestCode == SUCCESSFUL_CAMERA_RETURN_CODE){
+            uploadLocalImagePath = data.getData().toString();
+            Log.d("TEST", uploadLocalImagePath);
             this.initialMood.setOnlinePath(null);
         } else {
-            displayWarning(InputErrorType.CMFPhotoReturnError);
+//            displayWarning(InputErrorType.CMFPhotoReturnError);
         }
     }
 

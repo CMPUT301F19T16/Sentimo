@@ -12,4 +12,8 @@
     <string name="warning_ImageDisplayError">Error displaying image, please try again.</string>
     <string name="title_activity_display_map">Map</string>
     <string name="no_situation_text">(Optional)</string>
+    <string name="friend_map">Friend Map</string>
+    <string name="my_map">My Map</string>
+    <string name="delete_yes">YES</string>
+    <string name="delete_no">NO</string>
 </resources>

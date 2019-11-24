@@ -35,27 +35,32 @@
             android:textStyle="italic|bold" />
 
         <EditText
-            android:textColor="#fff"
-            android:gravity="left"
             android:id="@+id/Username_LS_editText"
-            android:textColorHint="#fff"
-            android:background="@drawable/logintextstyle"
             android:layout_width="300dp"
             android:layout_height="60dp"
             android:layout_gravity="center"
-            android:hint="UserName" />
-        <EditText
-            android:textColor="#fff"
+            android:background="@drawable/logintextstyle"
+            android:backgroundTint="#819C27B0"
             android:gravity="left"
-            android:id="@+id/Password_LS_editText"
+            android:hint="UserName"
+            android:textColor="#fff"
             android:textColorHint="#fff"
-            android:background="@drawable/logintextstyle"
-            android:layout_marginTop="10dp"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/Password_LS_editText"
             android:layout_width="300dp"
             android:layout_height="60dp"
             android:layout_gravity="center"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/logintextstyle"
+            android:backgroundTint="#859C27B0"
+            android:gravity="left"
             android:hint="Password"
-            android:inputType="textPassword"/>
+            android:inputType="textPassword"
+            android:textColor="#fff"
+            android:textColorHint="#fff"
+            android:textStyle="bold" />
         <Button
             android:background="@drawable/buttonstyleselector"
             android:textColor="#fff"
@@ -84,11 +89,6 @@
             android:text="Sign-Up"
             android:textColor="#fff" />
 
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:text="Skip Login"
-            android:id="@+id/skip_login_button"></Button>
 
 
     </LinearLayout>

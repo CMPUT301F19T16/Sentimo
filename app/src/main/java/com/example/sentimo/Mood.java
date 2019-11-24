@@ -14,7 +14,7 @@ import java.util.Objects;
  * A class to contain information about a mood.
  * TODO: Implement Location and Photo.
  */
-public class Mood implements Serializable, Comparable {
+public class Mood implements Serializable, Comparable{
 
     private TimeFormatter time;
     private Emotion emotion;
@@ -214,4 +214,5 @@ public class Mood implements Serializable, Comparable {
     public int compareTo(Object o) {
         return this.time.getTime().compareTo(((Mood) o).getTime().getTime());
     }
+
 }

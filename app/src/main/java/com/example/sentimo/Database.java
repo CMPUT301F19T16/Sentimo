@@ -21,6 +21,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
@@ -45,6 +46,7 @@ public class Database {
     private ArrayList<Mood> moodHistory;
     private ArrayList<String> userFollowing;
     private FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
+    private ListenerRegistration moodHistoryReg;
 
     Database(String username) {
         this.username = username;
@@ -126,7 +128,7 @@ public class Database {
      */
     public void addMoodListener(final DatabaseListener moodListener) {
         CollectionReference userMoods = this.getUserMoods();
-        userMoods.addSnapshotListener(new EventListener<QuerySnapshot>() {
+        moodHistoryReg = userMoods.addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
                 moodHistory.clear();
@@ -144,6 +146,14 @@ public class Database {
                 }
             }
         });
+    }
+
+    /**
+     * Detach all listeners no longer needed when quit the activity
+     */
+    public void destroyListener() {
+        if (moodHistoryReg != null)
+            moodHistoryReg.remove();
     }
 
     public ArrayList<String> getUserFollowing() {

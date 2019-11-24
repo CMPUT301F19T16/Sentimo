@@ -3,10 +3,11 @@ package com.example.sentimo.Emotions;
 
 import com.example.sentimo.R;
 
+
 /**
  *  This is a class that represents a specific emotion.
  */
-public class Emotion {
+public class Emotion{
     private String colour;
     private String name;
     private int image;

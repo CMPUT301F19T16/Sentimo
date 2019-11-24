@@ -46,7 +46,7 @@ public class MapSelectFragment extends DialogFragment{
         myMapButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                listener.onMapSelected("MY_MAP");
+                listener.onMapSelected(getString(R.string.my_map));
                 MapSelectFragment.this.dismiss();
             }
         });
@@ -54,7 +54,7 @@ public class MapSelectFragment extends DialogFragment{
         friendMapButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                listener.onMapSelected("FRIEND_MAP");
+                listener.onMapSelected(getString(R.string.friend_map));
                 MapSelectFragment.this.dismiss();
             }
         });

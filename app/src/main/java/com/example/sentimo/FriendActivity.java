@@ -2,18 +2,27 @@ package com.example.sentimo;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.sentimo.Fragments.EditMoodFragment;
 import com.example.sentimo.Fragments.FriendSearchFragment;
+import com.google.firebase.firestore.ListenerRegistration;
 
 import java.util.ArrayList;
 
 public class FriendActivity extends AppCompatActivity implements FriendSearchFragment.OnFragmentInteractionListener{
 
+    private ArrayList<Mood> friendMoodDataList;
+    private ArrayAdapter<Mood> friendMoodAdapter;
     private Button backButton;
     private Button searchButton;
     private Button friendRequstButton;
@@ -50,6 +59,28 @@ public class FriendActivity extends AppCompatActivity implements FriendSearchFra
                 new FriendSearchFragment().show(getSupportFragmentManager(), "FRIEND_SEARCH");
             }
         });
+        auth = new Auth(getApplicationContext());
+
+        // require user login
+        if (!auth.isLogin()) {
+            Intent intent = new Intent(this, LoginActivity.class);
+            startActivity(intent);
+        }
+
+        friendMoodDataList = database.getSharedMood();
+        friendMoodAdapter = new CustomFriendMoodList(this, friendMoodDataList);
+        friendListView.setAdapter(friendMoodAdapter);
+
+        fetchAllMoodsForFriends();
+
+        friendListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                Mood mood = friendMoodDataList.get(position);
+//                new EditMoodFragment(mood, position).show(getSupportFragmentManager(), "EDIT_MOOD");
+                // Implement display only edit mood type fragment so can see full details
+            }
+        });
     }
 
     /**
@@ -62,7 +93,7 @@ public class FriendActivity extends AppCompatActivity implements FriendSearchFra
     public void onSearchPressed(final String username){
         // Should check if user exists in the Sentimo database.
         // If not, displays a fragment telling the user that it doesn't exist.
-        database.getFollowList(new DatabaseListener() {
+        database.fetchFollowList(new DatabaseListener() {
             @Override
             public void onSuccess() {
                 database.isUserExist(new DatabaseListener() {
@@ -98,6 +129,46 @@ public class FriendActivity extends AppCompatActivity implements FriendSearchFra
             @Override
             public void onFailure() {
                 Toast.makeText(FriendActivity.this, "Failed to connect to cloud", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void fetchAllMoodsForFriends() {
+        database.fetchFollowList(new DatabaseListener() {
+            @Override
+            public void onSuccess() {
+                userFollowing = database.getUserFollowing();
+                for (int i = 0; i < userFollowing.size(); i++) {
+                    Log.d("USER TO GET MOOD FOR", userFollowing.get(i));
+                    Log.d("I IS", Integer.toString(i));
+                    recursiveFetchAllSharedMoods(i);
+                }
+            }
+
+            @Override
+            public void onFailure() {
+//                Toast.makeText(MainActivity.this, "fail to get moods", Toast.LENGTH_SHORT).show();
+                Log.d("FAILURE","Failed to get friend list");
+            }
+        });
+    }
+
+    private void recursiveFetchAllSharedMoods(final int indexOfUsername) {
+        String username = userFollowing.get(indexOfUsername);
+        database.fetchSharedMoodList(username, new DatabaseListener() {
+            @Override
+            public void onSuccess() {
+                friendMoodAdapter.notifyDataSetChanged();
+                Log.d("TEST", "SHARED MOOD LISTENER GOT HERE");
+                int incrementedIndex = indexOfUsername + 1;
+                if (incrementedIndex < userFollowing.size()) {
+                    recursiveFetchAllSharedMoods(incrementedIndex);
+                }
+            }
+
+            @Override
+            public void onFailure() {
+                Log.d("FAILURE","Failed to get Shared Mood");
             }
         });
     }

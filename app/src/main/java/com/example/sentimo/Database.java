@@ -22,6 +22,7 @@ import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.ListenerRegistration;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
@@ -47,11 +48,15 @@ public class Database {
     private ArrayList<String> userFollowing;
     private FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
     private ListenerRegistration moodHistoryReg;
+    private ArrayList<Mood> sharedMoodHistory;
+    private ListenerRegistration sharedMoodListenerReg;
 
     Database(String username) {
         this.username = username;
         this.moodHistory = new ArrayList<>();
         this.userFollowing = new ArrayList<>();
+        this.sharedMoodHistory = new ArrayList<>();
+        this.sharedMoodListenerReg = null;
     }
 
     /**
@@ -160,6 +165,10 @@ public class Database {
         return userFollowing;
     }
 
+    public ArrayList<Mood> getSharedMood() {
+        return sharedMoodHistory;
+    }
+
     /**
      * check if user exist
      * @param listener
@@ -185,7 +194,7 @@ public class Database {
     /**
      * get the follow list from cloud
      */
-    public void getFollowList(final DatabaseListener listener) {
+    public void fetchFollowList(final DatabaseListener listener) {
         users.document(this.username).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
@@ -293,5 +302,31 @@ public class Database {
                 Log.d("FAILURE","FAILURE");
             }
         });
+    }
+
+
+    public void fetchSharedMoodList(String username, final DatabaseListener listener) {
+        CollectionReference sharedMoods = users.document(username).collection("SharedMood");
+        ListenerRegistration reg = sharedMoods.addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
+                sharedMoodListenerReg.remove();
+                sharedMoodHistory.clear();
+                List<DocumentSnapshot> data;
+                if (queryDocumentSnapshots != null) {
+                    data = queryDocumentSnapshots.getDocuments();
+
+                    for (DocumentSnapshot d : data) {
+                        Mood mood = d.toObject(Mood.class);
+                        sharedMoodHistory.add(mood);
+                    }
+                    Log.d("SHARED MOOD SIZE", Integer.toString(sharedMoodHistory.size()));
+//                    Collections.sort(moodHistory, Collections.<Mood>reverseOrder());
+                    if (listener != null)
+                        listener.onSuccess();
+                }
+            }
+        });
+        this.sharedMoodListenerReg = reg;
     }
 }

@@ -310,7 +310,7 @@ public class Database {
         ListenerRegistration reg = sharedMoods.addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
-                sharedMoodListenerReg.remove();
+//                sharedMoodListenerReg.remove();
                 sharedMoodHistory.clear();
                 List<DocumentSnapshot> data;
                 if (queryDocumentSnapshots != null) {
@@ -319,6 +319,7 @@ public class Database {
                     for (DocumentSnapshot d : data) {
                         Mood mood = d.toObject(Mood.class);
                         sharedMoodHistory.add(mood);
+                        Log.d("","MADE MOOD");
                     }
                     Log.d("SHARED MOOD SIZE", Integer.toString(sharedMoodHistory.size()));
 //                    Collections.sort(moodHistory, Collections.<Mood>reverseOrder());

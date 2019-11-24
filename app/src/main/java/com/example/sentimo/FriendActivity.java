@@ -30,6 +30,7 @@ public class FriendActivity extends AppCompatActivity implements FriendSearchFra
     private Database database;
     private Auth auth;
     private ArrayList<String> userFollowing;
+    private ArrayList<Mood> tempMood;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,7 +68,7 @@ public class FriendActivity extends AppCompatActivity implements FriendSearchFra
             startActivity(intent);
         }
 
-        friendMoodDataList = database.getSharedMood();
+        friendMoodDataList = new ArrayList<>();
         friendMoodAdapter = new CustomFriendMoodList(this, friendMoodDataList);
         friendListView.setAdapter(friendMoodAdapter);
 
@@ -138,11 +139,9 @@ public class FriendActivity extends AppCompatActivity implements FriendSearchFra
             @Override
             public void onSuccess() {
                 userFollowing = database.getUserFollowing();
-                for (int i = 0; i < userFollowing.size(); i++) {
-                    Log.d("USER TO GET MOOD FOR", userFollowing.get(i));
-                    Log.d("I IS", Integer.toString(i));
-                    recursiveFetchAllSharedMoods(i);
-                }
+                Log.d("USER TO GET MOOD FOR", userFollowing.get(0));
+                Log.d("I IS", Integer.toString(0));
+                recursiveFetchAllSharedMoods(0);
             }
 
             @Override
@@ -158,17 +157,21 @@ public class FriendActivity extends AppCompatActivity implements FriendSearchFra
         database.fetchSharedMoodList(username, new DatabaseListener() {
             @Override
             public void onSuccess() {
-                friendMoodAdapter.notifyDataSetChanged();
-                Log.d("TEST", "SHARED MOOD LISTENER GOT HERE");
-                int incrementedIndex = indexOfUsername + 1;
-                if (incrementedIndex < userFollowing.size()) {
-                    recursiveFetchAllSharedMoods(incrementedIndex);
+                tempMood = database.getSharedMood();
+                if (tempMood.size() > 0) {
+                    friendMoodDataList.add(tempMood.get(0));
+                    friendMoodAdapter.notifyDataSetChanged();
+                    Log.d("TEST", "SHARED MOOD LISTENER GOT HERE");
+                    int incrementedIndex = indexOfUsername + 1;
+                    if (incrementedIndex < userFollowing.size()) {
+                        recursiveFetchAllSharedMoods(incrementedIndex);
+                    }
                 }
             }
 
             @Override
             public void onFailure() {
-                Log.d("FAILURE","Failed to get Shared Mood");
+                Toast.makeText(FriendActivity.this, "Failure fetching friend moods.", Toast.LENGTH_SHORT).show();
             }
         });
     }

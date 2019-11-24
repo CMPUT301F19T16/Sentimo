@@ -50,6 +50,7 @@ public class Database {
     private ListenerRegistration moodHistoryReg;
     private ArrayList<Mood> sharedMoodHistory;
     private ListenerRegistration sharedMoodListenerReg;
+    private ArrayList<String> pendingRequestsList;
 
     Database(String username) {
         this.username = username;
@@ -57,6 +58,7 @@ public class Database {
         this.userFollowing = new ArrayList<>();
         this.sharedMoodHistory = new ArrayList<>();
         this.sharedMoodListenerReg = null;
+        this.pendingRequestsList = new ArrayList<>();
     }
 
     /**
@@ -329,5 +331,33 @@ public class Database {
             }
         });
         this.sharedMoodListenerReg = reg;
+    }
+
+    public void fetchPendingRequests(final DatabaseListener listener) {
+        users.document(this.username).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                pendingRequestsList.clear();
+                pendingRequestsList.addAll((ArrayList<String>) documentSnapshot.get("pendingRequests"));
+            }
+        }).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                listener.onSuccess();
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                listener.onFailure();
+            }
+        });
+    }
+
+    public ArrayList<String> getPendingRequests() {
+        return this.pendingRequestsList;
+    }
+
+    public void confirmFollowRequest(String username, DatabaseListener listener) {
+        //TODO: IMPLEMENT
     }
 }

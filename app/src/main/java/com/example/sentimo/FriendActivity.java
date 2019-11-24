@@ -82,6 +82,14 @@ public class FriendActivity extends AppCompatActivity implements FriendSearchFra
                 // Implement display only edit mood type fragment so can see full details
             }
         });
+
+        friendRequstButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(FriendActivity.this, FriendRequestActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
     /**
@@ -135,6 +143,7 @@ public class FriendActivity extends AppCompatActivity implements FriendSearchFra
     }
 
     private void fetchAllMoodsForFriends() {
+        friendMoodDataList.clear();
         database.fetchFollowList(new DatabaseListener() {
             @Override
             public void onSuccess() {

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/login_screen"
@@ -44,8 +44,7 @@
             android:gravity="left"
             android:hint="UserName"
             android:textColor="#fff"
-            android:textColorHint="#fff"
-            android:textStyle="bold" />
+            android:textColorHint="#fff" />
 
         <EditText
             android:id="@+id/Password_LS_editText"
@@ -91,5 +90,5 @@
 
 
     </LinearLayout>
-</ScrollView>
+</LinearLayout>
 

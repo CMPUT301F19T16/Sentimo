@@ -132,6 +132,7 @@ public class MainActivity extends AppCompatActivity implements AddMoodFragment.A
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, FriendActivity.class);
+//                intent.putExtra("username", database.getUsername());
                 startActivity(intent);
             }
         });

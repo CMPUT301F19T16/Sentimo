@@ -67,12 +67,17 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
 
     final int SUCCESSFUL_GALLERY_RETURN_CODE = 71;
     final int SUCCESSFUL_CAMERA_RETURN_CODE = 1;
+    final int GALLERY_REQUEST_CODE = 2;
+    final int CAMERA_REQUEST_CODE = 3;
+    final int EXTERNAL_STORAGE_REQUEST_CODE = 4;
     String filePathToUse = null;
 
 
     protected View.OnClickListener emotionClick;
     protected View.OnClickListener situationClick;
     protected View view;
+
+    private String lastRequestedPermission = null;
 
 
     /**
@@ -112,6 +117,12 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
         dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (localImagePath != null) {
+                    if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                        requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, EXTERNAL_STORAGE_REQUEST_CODE);
+                        return;
+                    }
+                }
                 String date = dateTextView.getText().toString();
                 String time = timeTextView.getText().toString();
                 InputErrorType errorCode = isDataValid();
@@ -228,35 +239,40 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
         });
     }
 
+    /**
+     * Method for displaying menu to choose method of image selection
+     */
     private void selectImage() {
         // Method inspired by this Stack Overflow post: https://stackoverflow.com/questions/5991319/capture-image-from-camera-and-display-in-activity
         AlertDialog.Builder menuDialogBuilder = new AlertDialog.Builder((MainActivity)getContext());
         menuDialogBuilder.setTitle("Select Photo");
-        final String[] menuOptionsTitles = new String[]{ getString(R.string.take_picture_option), getString(R.string.select_picture_gallery_option), getString(R.string.use_online_picture_option) };
-//        if (initialMood.getOnlinePath() != null) { menuOptionsTitles.add(getString(R.string.use_online_picture_option)); }
-
+        ArrayList<String> tempMenuOptions = new ArrayList<>();
+        tempMenuOptions.add(getString(R.string.take_picture_option));
+        tempMenuOptions.add(getString(R.string.select_picture_gallery_option));
+        if (initialMood.getOnlinePath() != null) { tempMenuOptions.add(getString(R.string.use_online_picture_option)); }
+        final String[] menuOptionsTitles = tempMenuOptions.toArray(new String[tempMenuOptions.size()]);
+        if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, EXTERNAL_STORAGE_REQUEST_CODE);
+            return;
+        }
         menuDialogBuilder.setItems(menuOptionsTitles, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int item) {
                 if (menuOptionsTitles[item].equals(getString(R.string.select_picture_gallery_option))) {
                     //Photo selection launch inspired by: https://code.tutsplus.com/tutorials/image-upload-to-firebase-in-android-application--cms-29934
-                    Intent intent = new Intent();
-                    intent.setType("image/*");
-                    intent.setAction(Intent.ACTION_PICK);
-                    startActivityForResult(Intent.createChooser(intent, "Select Photograph for Reason"), SUCCESSFUL_GALLERY_RETURN_CODE);
+                    if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                        requestPermissions(new String[]{Manifest.permission.CAMERA}, GALLERY_REQUEST_CODE);
+                        return;
+                    }
+                    launchGalleryIntent();
 //                    Log.d("test", "should not get here");
                 } else if (menuOptionsTitles[item].equals(getString(R.string.take_picture_option))) {
                     if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-                        ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.CAMERA}, 1);
+                        requestPermissions(new String[]{Manifest.permission.CAMERA}, CAMERA_REQUEST_CODE);
+                        return;
                     }
                     if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
-                        File photoFile = createImageFile();
-                        if (photoFile != null) {
-                            Uri photoToUri = FileProvider.getUriForFile(getContext(), "com.example.sentimo.fileprovider", photoFile);
-                            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                            intent.putExtra(MediaStore.EXTRA_OUTPUT, photoToUri);
-                            startActivityForResult(intent, 1);
-                        }
+                        launchCameraIntent();
                     } else {
                         displayWarning(InputErrorType.CMFNoCameraPermission);
                     }
@@ -268,10 +284,44 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
                 }
             }
         });
-        AlertDialog myAlert = menuDialogBuilder.show();
+        menuDialogBuilder.show();
     }
 
-    //Method taken from Google documentation found here: https://developer.android.com/training/camera/photobasics
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+//        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        Log.d("TEST", "GOT HERE 1");
+        if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            if (requestCode == CAMERA_REQUEST_CODE) {
+                Log.d("TEST", "GOT HERE CAMERA");
+                launchCameraIntent();
+            } else if (requestCode == GALLERY_REQUEST_CODE) {
+                Log.d("TEST", "GOT HERE GALLERY");
+                launchGalleryIntent();
+            } else if (requestCode == EXTERNAL_STORAGE_REQUEST_CODE) {
+                selectImage();
+            }
+        }
+    }
+
+    private void launchGalleryIntent() {
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_PICK);
+        startActivityForResult(Intent.createChooser(intent, "Select Photograph for Reason"), SUCCESSFUL_GALLERY_RETURN_CODE);
+    }
+
+    private void launchCameraIntent() {
+        File photoFile = createImageFile();
+        if (photoFile != null) {
+            Uri photoToUri = FileProvider.getUriForFile(getContext(), "com.example.sentimo.fileprovider", photoFile);
+            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            intent.putExtra(MediaStore.EXTRA_OUTPUT, photoToUri);
+            startActivityForResult(intent, 1);
+        }
+    }
+
+        //Method taken from Google documentation found here: https://developer.android.com/training/camera/photobasics
     private File createImageFile() {
         // Create an image file name
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
@@ -371,8 +421,7 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
             displayLocalImage(localImagePath);
         } else if (initialMood.getOnlinePath() != null) {
             // Start progress bar with timeout
-            MainActivity act = (MainActivity)getContext();
-            act.database.downloadPhoto(initialMood.getOnlinePath(), this, new DatabaseListener() {
+            downloadAndSetPath(new DatabaseListener() {
                 @Override
                 public void onSuccess() {
                     displayLocalImage(downloadedImagePath);
@@ -387,23 +436,30 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
         }
     }
 
-    public void downloadAndSetThumbnail() {
+    public void downloadAndSetPath(DatabaseListener listener) {
+        // Path set in Database class download method before calling onSuccess listener
         if (downloadedImagePath != null) {
-            setThumbnail(downloadedImagePath);
+            Log.d("TEST", "OLD DOWNLOAD FILE USED");
+            listener.onSuccess();
         } else {
+            Log.d("TEST", "NEW DOWNLOAD");
             MainActivity act = (MainActivity) getContext();
-            act.database.downloadPhoto(initialMood.getOnlinePath(), this, new DatabaseListener() {
-                @Override
-                public void onSuccess() {
-                    setThumbnail(downloadedImagePath);
-                }
-
-                @Override
-                public void onFailure() {
-
-                }
-            });
+            act.database.downloadPhoto(initialMood.getOnlinePath(), this, listener);
         }
+    }
+
+    public void downloadAndSetThumbnail() {
+        downloadAndSetPath(new DatabaseListener() {
+            @Override
+            public void onSuccess() {
+                setThumbnail(downloadedImagePath);
+            }
+
+            @Override
+            public void onFailure() {
+
+            }
+        });
     }
 
     public void setDownloadedImagePath(String filepath) {

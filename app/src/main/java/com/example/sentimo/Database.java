@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Environment;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -220,8 +221,9 @@ public class Database {
      * @return
      */
     // Upload method uses information from Google's Firebase storage upload example: https://firebase.google.com/docs/storage/android/upload-files
-    public Uri addPhotoAndMood(final Mood incompleteMood, String stringPath) {
+    public Uri addPhotoAndMood(final Mood incompleteMood, final String stringPath) {
 //        Uri localPath = Uri.parse(stringPath);
+
         Uri localPath = Uri.fromFile(new File(stringPath));
         final StorageReference reference = firebaseStorage.getReference();
         final StorageReference storageLocation = reference.child("images/" + incompleteMood.hashCode());
@@ -245,7 +247,7 @@ public class Database {
                     addMood(completeMood);
                 }
                 else {
-                    throw new RuntimeException("MUST DEAL WITH ERROR CASES");
+                    Log.e("Photo upload error", stringPath);
                 }
             }
         });

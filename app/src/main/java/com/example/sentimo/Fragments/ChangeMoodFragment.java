@@ -10,6 +10,7 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
@@ -21,6 +22,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.ImageView;
 
@@ -58,7 +60,7 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
     protected ImageView reasonImageView;
     protected Button situationButton;
     protected CheckBox locationCheckBox;
-    protected Button displayPhotoButton;
+//    protected ImageButton displayPhotoButton;
 
     protected Mood initialMood;
     protected String localImagePath;
@@ -209,7 +211,7 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
         emojiImageView = view.findViewById(R.id.emotion_image);
         emojiImageButton = view.findViewById(R.id.emotion_button);
         reasonEditText = view.findViewById(R.id.reason_editText);
-        reasonImageButton = view.findViewById(R.id.reason_image_button);
+//        reasonImageButton = view.findViewById(R.id.reason_image_button);
         reasonImageView = view.findViewById(R.id.reason_image);
         situationButton = view.findViewById(R.id.situation_button);
         locationCheckBox = view.findViewById(R.id.location_checkbox);
@@ -230,8 +232,8 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
                 selectImage();
             }
         });
-        displayPhotoButton = view.findViewById(R.id.displayPhoto);
-        displayPhotoButton.setOnClickListener(new View.OnClickListener() {
+//        displayPhotoButton = view.findViewById(R.id.displayPhoto);
+        reasonImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 displayPhotoForMood();
@@ -438,6 +440,7 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
 
     public void downloadAndSetPath(DatabaseListener listener) {
         // Path set in Database class download method before calling onSuccess listener
+        // Only downloads if local copy not already present
         if (downloadedImagePath != null) {
             Log.d("TEST", "OLD DOWNLOAD FILE USED");
             listener.onSuccess();
@@ -468,7 +471,10 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
 
     public void setThumbnail(String localPath) {
         Bitmap myBitmap = BitmapFactory.decodeFile(localPath);
+        BitmapDrawable bitmapDrawable = new BitmapDrawable(getResources(), myBitmap);
+//        reasonImageButton.setBackground(bitmapDrawable);
         reasonImageView.setImageBitmap(myBitmap);
+        reasonImageView.setBackgroundColor(getResources().getColor(android.R.color.transparent));
     }
 
     public void displayLocalImage(String localPath) {

@@ -30,8 +30,6 @@ public class FriendMoodDisplayFragment extends ChangeMoodFragment{
         situationButton.setEnabled(false);
         reasonImageButton.setOnClickListener(null);
         reasonImageButton.setEnabled(false);
-        displayPhotoButton.setOnClickListener(null);
-        displayPhotoButton.setEnabled(false);
         reasonEditText.setEnabled(false);
 
 

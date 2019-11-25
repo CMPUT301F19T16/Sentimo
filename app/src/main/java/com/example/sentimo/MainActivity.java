@@ -3,12 +3,25 @@ package com.example.sentimo;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.*;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.DialogFragment;
+
 import com.example.sentimo.Emotions.Emotion;
 import com.example.sentimo.Fragments.AddMoodFragment;
+import com.example.sentimo.Fragments.ChangeMoodFragment;
 import com.example.sentimo.Fragments.EditMoodFragment;
 import com.example.sentimo.Fragments.FilterFragment;
 import com.example.sentimo.Fragments.MapSelectFragment;
@@ -120,7 +133,6 @@ public class MainActivity extends AppCompatActivity implements AddMoodFragment.A
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, FriendActivity.class);
-//                intent.putExtra("username", database.getUsername());
                 startActivity(intent);
             }
         });
@@ -317,4 +329,16 @@ public class MainActivity extends AppCompatActivity implements AddMoodFragment.A
         });
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        ChangeMoodFragment dialogFragment = (ChangeMoodFragment) (getSupportFragmentManager().findFragmentById(R.id.add_mood_fragment));
+        if (requestCode == 1) {
+            String localImagePath = data.getData().toString();
+            Log.d("TEST", localImagePath);
+//            dialogFragment.setLocalImagePath(localImagePath);
+        } else if (requestCode == 71) {
+            Log.d("REE", "GALLERY HANDLED BY MAIN");
+        }
+    }
 }

@@ -33,22 +33,23 @@ public class DisplayActivity extends AppCompatActivity {
 
         Intent intent  = getIntent();
         String imageFileName = intent.getStringExtra("localPath");
-        String type = intent.getStringExtra("type");
-        Log.d("TEST", type);
+//        String type = intent.getStringExtra("type");
+//        Log.d("TEST", type);
 
         Bitmap myBitmap = null;
-        if (type.equals("local")) {
-            Uri myUri = Uri.parse(imageFileName);
-            try {
-                myBitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), myUri);
-            } catch (IOException e) {
-                new InvalidDataWarningFragment(InputErrorType.ImageDisplayError).show(getSupportFragmentManager(), null);
-            }
-        } else if (type.equals("download")) {
-            myBitmap = BitmapFactory.decodeFile(imageFileName);
-        } else {
-            throw new RuntimeException("Display type not dealt with");
-        }
+        myBitmap = BitmapFactory.decodeFile(imageFileName);
+//        if (type.equals("local")) {
+//            Uri myUri = Uri.parse(imageFileName);
+//            try {
+//                myBitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), myUri);
+//            } catch (IOException e) {
+//                new InvalidDataWarningFragment(InputErrorType.ImageDisplayError).show(getSupportFragmentManager(), null);
+//            }
+//        } else if (type.equals("download")) {
+//            myBitmap = BitmapFactory.decodeFile(imageFileName);
+//        } else {
+//            throw new RuntimeException("Display type not dealt with");
+//        }
 
         imageView = findViewById(R.id.photo_image_view);
         imageView.setImageBitmap(myBitmap);

@@ -16,37 +16,64 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
 
+/**
+ * A class that handles user authentication
+ */
+
 public class Auth {
     private Context context;
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
     private FirebaseUser user;
 
+    /**
+     * Create a new Auth object
+     *
+     * @param context the application context, which will be used for redirecting into main activity
+     */
     public Auth(Context context) {
         this.context = context;
         user = mAuth.getCurrentUser();
     }
 
-    private void reloadUser() {
+    /**
+     * Displays the main activity when the current user is valid
+     */
+    public void reloadUser() {
         Intent intent = new Intent(context, MainActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
     }
 
+    /**
+     * Check if a user has login
+     *
+     * @return the current user is valid
+     */
     public Boolean isLogin() {
         return user != null;
     }
 
+    /**
+     * Get the username of the active user
+     *
+     * @return username of the active user if a user has logged in, otherwise null
+     */
     public String getActiveUsername() {
 
-        if (user != null)
+        if (isLogin())
             return user.getDisplayName();
 
         else
             return null;
     }
 
-
+    /**
+     * Create a user using the given combination
+     *
+     * @param logininfo username and password of the new user
+     * @param email     email of the new user
+     */
     public void createUser(final LoginInfo logininfo, final String email) {
         db.collection("users").document(logininfo.getUsername()).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
@@ -71,16 +98,16 @@ public class Auth {
                                             .setDisplayName(logininfo.getUsername())
                                             .build();
 
-                                    user.updateProfile(profileUpdates)
-                                            .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                @Override
-                                                public void onComplete(@NonNull Task<Void> task) {
-                                                    if (task.isSuccessful()) {
-                                                        reloadUser();
+                                    if (user != null)
+                                        user.updateProfile(profileUpdates)
+                                                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                    @Override
+                                                    public void onComplete(@NonNull Task<Void> task) {
+                                                        if (task.isSuccessful()) {
+                                                            reloadUser();
+                                                        }
                                                     }
-                                                }
-                                            });
-
+                                                });
                                 } else {
                                     Toast.makeText(context, "Registration failed. Email may be registered.",
                                             Toast.LENGTH_SHORT).show();
@@ -92,6 +119,11 @@ public class Auth {
 
     }
 
+    /**
+     * Logs in with given username and password if valid
+     *
+     * @param loginInfo username and password of a user
+     */
     public void loginUser(final LoginInfo loginInfo) {
         db.collection("users").document(loginInfo.getUsername()).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
@@ -121,6 +153,9 @@ public class Auth {
 
     }
 
+    /**
+     * Sign out the current user
+     */
     public void logoutUser() {
         mAuth.signOut();
     }

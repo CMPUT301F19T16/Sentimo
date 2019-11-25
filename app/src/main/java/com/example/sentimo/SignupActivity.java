@@ -44,10 +44,20 @@ public class SignupActivity extends AppCompatActivity {
     }
 
     /**
-     * Return LoginInfo with field values for username and password if they are valid inputs
-     * Else, return null
-     *
-     * @return LoginInfo with the username and password field values, or null if invalid
+     * Reloads into MainActivity the current user is valid
+     */
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (auth.isLogin()) {
+            auth.reloadUser();
+            finish();
+        }
+    }
+
+    /**
+     * Create new account with given email, username and password and log in if successful,
+     * otherwise displays a warning.
      */
     private void returnSignupInfo() {
         String username = usernameEditText.getText().toString();
@@ -60,8 +70,10 @@ public class SignupActivity extends AppCompatActivity {
         }
         // TODO: Validate email
         auth.createUser(new LoginInfo(username, password), email);
-//        return new LoginInfo(username, password);
-        // display main activity
+        if (auth.isLogin()) {
+            auth.reloadUser();
+            finish();
+        }
     }
 
     /**

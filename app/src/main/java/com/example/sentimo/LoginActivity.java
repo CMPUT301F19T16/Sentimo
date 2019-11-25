@@ -9,14 +9,16 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import com.example.sentimo.Fragments.InvalidDataWarningFragment;
 
-// Class for displaying the login page and taking username and password
-// and sending it to the Firebase database for authentication
+/**
+ * Class for displaying the login page and taking username and password
+ * and sending it to the Firebase database for authentication
+ */
+
 public class LoginActivity extends AppCompatActivity {
     private EditText usernameEditText;
     private EditText passwordEditText;
     private Button loginSubmitButton;
     private Button signupButton;
-    private Button skipButton;
     private Auth auth;
 
     /**
@@ -30,22 +32,17 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.login_screen);
         auth = new Auth(getApplicationContext());
 
-        if (auth.isLogin())
-            skipLogin();
-
         usernameEditText = findViewById(R.id.Username_LS_editText);
         passwordEditText = findViewById(R.id.Password_LS_editText);
         loginSubmitButton = findViewById(R.id.button_login);
         signupButton = findViewById(R.id.button_sign_upLoginScreen);
-        skipButton = findViewById(R.id.skip_login_button);
 
         loginSubmitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                returnLoginInfo();
+                login();
             }
         });
-
         signupButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -53,23 +50,25 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-        skipButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                skipLogin();
-            }
-        });
-
-
     }
 
     /**
-     * Returns a LoginInfo object with the EditText field values for username and password
-     * if the provided data is valid, otherwise return null
-     *
-     * @return LoginInfo indicating the provided username and password field values, or null if data invalid
+     * Reloads into MainActivity the current user is valid
      */
-    public void returnLoginInfo() {
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (auth.isLogin()) {
+            auth.reloadUser();
+            finish();
+        }
+    }
+
+    /**
+     * Validates entered username and password and login if a valid username and password combination is provided,
+     * otherwise displays a warning.
+     */
+    public void login() {
         String username = usernameEditText.getText().toString();
         String password = passwordEditText.getText().toString();
         InputErrorType warningType = LoginInfo.validUserNamePassword(username, password);
@@ -91,10 +90,6 @@ public class LoginActivity extends AppCompatActivity {
         new InvalidDataWarningFragment(warningCode).show(getSupportFragmentManager(), null);
     }
 
-    private void skipLogin() {
-        Intent intent = new Intent(this, MainActivity.class);
-        startActivity(intent);
-    }
 
     /**
      * Launches the signup page for new users to input a username and password for a new account

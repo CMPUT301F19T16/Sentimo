@@ -38,37 +38,45 @@
             android:textStyle="italic|bold" />
 
         <EditText
-            android:textColor="#fff"
-            android:gravity="left"
             android:id="@+id/Email_SP_editText"
-            android:textColorHint="#fff"
-            android:background="@drawable/logintextstyle"
             android:layout_width="300dp"
             android:layout_height="60dp"
             android:layout_gravity="center"
-            android:hint="Email" />
-        <EditText
-            android:textColor="#fff"
+            android:background="@drawable/logintextstyle"
+            android:backgroundTint="#6D9C27B0"
             android:gravity="left"
+            android:hint="Email"
+            android:textColor="#fff"
+            android:textColorHint="#fff"
+            android:textStyle="bold" />
+
+        <EditText
             android:id="@+id/Username_SP_editText"
-            android:textColorHint="#fff"
-            android:background="@drawable/logintextstyle"
             android:layout_width="300dp"
             android:layout_height="60dp"
             android:layout_gravity="center"
-            android:hint="UserName" />
-        <EditText
-            android:textColor="#fff"
+            android:background="@drawable/logintextstyle"
+            android:backgroundTint="#799C27B0"
             android:gravity="left"
-            android:id="@+id/Password_SP_editText"
+            android:hint="UserName"
+            android:textColor="#fff"
             android:textColorHint="#fff"
-            android:background="@drawable/logintextstyle"
-            android:layout_marginTop="10dp"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/Password_SP_editText"
             android:layout_width="300dp"
             android:layout_height="60dp"
             android:layout_gravity="center"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/logintextstyle"
+            android:backgroundTint="#809C27B0"
+            android:gravity="left"
             android:hint="Password"
-            android:inputType="textPassword"/>
+            android:inputType="textPassword"
+            android:textColor="#fff"
+            android:textColorHint="#fff"
+            android:textStyle="bold" />
         <Button
             android:background="@drawable/buttonstyleselector"
             android:textColor="#fff"

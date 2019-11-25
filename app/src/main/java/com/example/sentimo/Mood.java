@@ -14,7 +14,7 @@ import java.util.Objects;
  * A class to contain information about a mood.
  * TODO: Implement Location and Photo.
  */
-public class Mood implements Serializable, Comparable {
+public class Mood implements Serializable, Comparable{
 
     private TimeFormatter time;
     private Emotion emotion;
@@ -23,6 +23,7 @@ public class Mood implements Serializable, Comparable {
     private Double longitude;
     private Double latitude;
     private String onlinePath;
+    private String username;
 
     /**
      * Constructor for a null Mood object
@@ -191,6 +192,14 @@ public class Mood implements Serializable, Comparable {
                 && Objects.equals(latitude, mood.latitude) && Objects.equals(onlinePath, mood.getOnlinePath());
     }
 
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
     @Override
     public int hashCode() {
         int hash = 7;
@@ -214,4 +223,5 @@ public class Mood implements Serializable, Comparable {
     public int compareTo(Object o) {
         return this.time.getTime().compareTo(((Mood) o).getTime().getTime());
     }
+
 }

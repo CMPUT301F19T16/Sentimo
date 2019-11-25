@@ -235,11 +235,11 @@
         android:layout_gravity="center">
 
         <TextView
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:gravity="bottom|center_horizontal|top"
             android:text="View All:"
-            android:gravity="center_horizontal">
-        </TextView>
+            android:textStyle="bold"></TextView>
 
         <Button
             android:id="@+id/filter_all_button"

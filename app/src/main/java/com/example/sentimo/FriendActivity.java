@@ -15,6 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.sentimo.Fragments.EditMoodFragment;
+import com.example.sentimo.Fragments.FriendMoodDisplayFragment;
 import com.example.sentimo.Fragments.FriendSearchFragment;
 import com.google.firebase.firestore.ListenerRegistration;
 
@@ -78,7 +79,8 @@ public class FriendActivity extends AppCompatActivity implements FriendSearchFra
         friendListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                Mood mood = friendMoodDataList.get(position);
+                Mood mood = friendMoodDataList.get(position);
+                new FriendMoodDisplayFragment(mood).show(getSupportFragmentManager(), "FRIEND_MOOD");
 //                new EditMoodFragment(mood, position).show(getSupportFragmentManager(), "EDIT_MOOD");
                 // Implement display only edit mood type fragment so can see full details
             }

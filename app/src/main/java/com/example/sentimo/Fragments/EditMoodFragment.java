@@ -91,7 +91,7 @@ public class EditMoodFragment extends ChangeMoodFragment {
      */
     @Override
     public void callListener(Mood mood) {
-        listener.onConfirmEditPressed(mood, position, uploadLocalImagePath);
+        listener.onConfirmEditPressed(mood, position, localImagePath);
     }
 
     /**

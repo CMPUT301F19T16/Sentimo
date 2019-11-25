@@ -6,6 +6,7 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -23,6 +24,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.ImageView;
 
+import com.example.sentimo.DatabaseListener;
 import com.example.sentimo.DisplayActivity;
 import com.example.sentimo.Emotions.Emotion;
 import com.example.sentimo.InputErrorType;
@@ -59,8 +61,8 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
     protected Button displayPhotoButton;
 
     protected Mood initialMood;
-    protected String uploadLocalImagePath;
-    protected String displayOnlyLocalImagePath;
+    protected String localImagePath;
+    protected String downloadedImagePath;
 
 
     final int SUCCESSFUL_GALLERY_RETURN_CODE = 71;
@@ -101,11 +103,6 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
         subclassInitialization();
 
         TextView testTextView = view.findViewById(R.id.emotion_textview);
-//        if (initialMood.getOnlinePath() != null) {
-//            testTextView.setText(initialMood.getOnlinePath());
-//        } else {
-//            testTextView.setText("!ONLINE");
-//        }
 
         AlertDialog.Builder builder = returnBuilder();
         AlertDialog dialog = builder.create();
@@ -186,8 +183,7 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
      *Separate non-constructor function required to allow hookup of UI before initialization
      */
     private void sharedInitialization() {
-        uploadLocalImagePath = null;
-        displayOnlyLocalImagePath = null;
+        localImagePath = null;
 
         if (ChangeMoodFragment.this instanceof AddMoodFragment) {
             view = LayoutInflater.from(getActivity()).inflate(R.layout.add_mood_fragment, null);
@@ -207,6 +203,9 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
         situationButton = view.findViewById(R.id.situation_button);
         locationCheckBox = view.findViewById(R.id.location_checkbox);
 
+        if (initialMood.getOnlinePath() != null) {
+            downloadAndSetThumbnail();
+        }
 
         emojiImageButton.setOnClickListener(emotionClick);
         emojiImageView.setOnClickListener(emotionClick);
@@ -258,30 +257,14 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
                             intent.putExtra(MediaStore.EXTRA_OUTPUT, photoToUri);
                             startActivityForResult(intent, 1);
                         }
-//                        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-//                        if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
-//                            startActivityForResult(takePictureIntent, 1);
-//                        }
-
-//                        File myFile = createImageFile();
-//                        if (filePathToUse != null) {
-//                            Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-//                            Uri imageUri = Uri.fromFile(myFile);
-//                            cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
-//                            startActivityForResult(cameraIntent, 1);
-//                        }
-//                        Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-////                        String filePath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/tempCameraPicture.jpg";
-//                        String filePath = getActivity().getContentResolver().openInputStream()
-//                        File myFile = new File(filePath);
-//                        Uri imageUri = Uri.fromFile(myFile);
-//                        cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
-//                        startActivityForResult(cameraIntent, 1);
                     } else {
                         displayWarning(InputErrorType.CMFNoCameraPermission);
                     }
                 } else if (menuOptionsTitles[item].equals(getString(R.string.use_online_picture_option))) {
-                    Log.d("test", "NOT IMPLEMENTED");
+                    if (initialMood.getOnlinePath() != null) {
+                        localImagePath = null;
+                        downloadAndSetThumbnail();
+                    }
                 }
             }
         });
@@ -310,48 +293,24 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
         return image;
     }
 
-
-//    public void setLocalImagePath(String imagePath) {
-//        this.uploadLocalImagePath = imagePath;
-//    }
-
     // Data processing of returned image inspired by: https://code.tutsplus.com/tutorials/image-upload-to-firebase-in-android-application--cms-29934
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
 //        super.onActivityResult(requestCode, resultCode, data);
         if(requestCode == SUCCESSFUL_GALLERY_RETURN_CODE && resultCode == -1 && data != null && data.getData() != null ) {
-            uploadLocalImagePath = data.getData().toString();
-            Log.d("TEST", uploadLocalImagePath);
-            this.initialMood.setOnlinePath(null);
+            localImagePath = data.getData().toString();
+            Log.d("TEST", localImagePath);
+            Uri myUri = Uri.parse(localImagePath);
+            Log.d("MOFIED PATH", getAbsolutePathFromContentPathUri(myUri));
+            localImagePath = getAbsolutePathFromContentPathUri(myUri);
+            setThumbnail(localImagePath);
+//            this.initialMood.setOnlinePath(null);
         } else if (requestCode == SUCCESSFUL_CAMERA_RETURN_CODE){
             Log.d("TEST", "GOT TO CAMERA AREA");
-            Log.d("PATH FOR CAMERA PIC", filePathToUse);
-            uploadLocalImagePath = filePathToUse;
-            Bitmap myBitmap = BitmapFactory.decodeFile(filePathToUse);
-            reasonImageView.setImageBitmap(myBitmap);
-//            Bundle extras = data.getExtras();
-//            Bitmap imageBitmap = (Bitmap)extras.get("data");
-//            reasonImageView.setImageBitmap(imageBitmap);
-//            createImageFile();
-//            if (filePathToUse != null) {
-//                Log.d("File path", filePathToUse);
-//                File f = new File(filePathToUse);
-//                FileOutputStream fileOutputStream = null;
-//                try {
-//                    fileOutputStream = new FileOutputStream(f);
-//                } catch (Exception e) {
-//
-//                }
-//                if (fileOutputStream != null) {
-//                    imageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, fileOutputStream);
-//                }
-//                uploadLocalImagePath = filePathToUse;
-//            } else {
-//                Log.d("FILE PATH WAS NULL", "");
-//            }
-//            uploadLocalImagePath = data.getData().toString();
-//            Log.d("TEST", uploadLocalImagePath);
-//            this.initialMood.setOnlinePath(null);
+//            Log.d("PATH FOR CAMERA PIC", filePathToUse);
+            Log.d("PATH FOR CAMERA PIC", Uri.parse(filePathToUse).toString());
+            localImagePath = filePathToUse;
+            setThumbnail(localImagePath);
         } else {
 //            displayWarning(InputErrorType.CMFPhotoReturnError);
         }
@@ -400,7 +359,7 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
             }
 
         }
-        if ((initialMood.getOnlinePath() != null || uploadLocalImagePath != null) && (reasonEditText.getText().toString().length() != 0)) {
+        if ((initialMood.getOnlinePath() != null || localImagePath != null) && (reasonEditText.getText().toString().length() != 0)) {
             return InputErrorType.CMFPictureAndReasonError;
         }
         return InputErrorType.DataValid;
@@ -408,31 +367,78 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
 
 
     public void displayPhotoForMood() {
-        if (uploadLocalImagePath != null) {
-//            displayLocalImage(uploadLocalImagePath, "local");
-            displayLocalImage(uploadLocalImagePath, "download");
-        } else if (displayOnlyLocalImagePath != null) {
-            displayLocalImage(displayOnlyLocalImagePath, "download");
-        }
-        else if (initialMood.getOnlinePath() != null) {
+        if (localImagePath != null) {
+            displayLocalImage(localImagePath);
+        } else if (initialMood.getOnlinePath() != null) {
             // Start progress bar with timeout
             MainActivity act = (MainActivity)getContext();
-            act.database.downloadPhotoForDisplay(initialMood.getOnlinePath(), this);
+            act.database.downloadPhoto(initialMood.getOnlinePath(), this, new DatabaseListener() {
+                @Override
+                public void onSuccess() {
+                    displayLocalImage(downloadedImagePath);
+                }
+
+                @Override
+                public void onFailure() {
+
+                }
+            });
             // End progress bar with timeout
         }
     }
 
-    public void setLocalImageFileAndDisplay(String filePath) {
-        this.displayOnlyLocalImagePath = filePath;
-        displayLocalImage(displayOnlyLocalImagePath, "download");
+    public void downloadAndSetThumbnail() {
+        if (downloadedImagePath != null) {
+            setThumbnail(downloadedImagePath);
+        } else {
+            MainActivity act = (MainActivity) getContext();
+            act.database.downloadPhoto(initialMood.getOnlinePath(), this, new DatabaseListener() {
+                @Override
+                public void onSuccess() {
+                    setThumbnail(downloadedImagePath);
+                }
+
+                @Override
+                public void onFailure() {
+
+                }
+            });
+        }
     }
 
-    public void displayLocalImage(String localPath, String type) {
-        MainActivity mainActivity = (MainActivity)getActivity();
-        Intent intent = new Intent(mainActivity, DisplayActivity.class);
-        intent.putExtra("localPath", localPath);
-        intent.putExtra("type", type);
-        mainActivity.startActivity(intent);
+    public void setDownloadedImagePath(String filepath) {
+        this.downloadedImagePath = filepath;
+    }
+
+    public void setThumbnail(String localPath) {
+        Bitmap myBitmap = BitmapFactory.decodeFile(localPath);
+        reasonImageView.setImageBitmap(myBitmap);
+    }
+
+    public void displayLocalImage(String localPath) {
+        if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
+            return;
+        } else {
+            Intent intent = new Intent(getActivity(), DisplayActivity.class);
+            intent.putExtra("localPath", localPath);
+            getActivity().startActivity(intent);
+        }
+    }
+
+    // Content link parsing method taken from: https://stackoverflow.com/questions/2789276/android-get-real-path-by-uri-getpath/9989900
+    private String getAbsolutePathFromContentPathUri(Uri contentURI) {
+        String result;
+        Cursor cursor = getActivity().getContentResolver().query(contentURI, null, null, null, null);
+        if (cursor == null) {
+            result = contentURI.getPath();
+        } else {
+            cursor.moveToFirst();
+            int idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
+            result = cursor.getString(idx);
+            cursor.close();
+        }
+        return result;
     }
 
     /**

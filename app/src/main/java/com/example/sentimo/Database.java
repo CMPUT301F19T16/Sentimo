@@ -221,7 +221,8 @@ public class Database {
      */
     // Upload method uses information from Google's Firebase storage upload example: https://firebase.google.com/docs/storage/android/upload-files
     public Uri addPhotoAndMood(final Mood incompleteMood, String stringPath) {
-        Uri localPath = Uri.parse(stringPath);
+//        Uri localPath = Uri.parse(stringPath);
+        Uri localPath = Uri.fromFile(new File(stringPath));
         final StorageReference reference = firebaseStorage.getReference();
         final StorageReference storageLocation = reference.child("images/" + incompleteMood.hashCode());
         UploadTask uploadTask = storageLocation.putFile(localPath);
@@ -257,8 +258,7 @@ public class Database {
      */
     // Uses elements of Google's Firebase Storage examples found here: https://firebase.google.com/docs/storage/web/download-files
     // Inspired by elements of StackOverflow post: https://stackoverflow.com/questions/39905719/how-to-download-a-file-from-firebase-storage-to-the-external-storage-of-android
-    public void downloadPhotoForDisplay(String onlinePath, final ChangeMoodFragment changeMoodFragment) {
-        Log.d("TEST", onlinePath);
+    public void downloadPhoto(String onlinePath, final ChangeMoodFragment changeMoodFragment, final DatabaseListener listener) {
         StorageReference storedAt = firebaseStorage.getReference(onlinePath);
 
         final MainActivity mainActivity = (MainActivity)changeMoodFragment.getActivity();
@@ -274,13 +274,15 @@ public class Database {
         storedAt.getFile(newFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
-                Log.d("Success", "Success");
-                changeMoodFragment.setLocalImageFileAndDisplay(newFile.getPath());
+                Log.d("download path is", newFile.getPath());
+                changeMoodFragment.setDownloadedImagePath(newFile.getPath());
+                listener.onSuccess();
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
                 Log.d("FAILURE","FAILURE");
+                listener.onFailure();
             }
         });
     }

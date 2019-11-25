@@ -323,9 +323,9 @@ public class MainActivity extends AppCompatActivity implements AddMoodFragment.A
         super.onActivityResult(requestCode, resultCode, data);
         ChangeMoodFragment dialogFragment = (ChangeMoodFragment)(getSupportFragmentManager().findFragmentById(R.id.add_mood_fragment));
         if (requestCode == 1) {
-            String uploadLocalImagePath = data.getData().toString();
-            Log.d("TEST", uploadLocalImagePath);
-//            dialogFragment.setLocalImagePath(uploadLocalImagePath);
+            String localImagePath = data.getData().toString();
+            Log.d("TEST", localImagePath);
+//            dialogFragment.setLocalImagePath(localImagePath);
         } else if (requestCode == 71){
             Log.d("REE", "GALLERY HANDLED BY MAIN");
         }

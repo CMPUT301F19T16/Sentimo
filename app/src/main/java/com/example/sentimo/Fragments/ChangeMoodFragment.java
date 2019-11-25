@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.location.Location;
 import android.net.Uri;
@@ -35,6 +36,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
 import androidx.fragment.app.DialogFragment;
 
 import java.io.File;
@@ -249,10 +251,17 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
                         ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.CAMERA}, 1);
                     }
                     if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
-                        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                        if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
-                            startActivityForResult(takePictureIntent, 1);
+                        File photoFile = createImageFile();
+                        if (photoFile != null) {
+                            Uri photoToUri = FileProvider.getUriForFile(getContext(), "com.example.sentimo.fileprovider", photoFile);
+                            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                            intent.putExtra(MediaStore.EXTRA_OUTPUT, photoToUri);
+                            startActivityForResult(intent, 1);
                         }
+//                        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+//                        if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
+//                            startActivityForResult(takePictureIntent, 1);
+//                        }
 
 //                        File myFile = createImageFile();
 //                        if (filePathToUse != null) {
@@ -293,7 +302,7 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
                     storageDir      /* directory */
             );
         } catch (Exception e) {
-
+            Log.d("WARNING", "EXCEPTION FOR FILE CREATION");
         }
 
         // Save a file: path for use with ACTION_VIEW intents
@@ -315,26 +324,31 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
             Log.d("TEST", uploadLocalImagePath);
             this.initialMood.setOnlinePath(null);
         } else if (requestCode == SUCCESSFUL_CAMERA_RETURN_CODE){
-            Bundle extras = data.getExtras();
-            Bitmap imageBitmap = (Bitmap)extras.get("data");
-            reasonImageView.setImageBitmap(imageBitmap);
-            createImageFile();
-            if (filePathToUse != null) {
-                Log.d("File path", filePathToUse);
-                File f = new File(filePathToUse);
-                FileOutputStream fileOutputStream = null;
-                try {
-                    fileOutputStream = new FileOutputStream(f);
-                } catch (Exception e) {
-
-                }
-                if (fileOutputStream != null) {
-                    imageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, fileOutputStream);
-                }
-                uploadLocalImagePath = filePathToUse;
-            } else {
-                Log.d("FILE PATH WAS NULL", "");
-            }
+            Log.d("TEST", "GOT TO CAMERA AREA");
+            Log.d("PATH FOR CAMERA PIC", filePathToUse);
+            uploadLocalImagePath = filePathToUse;
+            Bitmap myBitmap = BitmapFactory.decodeFile(filePathToUse);
+            reasonImageView.setImageBitmap(myBitmap);
+//            Bundle extras = data.getExtras();
+//            Bitmap imageBitmap = (Bitmap)extras.get("data");
+//            reasonImageView.setImageBitmap(imageBitmap);
+//            createImageFile();
+//            if (filePathToUse != null) {
+//                Log.d("File path", filePathToUse);
+//                File f = new File(filePathToUse);
+//                FileOutputStream fileOutputStream = null;
+//                try {
+//                    fileOutputStream = new FileOutputStream(f);
+//                } catch (Exception e) {
+//
+//                }
+//                if (fileOutputStream != null) {
+//                    imageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, fileOutputStream);
+//                }
+//                uploadLocalImagePath = filePathToUse;
+//            } else {
+//                Log.d("FILE PATH WAS NULL", "");
+//            }
 //            uploadLocalImagePath = data.getData().toString();
 //            Log.d("TEST", uploadLocalImagePath);
 //            this.initialMood.setOnlinePath(null);
@@ -395,8 +409,8 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
 
     public void displayPhotoForMood() {
         if (uploadLocalImagePath != null) {
-            displayLocalImage(uploadLocalImagePath, "local");
-//            displayLocalImage(uploadLocalImagePath, "download");
+//            displayLocalImage(uploadLocalImagePath, "local");
+            displayLocalImage(uploadLocalImagePath, "download");
         } else if (displayOnlyLocalImagePath != null) {
             displayLocalImage(displayOnlyLocalImagePath, "download");
         }

@@ -9,8 +9,11 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import com.example.sentimo.Fragments.InvalidDataWarningFragment;
 
-// Class for displaying the login page and taking username and password
-// and sending it to the Firebase database for authentication
+/**
+ * Class for displaying the login page and taking username and password
+ * and sending it to the Firebase database for authentication
+ */
+
 public class LoginActivity extends AppCompatActivity {
     private EditText usernameEditText;
     private EditText passwordEditText;
@@ -64,10 +67,8 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     /**
-     * Returns a LoginInfo object with the EditText field values for username and password
-     * if the provided data is valid, otherwise return null
-     *
-     * @return LoginInfo indicating the provided username and password field values, or null if data invalid
+     * Validates entered username and password and login if a valid username and password combination is provided,
+     * otherwise displays a warning.
      */
     public void returnLoginInfo() {
         String username = usernameEditText.getText().toString();

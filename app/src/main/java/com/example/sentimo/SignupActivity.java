@@ -44,10 +44,8 @@ public class SignupActivity extends AppCompatActivity {
     }
 
     /**
-     * Return LoginInfo with field values for username and password if they are valid inputs
-     * Else, return null
-     *
-     * @return LoginInfo with the username and password field values, or null if invalid
+     * Create new account with given email, username and password and log in if successful,
+     * otherwise displays a warning.
      */
     private void returnSignupInfo() {
         String username = usernameEditText.getText().toString();

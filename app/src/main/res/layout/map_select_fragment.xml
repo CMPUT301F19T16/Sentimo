@@ -15,12 +15,12 @@
         android:layout_marginEnd="4dp"
         android:layout_marginBottom="8dp"
         android:text="@string/my_map"
-        android:textSize="30dp"
+        android:textAppearance="@style/TextAppearance.AppCompat.Small"
+        android:textSize="18sp"
         app:layout_constraintBottom_toTopOf="@+id/friend_map_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-    </Button>
+        app:layout_constraintTop_toTopOf="parent"></Button>
 
     <Button
         android:id="@+id/friend_map_button"
@@ -31,11 +31,11 @@
         android:layout_marginEnd="4dp"
         android:layout_marginBottom="8dp"
         android:text="@string/friend_map"
-        android:textSize="30dp"
+        android:textAppearance="@style/TextAppearance.AppCompat.Small"
+        android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/my_map_button">
-    </Button>
+        app:layout_constraintTop_toBottomOf="@+id/my_map_button"></Button>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

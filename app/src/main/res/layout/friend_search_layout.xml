@@ -8,17 +8,21 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text = "Enter Username of Friend: "
+        android:fontFamily="sans-serif-condensed-light"
         android:gravity="center"
-        android:textSize="25sp">
-    </TextView>
+        android:text="Enter Username of Friend: "
+        android:textAlignment="viewStart"
+        android:textAllCaps="false"
+        android:textColor="#673AB7"
+        android:textSize="18sp"
+        android:textStyle="bold"></TextView>
 
     <EditText
         android:id="@+id/friend_search_editText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="15sp"
+        android:paddingHorizontal="20dp"
         android:paddingTop="20dp"
-        android:paddingHorizontal="20dp">
-    </EditText>
+        android:textColor="#BAE91E63"
+        android:textSize="15sp"></EditText>
 </LinearLayout>

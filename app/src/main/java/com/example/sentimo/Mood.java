@@ -23,6 +23,7 @@ public class Mood implements Serializable, Comparable{
     private Double longitude;
     private Double latitude;
     private String onlinePath;
+    private String username;
 
     /**
      * Constructor for a null Mood object
@@ -189,6 +190,14 @@ public class Mood implements Serializable, Comparable{
                 Objects.equals(reason, mood.reason) &&
                 Objects.equals(situation, mood.situation) && Objects.equals(longitude, mood.longitude)
                 && Objects.equals(latitude, mood.latitude) && Objects.equals(onlinePath, mood.getOnlinePath());
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     @Override

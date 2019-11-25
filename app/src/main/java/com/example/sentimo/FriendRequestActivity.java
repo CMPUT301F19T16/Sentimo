@@ -80,7 +80,7 @@ public class FriendRequestActivity extends AppCompatActivity {
         database.confirmFollowRequest(username, new DatabaseListener() {
             @Override
             public void onSuccess() {
-                removeEntryWithUsername(username);
+                fetchAllRequests();
             }
 
             @Override
@@ -90,7 +90,4 @@ public class FriendRequestActivity extends AppCompatActivity {
         });
     }
 
-    private void removeEntryWithUsername(String username) {
-        requestsAdapter.remove(username);
-    }
 }

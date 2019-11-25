@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -68,7 +69,7 @@ public class FriendActivity extends AppCompatActivity implements FriendSearchFra
             startActivity(intent);
         }
 
-        friendMoodDataList = new ArrayList<>();
+        friendMoodDataList = database.getSharedMood();
         friendMoodAdapter = new CustomFriendMoodList(this, friendMoodDataList);
         friendListView.setAdapter(friendMoodAdapter);
 
@@ -108,16 +109,26 @@ public class FriendActivity extends AppCompatActivity implements FriendSearchFra
                 database.isUserExist(new DatabaseListener() {
                     @Override
                     public void onSuccess() {
+                        userFollowing = database.getUserFollowing();
                         if (username.equals(auth.getActiveUsername())) {
                             Toast.makeText(FriendActivity.this, "Cannot follow yourself", Toast.LENGTH_SHORT).show();
                         } else if (userFollowing.contains(username))
                             Toast.makeText(FriendActivity.this, "Already Followed", Toast.LENGTH_SHORT).show();
                         else {
-                            userFollowing.add(username);
-                            database.setFollowList(userFollowing, new DatabaseListener() {
+                            database.sendRequest(username, new DatabaseListener() {
                                 @Override
                                 public void onSuccess() {
-                                    Toast.makeText(FriendActivity.this, "Request Sent", Toast.LENGTH_SHORT).show();
+                                    database.setFollowList(username, new DatabaseListener() {
+                                        @Override
+                                        public void onSuccess() {
+                                            Toast.makeText(FriendActivity.this, "Request Sent", Toast.LENGTH_SHORT).show();
+                                        }
+
+                                        @Override
+                                        public void onFailure() {
+                                            Toast.makeText(FriendActivity.this, "Fail to send request", Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
                                 }
 
                                 @Override
@@ -143,44 +154,15 @@ public class FriendActivity extends AppCompatActivity implements FriendSearchFra
     }
 
     private void fetchAllMoodsForFriends() {
-        friendMoodDataList.clear();
-        database.fetchFollowList(new DatabaseListener() {
+        database.getSharedMoodList(new DatabaseListener() {
             @Override
             public void onSuccess() {
-                userFollowing = database.getUserFollowing();
-                Log.d("USER TO GET MOOD FOR", userFollowing.get(0));
-                Log.d("I IS", Integer.toString(0));
-                recursiveFetchAllSharedMoods(0);
+                friendMoodAdapter.notifyDataSetChanged();
             }
 
             @Override
             public void onFailure() {
-//                Toast.makeText(MainActivity.this, "fail to get moods", Toast.LENGTH_SHORT).show();
-                Log.d("FAILURE","Failed to get friend list");
-            }
-        });
-    }
-
-    private void recursiveFetchAllSharedMoods(final int indexOfUsername) {
-        String username = userFollowing.get(indexOfUsername);
-        database.fetchSharedMoodList(username, new DatabaseListener() {
-            @Override
-            public void onSuccess() {
-                tempMood = database.getSharedMood();
-                if (tempMood.size() > 0) {
-                    friendMoodDataList.add(tempMood.get(0));
-                    friendMoodAdapter.notifyDataSetChanged();
-                    Log.d("TEST", "SHARED MOOD LISTENER GOT HERE");
-                    int incrementedIndex = indexOfUsername + 1;
-                    if (incrementedIndex < userFollowing.size()) {
-                        recursiveFetchAllSharedMoods(incrementedIndex);
-                    }
-                }
-            }
-
-            @Override
-            public void onFailure() {
-                Toast.makeText(FriendActivity.this, "Failure fetching friend moods.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(FriendActivity.this, "Please check your Internet", Toast.LENGTH_SHORT).show();
             }
         });
     }

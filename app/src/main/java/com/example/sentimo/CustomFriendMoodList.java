@@ -39,7 +39,7 @@ public class CustomFriendMoodList extends ArrayAdapter<Mood> {
         LinearLayout background = view.findViewById(R.id.mood_list_background);
 
         TextView usernameTextView = view.findViewById(R.id.friend_name_textview);
-        usernameTextView.setText("SET UP USERNAMES");
+        usernameTextView.setText(mood.getUsername());
 
 
         date.setText(mood.getTime().getDateString());

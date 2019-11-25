@@ -6,10 +6,12 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -36,7 +38,11 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.DialogFragment;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 
 public abstract class ChangeMoodFragment extends DialogFragment implements SelectSituationFragment.SelectSituationListener, SelectMoodFragment.SelectMoodFragmentInteractionListener {
     protected TextView dateTextView;
@@ -57,6 +63,7 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
 
     final int SUCCESSFUL_GALLERY_RETURN_CODE = 71;
     final int SUCCESSFUL_CAMERA_RETURN_CODE = 1;
+    String filePathToUse = null;
 
 
     protected View.OnClickListener emotionClick;
@@ -92,11 +99,11 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
         subclassInitialization();
 
         TextView testTextView = view.findViewById(R.id.emotion_textview);
-        if (initialMood.getOnlinePath() != null) {
-            testTextView.setText(initialMood.getOnlinePath());
-        } else {
-            testTextView.setText("!ONLINE");
-        }
+//        if (initialMood.getOnlinePath() != null) {
+//            testTextView.setText(initialMood.getOnlinePath());
+//        } else {
+//            testTextView.setText("!ONLINE");
+//        }
 
         AlertDialog.Builder builder = returnBuilder();
         AlertDialog dialog = builder.create();
@@ -188,13 +195,6 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
             throw new RuntimeException("CHANGE MOOD FRAGMENT RECEIVED UNKNOWN SUBCLASS");
         }
 
-        TextView testTextView = view.findViewById(R.id.emotion_textview);
-        if (initialMood.getOnlinePath() != null) {
-            testTextView.setText(initialMood.getOnlinePath());
-        } else {
-            testTextView.setText("!ONLINE");
-        }
-
         dateTextView = view.findViewById(R.id.date_text);
         timeTextView = view.findViewById(R.id.time_text);
         emojiImageView = view.findViewById(R.id.emotion_image);
@@ -231,7 +231,9 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
         // Method inspired by this Stack Overflow post: https://stackoverflow.com/questions/5991319/capture-image-from-camera-and-display-in-activity
         AlertDialog.Builder menuDialogBuilder = new AlertDialog.Builder((MainActivity)getContext());
         menuDialogBuilder.setTitle("Select Photo");
-        final String[] menuOptionsTitles = {getString(R.string.take_picture_option), getString(R.string.select_picture_gallery_option), getString(R.string.use_online_picture_option) };
+        final String[] menuOptionsTitles = new String[]{ getString(R.string.take_picture_option), getString(R.string.select_picture_gallery_option), getString(R.string.use_online_picture_option) };
+//        if (initialMood.getOnlinePath() != null) { menuOptionsTitles.add(getString(R.string.use_online_picture_option)); }
+
         menuDialogBuilder.setItems(menuOptionsTitles, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int item) {
@@ -241,16 +243,31 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
                     intent.setType("image/*");
                     intent.setAction(Intent.ACTION_PICK);
                     startActivityForResult(Intent.createChooser(intent, "Select Photograph for Reason"), SUCCESSFUL_GALLERY_RETURN_CODE);
-                    Log.d("test", "should not get here");
+//                    Log.d("test", "should not get here");
                 } else if (menuOptionsTitles[item].equals(getString(R.string.take_picture_option))) {
                     if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
                         ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.CAMERA}, 1);
                     }
                     if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
-                        Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                        File myFile = new File(android.os.Environment.getExternalStorageDirectory(), "cameraImage");
-                        cameraIntent.putExtra("filename", Uri.fromFile(myFile));
-                        startActivityForResult(cameraIntent, 1);
+                        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                        if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
+                            startActivityForResult(takePictureIntent, 1);
+                        }
+
+//                        File myFile = createImageFile();
+//                        if (filePathToUse != null) {
+//                            Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+//                            Uri imageUri = Uri.fromFile(myFile);
+//                            cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
+//                            startActivityForResult(cameraIntent, 1);
+//                        }
+//                        Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+////                        String filePath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/tempCameraPicture.jpg";
+//                        String filePath = getActivity().getContentResolver().openInputStream()
+//                        File myFile = new File(filePath);
+//                        Uri imageUri = Uri.fromFile(myFile);
+//                        cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
+//                        startActivityForResult(cameraIntent, 1);
                     } else {
                         displayWarning(InputErrorType.CMFNoCameraPermission);
                     }
@@ -262,50 +279,65 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
         AlertDialog myAlert = menuDialogBuilder.show();
     }
 
-//        reasonImageButton.setOnClickListener(new View.OnClickListener() { @Override
-//            public void onClick(View v) {
-//                // Method inspired by this Stack Overflow post: https://stackoverflow.com/questions/5991319/capture-image-from-camera-and-display-in-activity
-//                AlertDialog.Builder menuDialogBuilder = new AlertDialog.Builder((MainActivity)getContext());
-//                menuDialogBuilder.setTitle("Select Photo");
-//                final String[] menuOptionsTitles = { "Take picture", "Select Existing Picture", "Use Online Picture" };
-//                menuDialogBuilder.setItems(menuDialogBuilder, new DialogInterface.OnClickListener() {
-//                    @Override
-//                    public void onClick(DialogInterface dialog, int which) {
-//                        if (menuOptionsTitles[which].equals("Select Photo")) {
-//                            //Photo selection launch inspired by: https://code.tutsplus.com/tutorials/image-upload-to-firebase-in-android-application--cms-29934
-//                            Intent intent = new Intent();
-//                            intent.setType("image/*");
-//                            intent.setAction(Intent.ACTION_PICK);
-//                            startActivityForResult(Intent.createChooser(intent, "Select Photograph for Reason"), SUCCESSFUL_GALLERY_RETURN_CODE);
-//                        }
-//                    });
-//                });
+    //Method taken from Google documentation found here: https://developer.android.com/training/camera/photobasics
+    private File createImageFile() {
+        // Create an image file name
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        File storageDir = getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File image = null;
+        try {
+            image = File.createTempFile(
+                    imageFileName,  /* prefix */
+                    ".jpg",         /* suffix */
+                    storageDir      /* directory */
+            );
+        } catch (Exception e) {
+
+        }
+
+        // Save a file: path for use with ACTION_VIEW intents
+        filePathToUse = image.getAbsolutePath();
+        return image;
+    }
 
 
-
-
-                // Photo selection launch inspired by: https://code.tutsplus.com/tutorials/image-upload-to-firebase-in-android-application--cms-29934
-//                Intent intent = new Intent();
-//                intent.setType("image/*");
-//                intent.setAction(Intent.ACTION_PICK);
-////                intent.setAction(Intent.ACTION_GET_CONTENT);
-//                startActivityForResult(Intent.createChooser(intent, "Select Photograph for Reason"), SUCCESSFUL_GALLERY_RETURN_CODE);
-//            }
-//        });
-
+//    public void setLocalImagePath(String imagePath) {
+//        this.uploadLocalImagePath = imagePath;
+//    }
 
     // Data processing of returned image inspired by: https://code.tutsplus.com/tutorials/image-upload-to-firebase-in-android-application--cms-29934
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
+//        super.onActivityResult(requestCode, resultCode, data);
         if(requestCode == SUCCESSFUL_GALLERY_RETURN_CODE && resultCode == -1 && data != null && data.getData() != null ) {
             uploadLocalImagePath = data.getData().toString();
             Log.d("TEST", uploadLocalImagePath);
             this.initialMood.setOnlinePath(null);
         } else if (requestCode == SUCCESSFUL_CAMERA_RETURN_CODE){
-            uploadLocalImagePath = data.getData().toString();
-            Log.d("TEST", uploadLocalImagePath);
-            this.initialMood.setOnlinePath(null);
+            Bundle extras = data.getExtras();
+            Bitmap imageBitmap = (Bitmap)extras.get("data");
+            reasonImageView.setImageBitmap(imageBitmap);
+            createImageFile();
+            if (filePathToUse != null) {
+                Log.d("File path", filePathToUse);
+                File f = new File(filePathToUse);
+                FileOutputStream fileOutputStream = null;
+                try {
+                    fileOutputStream = new FileOutputStream(f);
+                } catch (Exception e) {
+
+                }
+                if (fileOutputStream != null) {
+                    imageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, fileOutputStream);
+                }
+                uploadLocalImagePath = filePathToUse;
+            } else {
+                Log.d("FILE PATH WAS NULL", "");
+            }
+//            uploadLocalImagePath = data.getData().toString();
+//            Log.d("TEST", uploadLocalImagePath);
+//            this.initialMood.setOnlinePath(null);
         } else {
 //            displayWarning(InputErrorType.CMFPhotoReturnError);
         }
@@ -364,6 +396,7 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
     public void displayPhotoForMood() {
         if (uploadLocalImagePath != null) {
             displayLocalImage(uploadLocalImagePath, "local");
+//            displayLocalImage(uploadLocalImagePath, "download");
         } else if (displayOnlyLocalImagePath != null) {
             displayLocalImage(displayOnlyLocalImagePath, "download");
         }

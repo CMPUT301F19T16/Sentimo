@@ -47,6 +47,7 @@
         <activity android:name=".MainActivity" />
         <activity android:name=".SignupActivity" />
         <activity android:name=".DisplayActivity" />
+
     </application>
 
 </manifest>

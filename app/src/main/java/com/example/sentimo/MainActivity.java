@@ -16,9 +16,11 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.DialogFragment;
 
 import com.example.sentimo.Emotions.Emotion;
 import com.example.sentimo.Fragments.AddMoodFragment;
+import com.example.sentimo.Fragments.ChangeMoodFragment;
 import com.example.sentimo.Fragments.EditMoodFragment;
 import com.example.sentimo.Fragments.FilterFragment;
 
@@ -316,4 +318,16 @@ public class MainActivity extends AppCompatActivity implements AddMoodFragment.A
         });
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        ChangeMoodFragment dialogFragment = (ChangeMoodFragment)(getSupportFragmentManager().findFragmentById(R.id.add_mood_fragment));
+        if (requestCode == 1) {
+            String uploadLocalImagePath = data.getData().toString();
+            Log.d("TEST", uploadLocalImagePath);
+//            dialogFragment.setLocalImagePath(uploadLocalImagePath);
+        } else if (requestCode == 71){
+            Log.d("REE", "GALLERY HANDLED BY MAIN");
+        }
+    }
 }

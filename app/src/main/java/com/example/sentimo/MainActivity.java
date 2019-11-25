@@ -2,31 +2,18 @@ package com.example.sentimo;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
-
-import androidx.annotation.Nullable;
+import android.widget.*;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-
 import com.example.sentimo.Emotions.Emotion;
 import com.example.sentimo.Fragments.AddMoodFragment;
 import com.example.sentimo.Fragments.EditMoodFragment;
 import com.example.sentimo.Fragments.FilterFragment;
-
 import com.example.sentimo.Fragments.MapSelectFragment;
-import java.io.File;
-import java.text.ParseException;
+
 import java.util.ArrayList;
-import java.util.Objects;
 
 /**
  * This is the Main Screen of the Sentimo app. Has a ListView that displays
@@ -43,9 +30,9 @@ import java.util.Objects;
  * the moods so that they are not deleted each time the user logs on.
  */
 public class MainActivity extends AppCompatActivity implements AddMoodFragment.AddMoodListener,
-                                                               EditMoodFragment.EditMoodListener,
-                                                               FilterFragment.OnFragmentInteractionListener,
-                                                               MapSelectFragment.OnFragmentInteractionListener {
+        EditMoodFragment.EditMoodListener,
+        FilterFragment.OnFragmentInteractionListener,
+        MapSelectFragment.OnFragmentInteractionListener {
 
 
     private ListView moodList;
@@ -60,6 +47,7 @@ public class MainActivity extends AppCompatActivity implements AddMoodFragment.A
     public Database database;
     private TextView username;
     private Auth auth;
+
 
     /**
      * This is function that represents what happens when the Main Screen is
@@ -121,9 +109,9 @@ public class MainActivity extends AppCompatActivity implements AddMoodFragment.A
             }
         });
 
-        mapButton.setOnClickListener(new View.OnClickListener(){
+        mapButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v){
+            public void onClick(View v) {
                 new MapSelectFragment().show(getSupportFragmentManager(), "MAP_FRAGMENT");
             }
         });
@@ -140,7 +128,7 @@ public class MainActivity extends AppCompatActivity implements AddMoodFragment.A
         moodList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Mood mood = (Mood)moodList.getItemAtPosition(position);
+                Mood mood = (Mood) moodList.getItemAtPosition(position);
                 new EditMoodFragment(mood, position).show(getSupportFragmentManager(), "EDIT_MOOD");
             }
         });
@@ -153,8 +141,8 @@ public class MainActivity extends AppCompatActivity implements AddMoodFragment.A
                 alert.setPositiveButton("YES", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        Mood mood = (Mood)moodList.getItemAtPosition(position);
-                        if(moodList.getAdapter() == partialAdapter){
+                        Mood mood = (Mood) moodList.getItemAtPosition(position);
+                        if (moodList.getAdapter() == partialAdapter) {
                             partialDataList.remove(mood);
                             partialAdapter.notifyDataSetChanged();
                         }
@@ -170,11 +158,20 @@ public class MainActivity extends AppCompatActivity implements AddMoodFragment.A
     }
 
     /**
+     * This function prevents user to go back to login or signup page with back button
+     */
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        moveTaskToBack(true);
+    }
+
+    /**
      * This is the function that is required for the AddMoodFragment.
      * Takes a mood and adds it to the database.
      * Should then show up on the ListView.
      *
-     * @param mood This is the mood that the user created in the AddMoodFragment.
+     * @param mood      This is the mood that the user created in the AddMoodFragment.
      * @param localPath This is the local path to a stored image associated with the Mood, if any
      */
     @Override
@@ -185,17 +182,17 @@ public class MainActivity extends AppCompatActivity implements AddMoodFragment.A
         } else {
             uploadMood(mood, null);
         }
-        if(moodList.getAdapter() == partialAdapter) {
-              if(!partialDataList.isEmpty()){
-                  if(partialDataList.get(0).getEmotion().getName().equals(mood.getEmotion().getName())){
-                      partialDataList.add(0, mood);
-                      partialAdapter.notifyDataSetChanged();
-                  }
-              } else if(filterButton.getText().toString().equals(mood.getEmotion().getName())){
-                  partialDataList.add(mood);
-                  partialAdapter.notifyDataSetChanged();
-              }
-          }
+        if (moodList.getAdapter() == partialAdapter) {
+            if (!partialDataList.isEmpty()) {
+                if (partialDataList.get(0).getEmotion().getName().equals(mood.getEmotion().getName())) {
+                    partialDataList.add(0, mood);
+                    partialAdapter.notifyDataSetChanged();
+                }
+            } else if (filterButton.getText().toString().equals(mood.getEmotion().getName())) {
+                partialDataList.add(mood);
+                partialAdapter.notifyDataSetChanged();
+            }
+        }
         // End progress bar
         // Timeout on network failure
     }
@@ -206,8 +203,8 @@ public class MainActivity extends AppCompatActivity implements AddMoodFragment.A
      * the old mood in the MoodList and replaces it with a new mood.
      * Should then show up on the ListView.
      *
-     * @param mood     This is the mood that the user edited from a previously known mood.
-     * @param position This is the position of the old mood in the Mood List.
+     * @param mood      This is the mood that the user edited from a previously known mood.
+     * @param position  This is the position of the old mood in the Mood List.
      * @param localPath This is the local path to a stored image associated with the Mood, if any
      */
     @Override
@@ -226,7 +223,8 @@ public class MainActivity extends AppCompatActivity implements AddMoodFragment.A
 
     /**
      * Method for uploading a Mood to the Firebase database
-     * @param mood the Mood to be uploaded
+     *
+     * @param mood      the Mood to be uploaded
      * @param localPath a localPath to an image to be uploaded, if any
      */
     private void uploadMood(Mood mood, String localPath) {
@@ -239,6 +237,7 @@ public class MainActivity extends AppCompatActivity implements AddMoodFragment.A
 
     /**
      * Method for deleting a Mood from the Firebase database
+     *
      * @param mood the Mood to be deleted
      */
     private void deleteMood(Mood mood, Boolean deletePicture) {
@@ -293,8 +292,8 @@ public class MainActivity extends AppCompatActivity implements AddMoodFragment.A
     }
 
     @Override
-    public void onMapSelected(String button){
-        if (button != null){
+    public void onMapSelected(String button) {
+        if (button != null) {
             Intent intent = new Intent(this, DisplayMapActivity.class);
             intent.putExtra("mapName", button);
             startActivity(intent);

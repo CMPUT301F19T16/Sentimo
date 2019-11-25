@@ -61,7 +61,7 @@ public class Auth {
      */
     public String getActiveUsername() {
 
-        if (user != null)
+        if (isLogin())
             return user.getDisplayName();
 
         else
@@ -98,16 +98,16 @@ public class Auth {
                                             .setDisplayName(logininfo.getUsername())
                                             .build();
 
-                                    user.updateProfile(profileUpdates)
-                                            .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                @Override
-                                                public void onComplete(@NonNull Task<Void> task) {
-                                                    if (task.isSuccessful()) {
-                                                        reloadUser();
+                                    if (user != null)
+                                        user.updateProfile(profileUpdates)
+                                                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                    @Override
+                                                    public void onComplete(@NonNull Task<Void> task) {
+                                                        if (task.isSuccessful()) {
+                                                            reloadUser();
+                                                        }
                                                     }
-                                                }
-                                            });
-
+                                                });
                                 } else {
                                     Toast.makeText(context, "Registration failed. Email may be registered.",
                                             Toast.LENGTH_SHORT).show();

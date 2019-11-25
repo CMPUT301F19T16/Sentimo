@@ -44,6 +44,18 @@ public class SignupActivity extends AppCompatActivity {
     }
 
     /**
+     * Reloads into MainActivity the current user is valid
+     */
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (auth.isLogin()) {
+            auth.reloadUser();
+            finish();
+        }
+    }
+
+    /**
      * Create new account with given email, username and password and log in if successful,
      * otherwise displays a warning.
      */
@@ -58,8 +70,10 @@ public class SignupActivity extends AppCompatActivity {
         }
         // TODO: Validate email
         auth.createUser(new LoginInfo(username, password), email);
-//        return new LoginInfo(username, password);
-        // display main activity
+        if (auth.isLogin()) {
+            auth.reloadUser();
+            finish();
+        }
     }
 
     /**

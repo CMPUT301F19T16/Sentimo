@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Environment;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -19,9 +20,11 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.ListenerRegistration;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
@@ -47,11 +50,19 @@ public class Database {
     private ArrayList<String> userFollowing;
     private FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
     private ListenerRegistration moodHistoryReg;
+    private ArrayList<Mood> sharedMoodHistory;
+    private ListenerRegistration sharedMoodListenerReg;
+    private ArrayList<String> pendingRequestsList;
+    private ArrayList<String> allowedFriendList;
 
     Database(String username) {
         this.username = username;
         this.moodHistory = new ArrayList<>();
         this.userFollowing = new ArrayList<>();
+        this.sharedMoodHistory = new ArrayList<>();
+        this.sharedMoodListenerReg = null;
+        this.pendingRequestsList = new ArrayList<>();
+        this.allowedFriendList = new ArrayList<>();
     }
 
     /**
@@ -141,6 +152,13 @@ public class Database {
                         moodHistory.add(mood);
                     }
                     Collections.sort(moodHistory, Collections.<Mood>reverseOrder());
+                    if (moodHistory.size() > 0) {
+                        Mood recentMood = moodHistory.get(0);
+                        recentMood.setUsername(username);
+                        users.document(username).collection("SharedMood").document("sharedMood").set(recentMood);
+                    } else {
+                        users.document(username).collection("SharedMood").document("sharedMood").delete();
+                    }
                     if (moodListener != null)
                         moodListener.onSuccess();
                 }
@@ -156,8 +174,22 @@ public class Database {
             moodHistoryReg.remove();
     }
 
+    /**
+     * get a list of users who you already applied for following
+     * @return
+     *      an array list of users who you already applied for following
+     */
     public ArrayList<String> getUserFollowing() {
         return userFollowing;
+    }
+
+    /**
+     * get a list of your friends' mood
+     * @return
+     *      an array list of shared moods from users who give you permission
+     */
+    public ArrayList<Mood> getSharedMood() {
+        return sharedMoodHistory;
     }
 
     /**
@@ -183,17 +215,16 @@ public class Database {
     }
 
     /**
-     * get the follow list from cloud
+     * get a list of users who you already applied for following
      */
-    public void getFollowList(final DatabaseListener listener) {
+    public void fetchFollowList(final DatabaseListener listener) {
+        userFollowing.clear();
         users.document(this.username).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 userFollowing = (ArrayList<String>) documentSnapshot.get("followList");
-            }
-        }).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-            @Override
-            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                if (userFollowing == null)
+                    userFollowing = new ArrayList<>();
                 listener.onSuccess();
             }
         }).addOnFailureListener(new OnFailureListener() {
@@ -205,12 +236,12 @@ public class Database {
     }
 
     /**
-     * update follow list to cloud
-     * @param list
-     *      a list of username that the user  follows
+     * add a user to the list of users who you already applied for following
+     * @param username
+     *      the username added to the list
      */
-    public void setFollowList(ArrayList<String> list, final DatabaseListener listener) {
-        users.document(this.username).update("followList", list).addOnSuccessListener(new OnSuccessListener<Void>() {
+    public void setFollowList(String username, final DatabaseListener listener) {
+        users.document(this.username).update("followList", FieldValue.arrayUnion(username)).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
                 listener.onSuccess();
@@ -291,6 +322,169 @@ public class Database {
             @Override
             public void onFailure(@NonNull Exception e) {
                 Log.d("FAILURE","FAILURE");
+            }
+        });
+    }
+
+    /**
+     * get shared mood list from friends who give permission
+     * @param listener
+     *      custom listener
+     */
+    public void getSharedMoodList(final DatabaseListener listener) {
+        sharedMoodHistory.clear();
+        fetchAllowedFriendList(new DatabaseListener() {
+            @Override
+            public void onSuccess() {
+                for (String username : allowedFriendList) {
+                    fetchSharedMoodList(username, listener);
+                }
+            }
+
+            @Override
+            public void onFailure() {
+                listener.onFailure();
+            }
+        });
+    }
+
+    /**
+     * get a user's shared mood
+     * @param username
+     *      the user you get the mood from
+     * @param listener
+     *      custom listener
+     */
+    private void fetchSharedMoodList(String username, final DatabaseListener listener) {
+        CollectionReference sharedMoods = users.document(username).collection("SharedMood");
+        sharedMoods.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                List<DocumentSnapshot> data;
+                if (queryDocumentSnapshots != null) {
+                    data = queryDocumentSnapshots.getDocuments();
+                    for (DocumentSnapshot d : data) {
+                        Mood mood = d.toObject(Mood.class);
+                        sharedMoodHistory.add(mood);
+                    }
+                    if (listener != null)
+                        listener.onSuccess();
+                }
+            }
+        });
+    }
+
+    /**
+     * get all pending requests
+     * @param listener
+     *      custom listener
+     */
+    public void fetchPendingRequests(final DatabaseListener listener) {
+        users.document(this.username).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                pendingRequestsList.clear();
+                ArrayList<String> pendingReq = (ArrayList<String>) documentSnapshot.get("pendingRequests");
+                if (pendingReq != null)
+                    pendingRequestsList.addAll((pendingReq));
+                listener.onSuccess();
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                listener.onFailure();
+            }
+        });
+    }
+
+    /**
+     * send follow request to a user
+     * @param username
+     *      the user you send the request to
+     * @param listener
+     *      custom listener
+     */
+    public void sendRequest(String username, final DatabaseListener listener) {
+        users.document(username).update("pendingRequests", FieldValue.arrayUnion(this.username)).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                listener.onSuccess();
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                listener.onFailure();
+            }
+        });
+    }
+
+    /**
+     * get the pending request array list
+     * @return
+     *      pending requests array list
+     */
+    public ArrayList<String> getPendingRequests() {
+        return this.pendingRequestsList;
+    }
+
+    /**
+     * accept others' following request
+     * @param username
+     *      the user you accept the request from
+     * @param listener
+     *      custom listener
+     */
+    public void confirmFollowRequest(final String username, final DatabaseListener listener) {
+        users.document(username).update("allowedFollowingUsers", FieldValue.arrayUnion(this.username)).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                removeFollowRequest(username,listener);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                listener.onFailure();
+            }
+        });
+    }
+
+    private void removeFollowRequest(String username, final DatabaseListener listener) {
+        users.document(this.username).update("pendingRequests", FieldValue.arrayRemove(username)).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                listener.onSuccess();
+            }
+        });
+    }
+
+    /**
+     * get users who give you permission on following
+     * @return
+     *      an array list of users who give you permission on following
+     */
+    public ArrayList<String> getAllowedFriendList() {
+        return allowedFriendList;
+    }
+
+    /**
+     * get all users who give you permission on following
+     * @param listener
+     *      custom listener
+     */
+    public void fetchAllowedFriendList(final DatabaseListener listener) {
+        users.document(this.username).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                allowedFriendList.clear();
+                ArrayList<String> allowedReq = (ArrayList<String>) documentSnapshot.get("allowedFollowingUsers");
+                if (allowedReq != null)
+                    allowedFriendList.addAll((allowedReq));
+                listener.onSuccess();
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                listener.onFailure();
             }
         });
     }

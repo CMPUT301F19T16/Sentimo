@@ -7,11 +7,7 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.widget.ArrayAdapter;
-import android.widget.TextView;
-import android.widget.Toast;
 
-import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -65,37 +61,31 @@ public class DisplayMapActivity extends FragmentActivity implements OnMapReadyCa
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         if(mapName.equals(getString(R.string.my_map))) {
-            database.addMoodListener(new DatabaseListener() {
+            database.addMoodListener(new FirebaseListener() {
                 @Override
                 public void onSuccess() {
                     moods = database.getMoodHistory();
-                    if (moods.isEmpty()) {
-                        Toast.makeText(DisplayMapActivity.this, "No Moods", Toast.LENGTH_SHORT).show();
-                    } else {
+                    if(!moods.isEmpty()){
                         drawMap(moods);
                     }
                 }
                 @Override
                 public void onFailure() {
-                    Toast.makeText(DisplayMapActivity.this, "Couldn't get moods. Check Internet", Toast.LENGTH_SHORT);
                 }
             });
         }
         else if (mapName.equals(getString(R.string.friend_map))){
-            database.getSharedMoodList(new DatabaseListener() {
+            database.getSharedMoodList(new FirebaseListener() {
                 @Override
                 public void onSuccess() {
                     moods = database.getSharedMood();
-                    if (moods.isEmpty()){
-                        Toast.makeText(DisplayMapActivity.this, "No Friends with Moods", Toast.LENGTH_SHORT);
-                    } else {
+                    if(!moods.isEmpty()){
                         drawMap(moods);
                     }
                 }
 
                 @Override
                 public void onFailure() {
-                    Toast.makeText(DisplayMapActivity.this, "Couldn't get moods. Check Internet", Toast.LENGTH_SHORT);
                 }
             });
         }
@@ -114,9 +104,7 @@ public class DisplayMapActivity extends FragmentActivity implements OnMapReadyCa
                 moodLocations.add(mood);
             }
         }
-        if (moodLocations.isEmpty()) {
-            Toast.makeText(DisplayMapActivity.this, "No Moods with Locations", Toast.LENGTH_SHORT).show();
-        } else {
+        if (!moodLocations.isEmpty()) {
             for (int i = 0; i < moodLocations.size(); i++) {
                 mood = moodLocations.get(i);
                 Drawable image = getResources().getDrawable(mood.getEmotion().getImage());

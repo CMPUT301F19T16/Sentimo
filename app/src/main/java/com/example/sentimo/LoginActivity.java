@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import com.example.sentimo.Fragments.InvalidDataWarningFragment;
@@ -20,6 +21,7 @@ public class LoginActivity extends AppCompatActivity {
     private Button loginSubmitButton;
     private Button signupButton;
     private Auth auth;
+    private boolean allowLogin = true;
 
     /**
      * Initial activity setup
@@ -31,7 +33,10 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login_screen);
         auth = new Auth(getApplicationContext());
-
+        if (auth.isLogin()) {
+            auth.reloadUser();
+            finish();
+        }
         usernameEditText = findViewById(R.id.Username_LS_editText);
         passwordEditText = findViewById(R.id.Password_LS_editText);
         loginSubmitButton = findViewById(R.id.button_login);
@@ -40,7 +45,8 @@ public class LoginActivity extends AppCompatActivity {
         loginSubmitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                login();
+                if (allowLogin)
+                    login();
             }
         });
         signupButton.setOnClickListener(new View.OnClickListener() {
@@ -52,32 +58,35 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
-    /**
-     * Reloads into MainActivity the current user is valid
-     */
-    @Override
-    protected void onResume() {
-        super.onResume();
-        if (auth.isLogin()) {
-            auth.reloadUser();
-            finish();
-        }
-    }
 
     /**
      * Validates entered username and password and login if a valid username and password combination is provided,
      * otherwise displays a warning.
      */
     public void login() {
+        allowLogin = false;
         String username = usernameEditText.getText().toString();
         String password = passwordEditText.getText().toString();
         InputErrorType warningType = LoginInfo.validUserNamePassword(username, password);
         if (warningType != InputErrorType.DataValid) {
             displayWarning(warningType);
+            allowLogin = true;
             return;
         }
-        Auth auth = new Auth(getApplicationContext());
-        auth.loginUser(new LoginInfo(username, password));
+        final Auth auth = new Auth(getApplicationContext());
+        auth.loginUser(new LoginInfo(username, password), new FirebaseListener() {
+            @Override
+            public void onSuccess() {
+                auth.reloadUser();
+            }
+
+            @Override
+            public void onFailure() {
+                allowLogin = true;
+                Toast.makeText(getApplicationContext(), "Authorization failed.",
+                        Toast.LENGTH_SHORT).show();
+            }
+        });
 
     }
 

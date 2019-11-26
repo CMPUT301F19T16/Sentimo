@@ -12,10 +12,13 @@
         <TextView
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
+            android:fontFamily="casual"
             android:gravity="center_horizontal"
-            android:text="   Alone       "
+            android:text="   Alone   "
             android:textAllCaps="false"
-            android:textColor="#9C27B0" />
+            android:textAppearance="@style/TextAppearance.AppCompat.Small"
+            android:textColor="#9C27B0"
+            android:textStyle="bold" />
 
         <Button
             android:layout_width="60dp"
@@ -36,10 +39,13 @@
         <TextView
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
+            android:fontFamily="casual"
             android:gravity="center_horizontal"
             android:text=" With several people "
             android:textAllCaps="false"
-            android:textColor="#9C27B0" />
+            android:textAppearance="@style/TextAppearance.AppCompat.Small"
+            android:textColor="#9C27B0"
+            android:textStyle="bold" />
 
         <Button
             android:layout_width="60dp"
@@ -64,20 +70,22 @@
         android:orientation="horizontal">
 
 
-
         <TextView
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
+            android:fontFamily="casual"
             android:gravity="center_horizontal"
             android:text=" With a crowd"
             android:textAllCaps="false"
-            android:textColor="#9C27B0" />
+            android:textAppearance="@style/TextAppearance.AppCompat.Small"
+            android:textColor="#9C27B0"
+            android:textStyle="bold" />
 
         <Button
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:textAlignment="center"
-            android:layout_marginRight="10dp"
+            android:layout_marginRight="5dp"
             android:layout_marginBottom="10dp"
             android:layout_marginLeft="10dp"
             android:layout_marginTop="10dp"
@@ -91,10 +99,13 @@
         <TextView
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
+            android:fontFamily="casual"
             android:gravity="center_horizontal"
-            android:text="  With one person "
+            android:text="With one person "
             android:textAllCaps="false"
-            android:textColor="#9C27B0" />
+            android:textAppearance="@style/TextAppearance.AppCompat.Small"
+            android:textColor="#9C27B0"
+            android:textStyle="bold" />
 
         <Button
             android:layout_width="60dp"
@@ -118,14 +129,16 @@
         android:orientation="horizontal">
 
 
-
         <TextView
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
+            android:fontFamily="casual"
             android:gravity="center_horizontal"
             android:text=" No situation "
             android:textAllCaps="false"
-            android:textColor="#9C27B0" />
+            android:textAppearance="@style/TextAppearance.AppCompat.Small"
+            android:textColor="#9C27B0"
+            android:textStyle="bold" />
 
         <Button
             android:id="@+id/noSituationButton"

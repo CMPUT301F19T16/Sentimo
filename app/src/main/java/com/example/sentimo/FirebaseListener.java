@@ -1,6 +1,6 @@
 package com.example.sentimo;
 
-public interface DatabaseListener {
+public interface FirebaseListener {
     void onSuccess();
     void onFailure();
 }

@@ -2,7 +2,6 @@ package com.example.sentimo;
 
 import android.content.Context;
 import android.content.Intent;
-import android.widget.Toast;
 import androidx.annotation.NonNull;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -71,16 +70,16 @@ public class Auth {
     /**
      * Create a user using the given combination
      *
-     * @param logininfo username and password of the new user
-     * @param email     email of the new user
+     * @param logininfo    username and password of the new user
+     * @param email        email of the new user
+     * @param authListener Listener for monitoring authorization status
      */
-    public void createUser(final LoginInfo logininfo, final String email) {
+    public void createUser(final LoginInfo logininfo, final String email, final FirebaseListener authListener) {
         db.collection("users").document(logininfo.getUsername()).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 if (documentSnapshot.exists()) {
-                    Toast.makeText(context, "Username exists",
-                            Toast.LENGTH_SHORT).show();
+                    authListener.onFailure();
                     return;
                 }
                 mAuth.createUserWithEmailAndPassword(email, logininfo.getPassword())
@@ -104,13 +103,14 @@ public class Auth {
                                                     @Override
                                                     public void onComplete(@NonNull Task<Void> task) {
                                                         if (task.isSuccessful()) {
-                                                            reloadUser();
+                                                            authListener.onSuccess();
+                                                        } else {
+                                                            authListener.onFailure();
                                                         }
                                                     }
                                                 });
                                 } else {
-                                    Toast.makeText(context, "Registration failed. Email may be registered.",
-                                            Toast.LENGTH_SHORT).show();
+                                    authListener.onFailure();
                                 }
                             }
                         });
@@ -122,17 +122,17 @@ public class Auth {
     /**
      * Logs in with given username and password if valid
      *
-     * @param loginInfo username and password of a user
+     * @param loginInfo    username and password of a user
+     * @param authListener Listener for monitoring authorization status
      */
-    public void loginUser(final LoginInfo loginInfo) {
+    public void loginUser(final LoginInfo loginInfo, final FirebaseListener authListener) {
         db.collection("users").document(loginInfo.getUsername()).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
 
                 String email = documentSnapshot.getString("email");
                 if (email == null) {
-                    Toast.makeText(context, "Username does not exist",
-                            Toast.LENGTH_SHORT).show();
+                    authListener.onFailure();
                     return;
                 }
                 mAuth.signInWithEmailAndPassword(email, loginInfo.getPassword())
@@ -140,11 +140,9 @@ public class Auth {
                             @Override
                             public void onComplete(@NonNull Task<AuthResult> task) {
                                 if (task.isSuccessful()) {
-                                    reloadUser();
+                                    authListener.onSuccess();
                                 } else {
-
-                                    Toast.makeText(context, "Authorization failed.",
-                                            Toast.LENGTH_SHORT).show();
+                                    authListener.onFailure();
                                 }
                             }
                         });
@@ -158,5 +156,24 @@ public class Auth {
      */
     public void logoutUser() {
         mAuth.signOut();
+    }
+
+    /**
+     * Send a password reset email
+     *
+     * @param email        Email address of a user
+     * @param authListener Listener for monitoring authorization status
+     */
+    public void sendResetEmail(final String email, final FirebaseListener authListener) {
+        mAuth.sendPasswordResetEmail(email).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful()) {
+                    authListener.onSuccess();
+                } else {
+                    authListener.onFailure();
+                }
+            }
+        });
     }
 }

@@ -12,10 +12,13 @@
         <TextView
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
+            android:fontFamily="casual"
             android:gravity="center_horizontal"
-            android:text="           Happy"
+            android:text="         Happy"
             android:textAllCaps="false"
-            android:textColor="#8BC34A" />
+            android:textAppearance="@style/TextAppearance.AppCompat.Small"
+            android:textColor="#8BC34A"
+            android:textStyle="bold" />
 
         <Button
             android:id="@+id/filter_happy_button"
@@ -36,10 +39,13 @@
         <TextView
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
+            android:fontFamily="casual"
             android:gravity="center_horizontal"
-            android:text="          Sad"
+            android:text="       Sad"
             android:textAllCaps="false"
-            android:textColor="#3F51B5" />
+            android:textAppearance="@style/TextAppearance.AppCompat.Small"
+            android:textColor="#3F51B5"
+            android:textStyle="bold" />
 
         <Button
             android:id="@+id/filter_sad_button"
@@ -67,10 +73,13 @@
         <TextView
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
+            android:fontFamily="casual"
             android:gravity="center_horizontal"
-            android:text="               Mad "
+            android:text="            Mad "
             android:textAllCaps="false"
-            android:textColor="#8D2017" />
+            android:textAppearance="@style/TextAppearance.AppCompat.Small"
+            android:textColor="#8D2017"
+            android:textStyle="bold" />
 
         <Button
             android:id="@+id/filter_mad_button"
@@ -92,10 +101,13 @@
         <TextView
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
+            android:fontFamily="casual"
             android:gravity="center_horizontal"
-            android:text="  Loved"
+            android:text=" Loved"
             android:textAllCaps="false"
-            android:textColor="#F44336" />
+            android:textAppearance="@style/TextAppearance.AppCompat.Small"
+            android:textColor="#F44336"
+            android:textStyle="bold" />
 
         <Button
             android:id="@+id/filter_loved_button"
@@ -124,10 +136,13 @@
         <TextView
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
+            android:fontFamily="casual"
             android:gravity="center_horizontal"
-            android:text="  Embarassed"
+            android:text=" Embarassed"
             android:textAllCaps="false"
-            android:textColor="#E95384" />
+            android:textAppearance="@style/TextAppearance.AppCompat.Small"
+            android:textColor="#E95384"
+            android:textStyle="bold" />
 
         <Button
             android:id="@+id/filter_embarrassed_button"
@@ -149,10 +164,13 @@
         <TextView
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
+            android:fontFamily="casual"
             android:gravity="center_horizontal"
             android:text="     Tired"
             android:textAllCaps="false"
-            android:textColor="#241F1F" />
+            android:textAppearance="@style/TextAppearance.AppCompat.Small"
+            android:textColor="#241F1F"
+            android:textStyle="bold" />
 
         <Button
             android:id="@+id/filter_tired_button"
@@ -181,10 +199,13 @@
         <TextView
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
+            android:fontFamily="casual"
             android:gravity="center_horizontal"
-            android:text="      Confident"
+            android:text="    Confident"
             android:textAllCaps="false"
-            android:textColor="#FFEB3B" />
+            android:textAppearance="@style/TextAppearance.AppCompat.Small"
+            android:textColor="#FCE305"
+            android:textStyle="bold" />
 
         <Button
             android:id="@+id/filter_confident_button"
@@ -206,10 +227,13 @@
         <TextView
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
+            android:fontFamily="casual"
             android:gravity="center_horizontal"
             android:text="Worried"
             android:textAllCaps="false"
-            android:textColor="#00BCD4" />
+            android:textAppearance="@style/TextAppearance.AppCompat.Small"
+            android:textColor="#00BCD4"
+            android:textStyle="bold" />
 
         <Button
             android:id="@+id/filter_worried_button"
@@ -237,16 +261,20 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:fontFamily="casual"
             android:gravity="bottom|center_horizontal|top"
             android:text="View All:"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small"
             android:textStyle="bold"></TextView>
 
         <Button
             android:id="@+id/filter_all_button"
             android:layout_width="135dp"
             android:layout_height="match_parent"
-            android:text="ALL">
-        </Button>
+            android:fontFamily="casual"
+            android:text="ALL"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textStyle="bold"></Button>
     </LinearLayout>
 
 </LinearLayout>

@@ -4,14 +4,15 @@
     android:layout_height="match_parent">
 
     <TextView
+        android:id="@+id/request_name_textview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/request_name_textview"
         android:layout_marginStart="4dp"
         android:layout_marginTop="4dp"
-        android:fontFamily="sans-serif-smallcaps"
-        android:textAllCaps="true"
+        android:fontFamily="casual"
+        android:textAllCaps="false"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
         android:textSize="20sp"
-        android:textStyle="bold"/>
+        android:textStyle="bold" />
 
 </LinearLayout>

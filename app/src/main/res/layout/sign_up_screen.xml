@@ -4,9 +4,7 @@
     android:id="@+id/sign_up_screen"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingLeft="45dp"
-    android:paddingRight="45dp"
-    android:paddingTop="20dp"
+    android:paddingTop="50dp"
     android:paddingBottom="10dp"
     tools:context="com.example.sentimo.MainActivity"
     android:background="@drawable/image00"
@@ -21,21 +19,28 @@
             android:id="@+id/TextViewSignUpScreen"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:fontFamily="serif"
             android:gravity="center_horizontal"
             android:text="Sentimo Sign-Up"
             android:textAllCaps="false"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
             android:textColor="#E95384"
-            android:textSize="60sp" />
+            android:textSize="70dp"
+            android:textStyle="bold" />
 
         <TextView
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
+            android:fontFamily="cursive"
             android:gravity="top|center_horizontal"
             android:text="Celebrate your Sentiments with Sentimo"
+            android:layout_marginBottom="10dp"
             android:textAllCaps="false"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textColor="#1A1A1B"
             android:textSize="20sp"
-            android:textStyle="italic|bold" />
+            android:textStyle="bold" />
 
         <EditText
             android:id="@+id/Email_SP_editText"
@@ -44,8 +49,11 @@
             android:layout_gravity="center"
             android:background="@drawable/logintextstyle"
             android:backgroundTint="#6D9C27B0"
+            android:fontFamily="casual"
             android:gravity="left"
             android:hint="Email"
+            android:layout_marginBottom="10dp"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textColor="#fff"
             android:textColorHint="#fff"
             android:textStyle="bold" />
@@ -57,8 +65,10 @@
             android:layout_gravity="center"
             android:background="@drawable/logintextstyle"
             android:backgroundTint="#799C27B0"
+            android:fontFamily="casual"
             android:gravity="left"
             android:hint="UserName"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textColor="#fff"
             android:textColorHint="#fff"
             android:textStyle="bold" />
@@ -71,20 +81,26 @@
             android:layout_marginTop="10dp"
             android:background="@drawable/logintextstyle"
             android:backgroundTint="#809C27B0"
+            android:fontFamily="casual"
             android:gravity="left"
             android:hint="Password"
             android:inputType="textPassword"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textColor="#fff"
             android:textColorHint="#fff"
             android:textStyle="bold" />
+
         <Button
-            android:background="@drawable/buttonstyleselector"
-            android:textColor="#fff"
             android:id="@+id/submit_signup_button"
-            android:layout_marginTop="50dp"
-            android:layout_height="60dp"
             android:layout_width="match_parent"
-            android:text="Sign-Up" />
+            android:layout_height="60dp"
+            android:layout_marginTop="50dp"
+            android:background="@drawable/buttonstyleselector"
+            android:fontFamily="casual"
+            android:text="Sign-Up"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textColor="#fff"
+            android:textStyle="bold" />
 
 
     </LinearLayout>

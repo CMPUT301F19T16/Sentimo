@@ -372,7 +372,7 @@ public class Database {
                     for (DocumentSnapshot d : data) {
                         Mood mood = d.toObject(Mood.class);
                         sharedMoodHistory.add(mood);
-                        }
+                    }
                     Collections.sort(sharedMoodHistory, Collections.<Mood>reverseOrder());
                     if (listener != null) {
                         listener.onSuccess();

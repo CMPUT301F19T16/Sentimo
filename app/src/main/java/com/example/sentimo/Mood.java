@@ -192,10 +192,20 @@ public class Mood implements Serializable, Comparable{
                 && Objects.equals(latitude, mood.latitude) && Objects.equals(onlinePath, mood.getOnlinePath());
     }
 
+    /**
+     * get users' username saving in the mood
+     * @return
+     *      users' username
+     */
     public String getUsername() {
         return username;
     }
 
+    /**
+     * set the mood's owner
+     * @param username
+     *      owner's username
+     */
     public void setUsername(String username) {
         this.username = username;
     }

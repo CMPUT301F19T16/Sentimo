@@ -373,8 +373,10 @@ public class Database {
                         Mood mood = d.toObject(Mood.class);
                         sharedMoodHistory.add(mood);
                     }
-                    if (listener != null)
+                    Collections.sort(sharedMoodHistory, Collections.<Mood>reverseOrder());
+                    if (listener != null) {
                         listener.onSuccess();
+                    }
                 }
             }
         });

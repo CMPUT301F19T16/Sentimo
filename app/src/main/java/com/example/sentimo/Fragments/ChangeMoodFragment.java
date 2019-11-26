@@ -29,6 +29,7 @@ import android.widget.ImageView;
 import com.example.sentimo.DatabaseListener;
 import com.example.sentimo.DisplayActivity;
 import com.example.sentimo.Emotions.Emotion;
+import com.example.sentimo.FriendActivity;
 import com.example.sentimo.InputErrorType;
 import com.example.sentimo.MainActivity;
 import com.example.sentimo.Mood;
@@ -116,47 +117,51 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
         dialog.show();
         // Method for reassigning positive button clicker to avoid automatic dismissal found at
         // StackOverflow post:https://stackoverflow.com/questions/2620444/how-to-prevent-a-dialog-from-closing-when-a-button-is-clicked
-        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (localImagePath != null) {
-                    if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                        requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, EXTERNAL_STORAGE_REQUEST_CODE);
+        if (dialog.getButton(AlertDialog.BUTTON_POSITIVE).getText() != "delete") {
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (localImagePath != null) {
+                        if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                            requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, EXTERNAL_STORAGE_REQUEST_CODE);
+                            return;
+                        }
+                    }
+                    String date = dateTextView.getText().toString();
+                    String time = timeTextView.getText().toString();
+                    InputErrorType errorCode = isDataValid();
+                    if (errorCode != InputErrorType.DataValid) {
+                        displayWarning(errorCode);
                         return;
                     }
+                    TimeFormatter timef = new TimeFormatter();
+                    try {
+                        timef.setTimeFormat(date, time);
+                    } catch (ParseException e) {
+                        return;
+                    }
+                    String reason = reasonEditText.getText().toString();
+                    Location location = null;
+                    if (locationCheckBox.isChecked()) {
+                        location = subclassLocationReturnBehaviour();
+                    }
+                    Double longitude = null;
+                    Double latitude = null;
+                    if (location != null) {
+                        longitude = location.getLongitude();
+                        latitude = location.getLatitude();
+                    }
+                    Mood myMood = new Mood(timef, ChangeMoodFragment.this.initialMood.getEmotion(),
+                            reason, ChangeMoodFragment.this.initialMood.getSituation(), longitude,
+                            latitude, ChangeMoodFragment.this.initialMood.getOnlinePath());
+                    callListener(myMood);
+                    ChangeMoodFragment.this.dismiss();
                 }
-                String date = dateTextView.getText().toString();
-                String time = timeTextView.getText().toString();
-                InputErrorType errorCode = isDataValid();
-                if (errorCode != InputErrorType.DataValid) {
-                    displayWarning(errorCode);
-                    return;
-                }
-                TimeFormatter timef = new TimeFormatter();
-                try {
-                    timef.setTimeFormat(date, time);
-                } catch (ParseException e) {
-                    return;
-                }
-                String reason = reasonEditText.getText().toString();
-                Location location = null;
-                if (locationCheckBox.isChecked()) {
-                    location = subclassLocationReturnBehaviour();
-                }
-                Double longitude = null;
-                Double latitude = null;
-                if (location != null) {
-                    longitude = location.getLongitude();
-                    latitude = location.getLatitude();
-                }
-                Mood myMood = new Mood(timef, ChangeMoodFragment.this.initialMood.getEmotion(),
-                        reason, ChangeMoodFragment.this.initialMood.getSituation(), longitude,
-                        latitude, ChangeMoodFragment.this.initialMood.getOnlinePath());
-                callListener(myMood);
-                ChangeMoodFragment.this.dismiss();
-            }
-        });
-        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setId(R.id.change_mood_fragment_positive_button);
+            });
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE).setId(R.id.change_mood_fragment_positive_button);
+        } else {
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE).setVisibility(View.INVISIBLE);
+        }
 
         return dialog;
     }
@@ -202,6 +207,8 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
             view = LayoutInflater.from(getActivity()).inflate(R.layout.add_mood_fragment, null);
         } else if (ChangeMoodFragment.this instanceof EditMoodFragment) {
             view = LayoutInflater.from(getActivity()).inflate(R.layout.edit_mood_fragment, null);
+        } else if (ChangeMoodFragment.this instanceof FriendMoodDisplayFragment) {
+            view = LayoutInflater.from(getActivity()).inflate(R.layout.add_mood_fragment, null);
         } else {
             throw new RuntimeException("CHANGE MOOD FRAGMENT RECEIVED UNKNOWN SUBCLASS");
         }
@@ -446,8 +453,13 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
             listener.onSuccess();
         } else {
             Log.d("TEST", "NEW DOWNLOAD");
-            MainActivity act = (MainActivity) getContext();
-            act.database.downloadPhoto(initialMood.getOnlinePath(), this, listener);
+            if (ChangeMoodFragment.this instanceof FriendMoodDisplayFragment) {
+                FriendActivity act = (FriendActivity)getContext();
+                act.database.downloadPhoto(initialMood.getOnlinePath(), this, listener);
+            } else {
+                MainActivity act = (MainActivity) getContext();
+                act.database.downloadPhoto(initialMood.getOnlinePath(), this, listener);
+            }
         }
     }
 

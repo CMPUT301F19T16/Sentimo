@@ -1,6 +1,7 @@
 package com.example.sentimo;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Environment;
@@ -303,8 +304,10 @@ public class Database {
     public void downloadPhoto(String onlinePath, final ChangeMoodFragment changeMoodFragment, final DatabaseListener listener) {
         StorageReference storedAt = firebaseStorage.getReference(onlinePath);
 
-        final MainActivity mainActivity = (MainActivity)changeMoodFragment.getActivity();
-        File path = new File(mainActivity.getApplicationContext().getFilesDir(), "file_name");
+//        final MainActivity mainActivity = (MainActivity)changeMoodFragment.getActivity();
+        Context myContext = changeMoodFragment.getActivity().getApplicationContext();
+        File path = new File(myContext.getFilesDir(), "file_name");
+//        File path = new File(mainActivity.getApplicationContext().getFilesDir(), "file_name");
         if (!path.exists()) {
             path.mkdirs();
         }

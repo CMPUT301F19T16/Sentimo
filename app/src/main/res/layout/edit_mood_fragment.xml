@@ -186,7 +186,8 @@
             android:textSize="20sp"
             app:layout_constraintBottom_toTopOf="@+id/reason_editText"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"></TextView>
+            app:layout_constraintTop_toTopOf="parent">
+        </TextView>
 
         <Button
             android:id="@+id/reason_image_button"
@@ -203,7 +204,8 @@
             app:layout_constraintHorizontal_bias="0.044"
             app:layout_constraintStart_toEndOf="@+id/reason_text"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="1.0"></Button>
+            app:layout_constraintVertical_bias="1.0">
+        </Button>
 
         <ImageView
             android:id="@+id/reason_image"
@@ -234,7 +236,8 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.8"
-            android:maxLength="20"></EditText>
+            android:maxLength="20">
+        </EditText>
 
         <TextView
             android:id="@+id/textView"
@@ -320,7 +323,8 @@
             android:textSize="20sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"></TextView>
+            app:layout_constraintTop_toTopOf="parent">
+        </TextView>
 
         <CheckBox
             android:id="@+id/location_checkbox"
@@ -333,7 +337,8 @@
             app:layout_constraintHorizontal_bias="0.689"
             app:layout_constraintStart_toEndOf="@+id/edit_location_textview"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.0"></CheckBox>
+            app:layout_constraintVertical_bias="0.0">
+        </CheckBox>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -7,11 +7,11 @@
     android:layout_height="fill_parent"
     android:background="#3E0C0E13"
     android:orientation="vertical"
-    android:paddingTop="20dp"
-    android:paddingBottom="20dp"
+    android:paddingTop="10dp"
+    android:paddingBottom="10dp"
     tools:context=".MainActivity">
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/main_screen_top_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -26,37 +26,52 @@
 
 
         <TextView
-            android:layout_width="170dp"
-            android:layout_height="40dp"
+            android:id="@+id/textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:fontFamily="serif-monospace"
             android:text="SENTIMO"
-            android:textAlignment="viewStart"
             android:textAppearance="@style/TextAppearance.AppCompat.Large"
             android:textColor="#673AB7"
             android:textSize="28sp"
-            android:textStyle="bold"></TextView>
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+        </TextView>
+
 
         <Button
             android:id="@+id/filter_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
             android:text="Filter"
             android:textSize="15dp"
-            android:visibility="visible">
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.052"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView"
+            app:layout_constraintVertical_bias="1.0">
         </Button>
-
 
         <TextView
             android:id="@+id/main_screen_username"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
+            android:layout_width="246dp"
+            android:layout_height="34dp"
             android:layout_gravity="center"
             android:text="USERNAME"
             android:textAlignment="viewEnd"
-            android:textSize="20dp">
+            android:textSize="20dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/textView"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0">
         </TextView>
-    </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 
     <ListView

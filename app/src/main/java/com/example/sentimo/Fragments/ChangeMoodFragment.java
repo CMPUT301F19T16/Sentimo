@@ -49,6 +49,7 @@ import java.io.FileOutputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 
 public abstract class ChangeMoodFragment extends DialogFragment implements SelectSituationFragment.SelectSituationListener, SelectMoodFragment.SelectMoodFragmentInteractionListener,
@@ -215,12 +216,21 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
 
     @Override
     public void DateReturned(int year, int month, int day) {
-        dateTextView.setText(day + "/" + month + "/" + year);
+        SimpleDateFormat df = new SimpleDateFormat("MMM. d, yyyy");
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.YEAR, year);
+        cal.set(Calendar.MONTH, month);
+        cal.set(Calendar.DAY_OF_MONTH, day);
+        dateTextView.setText(df.format(cal.getTime()));
     }
 
     @Override
     public void TimeReturned(int hourOfDay, int minute) {
-        timeTextView.setText(hourOfDay + ":" + minute);
+        SimpleDateFormat df = new SimpleDateFormat("h:mm a");
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.HOUR_OF_DAY, hourOfDay);
+        cal.set(Calendar.MINUTE, minute);
+        timeTextView.setText(df.format(cal.getTime()));
     }
 
     /**

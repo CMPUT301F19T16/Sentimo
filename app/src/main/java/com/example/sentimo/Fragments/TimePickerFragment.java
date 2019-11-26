@@ -7,23 +7,14 @@ import android.content.Context;
 import android.os.Bundle;
 
 import androidx.fragment.app.DialogFragment;
-
 import android.text.format.DateFormat;
-import android.util.Log;
 import android.widget.TimePicker;
-import com.example.sentimo.TimeFormatter;
 
-import java.text.ParseException;
 import java.util.Calendar;
-
 
 public class TimePickerFragment extends DialogFragment implements TimePickerDialog.OnTimeSetListener {
 
     TimePickerListener listener;
-//
-//    public TimePickerFragment() {
-//        // Required empty public constructor
-//    }
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {

@@ -51,7 +51,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
-public abstract class ChangeMoodFragment extends DialogFragment implements SelectSituationFragment.SelectSituationListener, SelectMoodFragment.SelectMoodFragmentInteractionListener {
+public abstract class ChangeMoodFragment extends DialogFragment implements SelectSituationFragment.SelectSituationListener, SelectMoodFragment.SelectMoodFragmentInteractionListener, TimePickerFragment.TimePickerListener {
     protected TextView dateTextView;
     protected TextView timeTextView;
     protected ImageView emojiImageView;
@@ -78,6 +78,7 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
 
     protected View.OnClickListener emotionClick;
     protected View.OnClickListener situationClick;
+    protected View.OnClickListener timeClick;
     protected View view;
 
     private String lastRequestedPermission = null;
@@ -104,6 +105,13 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
             @Override
             public void onClick(View v) {
                 new SelectSituationFragment().show(getChildFragmentManager(), "SELECT_SITUATION");
+            }
+        };
+
+        timeClick = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new TimePickerFragment().show(getChildFragmentManager(), "SELECT_TIME");
             }
         };
 
@@ -196,6 +204,11 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
         }
     }
 
+    @Override
+    public void TimeReturned(int hourOfDay, int minute) {
+        timeTextView.setText(hourOfDay + ":" + minute);
+    }
+
     /**
      *Shared initialization between subclasses
      *Separate non-constructor function required to allow hookup of UI before initialization
@@ -231,6 +244,8 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
         emojiImageView.setOnClickListener(emotionClick);
 
         situationButton.setOnClickListener(situationClick);
+
+        timeTextView.setOnClickListener(timeClick);
 
         reasonImageButton = view.findViewById(R.id.reason_image_button);
         reasonImageButton.setOnClickListener(new View.OnClickListener() {

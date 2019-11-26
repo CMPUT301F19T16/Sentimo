@@ -35,12 +35,12 @@ android:padding="10dp">
         android:layout_height="match_parent">
 
         <TextView
+            android:id="@+id/friend_name_textview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/friend_name_textview"
             android:layout_marginStart="4dp"
             android:layout_marginTop="4dp"
-            android:fontFamily="sans-serif-smallcaps"
+            android:fontFamily="casual"
             android:text="USERNAME"
             android:textAllCaps="true"
             android:textSize="20sp"
@@ -48,13 +48,13 @@ android:padding="10dp">
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"></TextView>
 
-    <TextView
-        android:id="@+id/mood_date"
+        <TextView
+            android:id="@+id/mood_date"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="4dp"
             android:layout_marginTop="4dp"
-            android:fontFamily="sans-serif-smallcaps"
+            android:fontFamily="casual"
             android:text="DATE"
             android:textAllCaps="true"
             android:textSize="20sp"
@@ -68,7 +68,7 @@ android:padding="10dp">
             android:layout_height="wrap_content"
             android:layout_marginStart="4dp"
             android:layout_marginBottom="4dp"
-            android:fontFamily="sans-serif-smallcaps"
+            android:fontFamily="casual"
             android:text="TIME"
             android:textAllCaps="true"
             android:textSize="20sp"

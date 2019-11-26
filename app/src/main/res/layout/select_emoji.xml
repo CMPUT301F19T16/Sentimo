@@ -13,10 +13,13 @@
         <TextView
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
+            android:fontFamily="casual"
             android:gravity="center_horizontal"
-            android:text="           Happy"
+            android:text="        Happy"
             android:textAllCaps="false"
-            android:textColor="#8BC34A" />
+            android:textAppearance="@style/TextAppearance.AppCompat.Small"
+            android:textColor="#8BC34A"
+            android:textStyle="bold" />
 
         <Button
             android:layout_width="80dp"
@@ -37,10 +40,13 @@
         <TextView
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
+            android:fontFamily="casual"
             android:gravity="center_horizontal"
-            android:text="          Sad"
+            android:text="        Sad"
             android:textAllCaps="false"
-            android:textColor="#3F51B5" />
+            android:textAppearance="@style/TextAppearance.AppCompat.Small"
+            android:textColor="#3F51B5"
+            android:textStyle="bold" />
 
         <Button
             android:layout_width="80dp"
@@ -68,10 +74,13 @@
         <TextView
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
+            android:fontFamily="casual"
             android:gravity="center_horizontal"
-            android:text="              Mad "
+            android:text="           Mad "
             android:textAllCaps="false"
-            android:textColor="#8D2017" />
+            android:textAppearance="@style/TextAppearance.AppCompat.Small"
+            android:textColor="#8D2017"
+            android:textStyle="bold" />
 
         <Button
             android:layout_width="80dp"
@@ -93,10 +102,13 @@
         <TextView
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
+            android:fontFamily="casual"
             android:gravity="center_horizontal"
             android:text="  Loved"
             android:textAllCaps="false"
-            android:textColor="#F44336" />
+            android:textAppearance="@style/TextAppearance.AppCompat.Small"
+            android:textColor="#F44336"
+            android:textStyle="bold" />
 
         <Button
             android:layout_width="80dp"
@@ -125,10 +137,13 @@
         <TextView
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
+            android:fontFamily="casual"
             android:gravity="center_horizontal"
             android:text="  Embarrassed"
             android:textAllCaps="false"
-            android:textColor="#E95384" />
+            android:textAppearance="@style/TextAppearance.AppCompat.Small"
+            android:textColor="#E95384"
+            android:textStyle="bold" />
 
         <Button
             android:layout_width="80dp"
@@ -150,10 +165,13 @@
         <TextView
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
+            android:fontFamily="casual"
             android:gravity="center_horizontal"
-            android:text="     Tired"
+            android:text="  Tired"
             android:textAllCaps="false"
-            android:textColor="#241F1F" />
+            android:textAppearance="@style/TextAppearance.AppCompat.Small"
+            android:textColor="#241F1F"
+            android:textStyle="bold" />
 
         <Button
             android:layout_width="80dp"
@@ -182,10 +200,13 @@
         <TextView
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
+            android:fontFamily="casual"
             android:gravity="center_horizontal"
-            android:text="      Confident"
+            android:text="    Confident"
             android:textAllCaps="false"
-            android:textColor="#FFEB3B" />
+            android:textAppearance="@style/TextAppearance.AppCompat.Small"
+            android:textColor="#F8E207"
+            android:textStyle="bold" />
 
         <Button
             android:layout_width="80dp"
@@ -207,10 +228,13 @@
         <TextView
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
+            android:fontFamily="casual"
             android:gravity="center_horizontal"
             android:text="Worried"
             android:textAllCaps="false"
-            android:textColor="#00BCD4" />
+            android:textAppearance="@style/TextAppearance.AppCompat.Small"
+            android:textColor="#00BCD4"
+            android:textStyle="bold" />
 
         <Button
             android:layout_width="80dp"

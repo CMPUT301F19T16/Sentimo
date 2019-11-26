@@ -8,11 +8,11 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:fontFamily="sans-serif-condensed-light"
+        android:fontFamily="casual"
         android:gravity="center"
         android:text="Enter Username of Friend: "
-        android:textAlignment="viewStart"
         android:textAllCaps="false"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
         android:textColor="#673AB7"
         android:textSize="18sp"
         android:textStyle="bold"></TextView>
@@ -21,8 +21,11 @@
         android:id="@+id/friend_search_editText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:fontFamily="casual"
         android:paddingHorizontal="20dp"
         android:paddingTop="20dp"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
         android:textColor="#BAE91E63"
-        android:textSize="15sp"></EditText>
+        android:textSize="15sp"
+        android:textStyle="bold"></EditText>
 </LinearLayout>

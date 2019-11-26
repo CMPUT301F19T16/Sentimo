@@ -8,6 +8,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.widget.ArrayAdapter;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdate;
@@ -63,48 +64,67 @@ public class DisplayMapActivity extends FragmentActivity implements OnMapReadyCa
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        database.addMoodListener(new DatabaseListener() {
-            @Override
-            public void onSuccess() {
-                moods = database.getMoodHistory();
-                if(mapName.equals(getString(R.string.my_map))){
-                    if(moods.isEmpty()) {
-                        Toast.makeText(DisplayMapActivity.this, "No Moods", Toast.LENGTH_SHORT).show();
-                    } else {
-                        for (int i = 0; i < moods.size(); i++) {
-                            mood = moods.get(i);
-                            if (mood.getEmotion() != null && mood.getLongitude() != null && mood.getLatitude() != null) {
-                                moodLocations.add(mood);
-                            }
-                        }
-                        if (moodLocations.isEmpty()) {
-                            Toast.makeText(DisplayMapActivity.this, "No Moods with Locations", Toast.LENGTH_SHORT).show();
-                        } else {
-                            for (int i = 0; i < moodLocations.size(); i++) {
-                                mood = moodLocations.get(i);
-                                Drawable image = getResources().getDrawable(mood.getEmotion().getImage());
-                                Bitmap bitmap = ((BitmapDrawable)image).getBitmap();
-                                bitmap = Bitmap.createScaledBitmap(bitmap, 60, 60, false);
-
-                                BitmapDescriptor icon = BitmapDescriptorFactory.fromBitmap(bitmap);
-                                LatLng location = new LatLng(mood.getLatitude(), mood.getLongitude());
-                                mMap.addMarker(new MarkerOptions()
-                                        .position(location)
-                                        .title(mood.getEmotion().getName()))
-                                        .setIcon(icon);
-                                if (i == moodLocations.size() - 1) {
-                                    mMap.moveCamera(CameraUpdateFactory.newLatLng(location));
-                                }
-                            }
-                        }
+        if(mapName.equals(getString(R.string.my_map))) {
+            database.addMoodListener(new DatabaseListener() {
+                @Override
+                public void onSuccess() {
+                    moods = database.getMoodHistory();
+                    if(!moods.isEmpty()){
+                        drawMap(moods);
                     }
                 }
-            }
+                @Override
+                public void onFailure() {
+                }
+            });
+        }
+        else if (mapName.equals(getString(R.string.friend_map))){
+            database.getSharedMoodList(new DatabaseListener() {
+                @Override
+                public void onSuccess() {
+                    moods = database.getSharedMood();
+                    if(!moods.isEmpty()){
+                        drawMap(moods);
+                    }
+                }
 
-            @Override
-            public void onFailure() {
-                Toast.makeText(DisplayMapActivity.this, "Couldn't get moods", Toast.LENGTH_SHORT);
+                @Override
+                public void onFailure() {
+                }
+            });
+        }
+    }
+    @Override
+    protected void onStop() {
+        super.onStop();
+        database.destroyListener();
+        finish();
+    }
+
+    private void drawMap(ArrayList<Mood> moods){
+        for (int i = 0; i < moods.size(); i++) {
+            mood = moods.get(i);
+            if (mood.getEmotion() != null && mood.getLongitude() != null && mood.getLatitude() != null) {
+                moodLocations.add(mood);
             }
-        });
+        }
+        if (!moodLocations.isEmpty()) {
+            for (int i = 0; i < moodLocations.size(); i++) {
+                mood = moodLocations.get(i);
+                Drawable image = getResources().getDrawable(mood.getEmotion().getImage());
+                Bitmap bitmap = ((BitmapDrawable) image).getBitmap();
+                bitmap = Bitmap.createScaledBitmap(bitmap, 60, 60, false);
+
+                BitmapDescriptor icon = BitmapDescriptorFactory.fromBitmap(bitmap);
+                LatLng location = new LatLng(mood.getLatitude(), mood.getLongitude());
+                mMap.addMarker(new MarkerOptions()
+                        .position(location)
+                        .title(mood.getEmotion().getName()))
+                        .setIcon(icon);
+                if (i == 0) {
+                    mMap.moveCamera(CameraUpdateFactory.newLatLng(location));
+                }
+            }
+        }
     }
 }

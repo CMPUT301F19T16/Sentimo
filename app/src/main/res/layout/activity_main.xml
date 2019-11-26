@@ -19,6 +19,7 @@
         android:layout_marginTop="4dp"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="4dp"
+        android:backgroundTint="#9EE91E63"
         app:layout_constraintBottom_toTopOf="@+id/mood_list"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -30,32 +31,36 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:fontFamily="serif-monospace"
+            android:layout_marginLeft="10dp"
+            android:fontFamily="serif"
             android:text="SENTIMO"
             android:textAppearance="@style/TextAppearance.AppCompat.Large"
             android:textColor="#673AB7"
-            android:textSize="28sp"
+            android:textSize="35sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-        </TextView>
+            app:layout_constraintTop_toTopOf="parent"></TextView>
 
 
         <Button
             android:id="@+id/filter_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
             android:layout_marginTop="4dp"
+            android:fontFamily="casual"
             android:text="Filter"
-            android:textSize="15dp"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textColor="#FC1F1D1D"
+            android:textSize="20dp"
+            android:textStyle="bold"
             android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/sentimo"
-            app:layout_constraintVertical_bias="0.166">
-        </Button>
+            app:layout_constraintVertical_bias="0.166"></Button>
 
         <Button
             android:id="@+id/main_screen_username"
@@ -65,17 +70,25 @@
             android:layout_marginTop="4dp"
             android:layout_marginEnd="4dp"
             android:layout_marginBottom="4dp"
+            android:background="@drawable/logintextstyle"
+            android:backgroundTint="#8FF8F6F7"
+            android:fontFamily="casual"
             android:text="username"
+            android:layout_marginRight="10dp"
+            android:paddingRight="10dp"
+            android:paddingLeft="10dp"
             android:textAlignment="viewEnd"
+            android:textAllCaps="true"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textColor="#673AB7"
             android:textSize="20dp"
-            android:textAllCaps="false"
+            android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toEndOf="@+id/sentimo"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.695">
-        </Button>
+            app:layout_constraintVertical_bias="0.695"></Button>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 
@@ -113,18 +126,20 @@
             android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:layout_marginLeft="8dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
-            android:layout_marginRight="8dp"
             android:layout_marginBottom="8dp"
+            android:fontFamily="casual"
             android:text="Map"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textColor="#FC1A1818"
+            android:textSize="20dp"
+            android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/add_button"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.0">
-        </Button>
+            app:layout_constraintVertical_bias="0.0"></Button>
 
         <Button
             android:id="@+id/add_button"
@@ -132,30 +147,36 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
+            android:fontFamily="casual"
             android:text="Add"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textColor="#DF131212"
+            android:textSize="20dp"
+            android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.0">
-        </Button>
+            app:layout_constraintVertical_bias="0.0"></Button>
 
         <Button
             android:id="@+id/friend_button"
             android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:layout_marginLeft="8dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
-            android:layout_marginRight="8dp"
             android:layout_marginBottom="8dp"
+            android:fontFamily="casual"
             android:text="Friends"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textColor="#F0131111"
+            android:textSize="20dp"
+            android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/add_button"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.0">
-        </Button>
+            app:layout_constraintVertical_bias="0.0"></Button>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

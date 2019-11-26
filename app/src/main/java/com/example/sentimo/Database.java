@@ -338,46 +338,38 @@ public class Database {
      *      custom listener
      */
     public void getSharedMoodList(final DatabaseListener listener) {
-        sharedMoodHistory.clear();
         fetchAllowedFriendList(new DatabaseListener() {
             @Override
             public void onSuccess() {
-                for (String username : allowedFriendList) {
-                    fetchSharedMoodList(username, listener);
+                if (allowedFriendList.size() > 0) {
+                    db.collectionGroup("SharedMood").whereIn("username", allowedFriendList).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                        @Override
+                        public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                            sharedMoodHistory.clear();
+                            List<DocumentSnapshot> data;
+                            if (queryDocumentSnapshots != null) {
+                                data = queryDocumentSnapshots.getDocuments();
+
+                                for (DocumentSnapshot d : data) {
+                                    Mood mood = d.toObject(Mood.class);
+                                    sharedMoodHistory.add(mood);
+                                }
+                                Collections.sort(sharedMoodHistory, Collections.<Mood>reverseOrder());
+                                listener.onSuccess();
+                            }
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            listener.onFailure();
+                        }
+                    });
                 }
             }
 
             @Override
             public void onFailure() {
                 listener.onFailure();
-            }
-        });
-    }
-
-    /**
-     * get a user's shared mood
-     * @param username
-     *      the user you get the mood from
-     * @param listener
-     *      custom listener
-     */
-    private void fetchSharedMoodList(String username, final DatabaseListener listener) {
-        CollectionReference sharedMoods = users.document(username).collection("SharedMood");
-        sharedMoods.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-            @Override
-            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                List<DocumentSnapshot> data;
-                if (queryDocumentSnapshots != null) {
-                    data = queryDocumentSnapshots.getDocuments();
-                    for (DocumentSnapshot d : data) {
-                        Mood mood = d.toObject(Mood.class);
-                        sharedMoodHistory.add(mood);
-                    }
-                    Collections.sort(sharedMoodHistory, Collections.<Mood>reverseOrder());
-                    if (listener != null) {
-                        listener.onSuccess();
-                    }
-                }
             }
         });
     }

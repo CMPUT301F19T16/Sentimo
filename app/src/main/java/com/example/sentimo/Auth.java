@@ -70,8 +70,9 @@ public class Auth {
     /**
      * Create a user using the given combination
      *
-     * @param logininfo username and password of the new user
-     * @param email     email of the new user
+     * @param logininfo    username and password of the new user
+     * @param email        email of the new user
+     * @param authListener Listener for monitoring authorization status
      */
     public void createUser(final LoginInfo logininfo, final String email, final FirebaseListener authListener) {
         db.collection("users").document(logininfo.getUsername()).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
@@ -121,7 +122,8 @@ public class Auth {
     /**
      * Logs in with given username and password if valid
      *
-     * @param loginInfo username and password of a user
+     * @param loginInfo    username and password of a user
+     * @param authListener Listener for monitoring authorization status
      */
     public void loginUser(final LoginInfo loginInfo, final FirebaseListener authListener) {
         db.collection("users").document(loginInfo.getUsername()).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
@@ -154,5 +156,24 @@ public class Auth {
      */
     public void logoutUser() {
         mAuth.signOut();
+    }
+
+    /**
+     * Send a password reset email
+     *
+     * @param email        Email address of a user
+     * @param authListener Listener for monitoring authorization status
+     */
+    public void sendResetEmail(final String email, final FirebaseListener authListener) {
+        mAuth.sendPasswordResetEmail(email).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful()) {
+                    authListener.onSuccess();
+                } else {
+                    authListener.onFailure();
+                }
+            }
+        });
     }
 }

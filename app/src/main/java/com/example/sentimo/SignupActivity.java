@@ -45,7 +45,7 @@ public class SignupActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (allowLogin) {
-                    returnSignupInfo();
+                    signup();
                 }
             }
         });
@@ -56,7 +56,7 @@ public class SignupActivity extends AppCompatActivity {
      * Create new account with given email, username and password and log in if successful,
      * otherwise displays a warning.
      */
-    private void returnSignupInfo() {
+    private void signup() {
         allowLogin = false;
         String username = usernameEditText.getText().toString();
         String password = passwordEditText.getText().toString();

@@ -4,39 +4,39 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.provider.ContactsContract;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.sentimo.Fragments.EditMoodFragment;
 import com.example.sentimo.Fragments.FriendMoodDisplayFragment;
 import com.example.sentimo.Fragments.FriendSearchFragment;
-import com.google.firebase.firestore.ListenerRegistration;
+import android.util.Log;
 
 import java.util.ArrayList;
 
+/**
+ * An activity to coordinate friend following and sharing of Moods. Links to activities where a
+ * user can make or approve follow requests. Displays the most recent moods of all approved followed
+ * friends.
+ */
 public class FriendActivity extends AppCompatActivity implements FriendSearchFragment.OnFragmentInteractionListener{
 
     private ArrayList<Mood> friendMoodDataList;
     private ArrayAdapter<Mood> friendMoodAdapter;
     private Button backButton;
     private Button searchButton;
-    private Button friendRequstButton;
+    private Button friendRequestButton;
     private ListView friendListView;
     public Database database;
     private Auth auth;
     private ArrayList<String> userFollowing;
-    private ArrayList<Mood> tempMood;
 
     /**
-     *
-     * @param savedInstanceState
+     * Initialization behaviour for activity
+     * @param savedInstanceState information being passed to FriendActivity
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,7 +50,7 @@ public class FriendActivity extends AppCompatActivity implements FriendSearchFra
 
         backButton = findViewById(R.id.friend_back_button);
         searchButton = findViewById(R.id.friend_search_button);
-        friendRequstButton = findViewById(R.id.friend_request_button);
+        friendRequestButton = findViewById(R.id.friend_request_button);
         friendListView = findViewById(R.id.friend_list);
 
         backButton.setOnClickListener(new View.OnClickListener() {
@@ -81,16 +81,16 @@ public class FriendActivity extends AppCompatActivity implements FriendSearchFra
         fetchAllMoodsForFriends();
 
         friendListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            // Display full details for friend Mood on click of list item
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Mood mood = friendMoodDataList.get(position);
                 new FriendMoodDisplayFragment(mood).show(getSupportFragmentManager(), "FRIEND_MOOD");
-//                new EditMoodFragment(mood, position).show(getSupportFragmentManager(), "EDIT_MOOD");
-                // Implement display only edit mood type fragment so can see full details
             }
         });
 
-        friendRequstButton.setOnClickListener(new View.OnClickListener() {
+        friendRequestButton.setOnClickListener(new View.OnClickListener() {
+            // Launch friend request activity
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(FriendActivity.this, FriendRequestActivity.class);
@@ -101,9 +101,8 @@ public class FriendActivity extends AppCompatActivity implements FriendSearchFra
 
     /**
      *  search if the username exist. If the username exists, add it to the follow list if it's
-     *  not in the list or as same as the current user's username
-     * @param username
-     *      username entered
+     *  not in the list or the same as the current user's username
+     * @param username username entered to be searched for
      */
     @Override
     public void onSearchPressed(final String username){
@@ -159,6 +158,10 @@ public class FriendActivity extends AppCompatActivity implements FriendSearchFra
         });
     }
 
+    /**
+     * Fetches the most recent mood of all the approved followed friends of the current user
+     * from the Database
+     */
     private void fetchAllMoodsForFriends() {
         database.getSharedMoodList(new DatabaseListener() {
             @Override

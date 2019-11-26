@@ -267,7 +267,8 @@ public class Database {
 
         Uri localPath = Uri.fromFile(new File(stringPath));
         final StorageReference reference = firebaseStorage.getReference();
-        final StorageReference storageLocation = reference.child("images/" + incompleteMood.hashCode());
+        long millisecondTime = System.currentTimeMillis();
+        final StorageReference storageLocation = reference.child("images/" + incompleteMood.hashCode() + ":" + getUsername() + ":" + millisecondTime);
         UploadTask uploadTask = storageLocation.putFile(localPath);
         Task<Uri> urlTask = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
             @Override

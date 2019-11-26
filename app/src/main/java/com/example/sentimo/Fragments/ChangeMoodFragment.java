@@ -110,14 +110,12 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
         sharedInitialization();
         subclassInitialization();
 
-        TextView testTextView = view.findViewById(R.id.emotion_textview);
-
         AlertDialog.Builder builder = returnBuilder();
         AlertDialog dialog = builder.create();
         dialog.show();
         // Method for reassigning positive button clicker to avoid automatic dismissal found at
         // StackOverflow post:https://stackoverflow.com/questions/2620444/how-to-prevent-a-dialog-from-closing-when-a-button-is-clicked
-        if (dialog.getButton(AlertDialog.BUTTON_POSITIVE).getText() != "delete") {
+        if (dialog.getButton(AlertDialog.BUTTON_POSITIVE).getText() != getString(R.string.friend_mood_display_fragment_positive_text)) {
             dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -160,6 +158,7 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
             });
             dialog.getButton(AlertDialog.BUTTON_POSITIVE).setId(R.id.change_mood_fragment_positive_button);
         } else {
+            // Disable submit button for display only view
             dialog.getButton(AlertDialog.BUTTON_POSITIVE).setVisibility(View.INVISIBLE);
         }
 

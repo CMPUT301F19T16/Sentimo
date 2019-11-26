@@ -34,6 +34,10 @@ public class FriendActivity extends AppCompatActivity implements FriendSearchFra
     private ArrayList<String> userFollowing;
     private ArrayList<Mood> tempMood;
 
+    /**
+     *
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

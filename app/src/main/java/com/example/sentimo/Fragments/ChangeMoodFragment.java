@@ -51,7 +51,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
-public abstract class ChangeMoodFragment extends DialogFragment implements SelectSituationFragment.SelectSituationListener, SelectMoodFragment.SelectMoodFragmentInteractionListener, TimePickerFragment.TimePickerListener {
+public abstract class ChangeMoodFragment extends DialogFragment implements SelectSituationFragment.SelectSituationListener, SelectMoodFragment.SelectMoodFragmentInteractionListener,
+                                                                            DatePickerFragment.DatePickerListener, TimePickerFragment.TimePickerListener {
     protected TextView dateTextView;
     protected TextView timeTextView;
     protected ImageView emojiImageView;
@@ -78,6 +79,7 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
 
     protected View.OnClickListener emotionClick;
     protected View.OnClickListener situationClick;
+    protected View.OnClickListener dateClick;
     protected View.OnClickListener timeClick;
     protected View view;
 
@@ -105,6 +107,13 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
             @Override
             public void onClick(View v) {
                 new SelectSituationFragment().show(getChildFragmentManager(), "SELECT_SITUATION");
+            }
+        };
+
+        dateClick = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new DatePickerFragment().show(getChildFragmentManager(), "SELECT_DATE");
             }
         };
 
@@ -205,6 +214,11 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
     }
 
     @Override
+    public void DateReturned(int year, int month, int day) {
+        dateTextView.setText(day + "/" + month + "/" + year);
+    }
+
+    @Override
     public void TimeReturned(int hourOfDay, int minute) {
         timeTextView.setText(hourOfDay + ":" + minute);
     }
@@ -245,6 +259,7 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
 
         situationButton.setOnClickListener(situationClick);
 
+        dateTextView.setOnClickListener(dateClick);
         timeTextView.setOnClickListener(timeClick);
 
         reasonImageButton = view.findViewById(R.id.reason_image_button);

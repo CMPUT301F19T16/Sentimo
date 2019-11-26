@@ -31,7 +31,10 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login_screen);
         auth = new Auth(getApplicationContext());
-
+        if (auth.isLogin()) {
+            auth.reloadUser();
+            finish();
+        }
         usernameEditText = findViewById(R.id.Username_LS_editText);
         passwordEditText = findViewById(R.id.Password_LS_editText);
         loginSubmitButton = findViewById(R.id.button_login);
@@ -52,17 +55,6 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
-    /**
-     * Reloads into MainActivity the current user is valid
-     */
-    @Override
-    protected void onResume() {
-        super.onResume();
-        if (auth.isLogin()) {
-            auth.reloadUser();
-            finish();
-        }
-    }
 
     /**
      * Validates entered username and password and login if a valid username and password combination is provided,

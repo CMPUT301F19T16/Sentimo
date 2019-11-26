@@ -30,6 +30,10 @@ public class SignupActivity extends AppCompatActivity {
         setContentView(R.layout.sign_up_screen);
 
         auth = new Auth(getApplicationContext());
+        if (auth.isLogin()) {
+            auth.reloadUser();
+            finish();
+        }
         submitSignup = findViewById(R.id.submit_signup_button);
         usernameEditText = findViewById(R.id.Username_SP_editText);
         passwordEditText = findViewById(R.id.Password_SP_editText);
@@ -43,17 +47,6 @@ public class SignupActivity extends AppCompatActivity {
         });
     }
 
-    /**
-     * Reloads into MainActivity the current user is valid
-     */
-    @Override
-    protected void onResume() {
-        super.onResume();
-        if (auth.isLogin()) {
-            auth.reloadUser();
-            finish();
-        }
-    }
 
     /**
      * Create new account with given email, username and password and log in if successful,

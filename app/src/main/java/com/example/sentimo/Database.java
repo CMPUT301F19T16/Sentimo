@@ -345,9 +345,9 @@ public class Database {
                     db.collectionGroup("SharedMood").whereIn("username", allowedFriendList).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                         @Override
                         public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                            sharedMoodHistory.clear();
+                            List<DocumentSnapshot> data;
                             if (queryDocumentSnapshots != null) {
-                                sharedMoodHistory.clear();
-                                List<DocumentSnapshot> data;
                                 data = queryDocumentSnapshots.getDocuments();
 
                                 for (DocumentSnapshot d : data) {

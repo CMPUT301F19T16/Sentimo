@@ -7,11 +7,7 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.widget.ArrayAdapter;
-import android.widget.TextView;
-import android.widget.Toast;
 
-import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -65,7 +61,7 @@ public class DisplayMapActivity extends FragmentActivity implements OnMapReadyCa
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         if(mapName.equals(getString(R.string.my_map))) {
-            database.addMoodListener(new DatabaseListener() {
+            database.addMoodListener(new FirebaseListener() {
                 @Override
                 public void onSuccess() {
                     moods = database.getMoodHistory();
@@ -79,7 +75,7 @@ public class DisplayMapActivity extends FragmentActivity implements OnMapReadyCa
             });
         }
         else if (mapName.equals(getString(R.string.friend_map))){
-            database.getSharedMoodList(new DatabaseListener() {
+            database.getSharedMoodList(new FirebaseListener() {
                 @Override
                 public void onSuccess() {
                     moods = database.getSharedMood();

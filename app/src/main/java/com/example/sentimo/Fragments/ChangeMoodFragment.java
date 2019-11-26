@@ -22,11 +22,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.ImageView;
 
-import com.example.sentimo.DatabaseListener;
+import com.example.sentimo.FirebaseListener;
 import com.example.sentimo.DisplayActivity;
 import com.example.sentimo.Emotions.Emotion;
 import com.example.sentimo.FriendActivity;
@@ -45,7 +44,6 @@ import androidx.core.content.FileProvider;
 import androidx.fragment.app.DialogFragment;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -430,7 +428,7 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
             displayLocalImage(localImagePath);
         } else if (initialMood.getOnlinePath() != null) {
             // Start progress bar with timeout
-            downloadAndSetPath(new DatabaseListener() {
+            downloadAndSetPath(new FirebaseListener() {
                 @Override
                 public void onSuccess() {
                     displayLocalImage(downloadedImagePath);
@@ -445,7 +443,7 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
         }
     }
 
-    public void downloadAndSetPath(DatabaseListener listener) {
+    public void downloadAndSetPath(FirebaseListener listener) {
         // Path set in Database class download method before calling onSuccess listener
         // Only downloads if local copy not already present
         if (downloadedImagePath != null) {
@@ -464,7 +462,7 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
     }
 
     public void downloadAndSetThumbnail() {
-        downloadAndSetPath(new DatabaseListener() {
+        downloadAndSetPath(new FirebaseListener() {
             @Override
             public void onSuccess() {
                 setThumbnail(downloadedImagePath);

@@ -1,42 +1,21 @@
 package com.example.sentimo;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.net.Uri;
-import android.os.Environment;
 import android.util.Log;
-import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-
 import com.example.sentimo.Fragments.ChangeMoodFragment;
-import com.google.android.gms.tasks.Continuation;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
-import com.google.firebase.firestore.FieldValue;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.ListenerRegistration;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
+import com.google.android.gms.tasks.*;
+import com.google.firebase.firestore.*;
 import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.File;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -68,10 +47,10 @@ public class Database {
 
     /**
      * Returns the username of the user.
-     * @return
-     *  Returns a string that represents the username.
+     *
+     * @return Returns a string that represents the username.
      */
-    public String getUsername(){
+    public String getUsername() {
         return this.username;
     }
 
@@ -107,20 +86,20 @@ public class Database {
         storageLocation.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
-                Log.d("SUCCESS","DELETED IMAGE");
+                Log.d("SUCCESS", "DELETED IMAGE");
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Log.d("SUCCESS","DELETED IMAGE");
+                Log.d("SUCCESS", "DELETED IMAGE");
             }
         });
     }
 
     /**
      * get the collection reference of user's mood list
-     * @return
-     *      the reference pointing to user's moods
+     *
+     * @return the reference pointing to user's moods
      */
     public CollectionReference getUserMoods() {
         return users.document(this.username).collection("moods");
@@ -128,8 +107,8 @@ public class Database {
 
     /**
      * get mood list
-     * @return
-     *      user's mood list
+     *
+     * @return user's mood list
      */
     public ArrayList<Mood> getMoodHistory() {
         return moodHistory;
@@ -138,7 +117,7 @@ public class Database {
     /**
      * listen to the mood list from cloud, sorted by reverse chronological order
      */
-    public void addMoodListener(final DatabaseListener moodListener) {
+    public void addMoodListener(final FirebaseListener moodListener) {
         CollectionReference userMoods = this.getUserMoods();
         moodHistoryReg = userMoods.addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
@@ -177,8 +156,8 @@ public class Database {
 
     /**
      * get a list of users who you already applied for following
-     * @return
-     *      an array list of users who you already applied for following
+     *
+     * @return an array list of users who you already applied for following
      */
     public ArrayList<String> getUserFollowing() {
         return userFollowing;
@@ -186,8 +165,8 @@ public class Database {
 
     /**
      * get a list of your friends' mood
-     * @return
-     *      an array list of shared moods from users who give you permission
+     *
+     * @return an array list of shared moods from users who give you permission
      */
     public ArrayList<Mood> getSharedMood() {
         return sharedMoodHistory;
@@ -195,12 +174,11 @@ public class Database {
 
     /**
      * check if user exist
-     * @param listener
-     *      custom listener
-     * @param username
-     *      the user being checked
+     *
+     * @param listener custom listener
+     * @param username the user being checked
      */
-    public void isUserExist(final DatabaseListener listener, String username) {
+    public void isUserExist(final FirebaseListener listener, String username) {
         users.document(username).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
@@ -218,7 +196,7 @@ public class Database {
     /**
      * get a list of users who you already applied for following
      */
-    public void fetchFollowList(final DatabaseListener listener) {
+    public void fetchFollowList(final FirebaseListener listener) {
         userFollowing.clear();
         users.document(this.username).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
@@ -238,10 +216,10 @@ public class Database {
 
     /**
      * add a user to the list of users who you already applied for following
-     * @param username
-     *      the username added to the list
+     *
+     * @param username the username added to the list
      */
-    public void setFollowList(String username, final DatabaseListener listener) {
+    public void setFollowList(String username, final FirebaseListener listener) {
         users.document(this.username).update("followList", FieldValue.arrayUnion(username)).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
@@ -257,8 +235,9 @@ public class Database {
 
     /**
      * Method for adding a Mood and corresponding photo
+     *
      * @param incompleteMood Mood to be added, without its onlinePath initially
-     * @param stringPath Local path to photo file to be uploaded
+     * @param stringPath     Local path to photo file to be uploaded
      * @return
      */
     // Upload method uses information from Google's Firebase storage upload example: https://firebase.google.com/docs/storage/android/upload-files
@@ -287,8 +266,7 @@ public class Database {
                     Mood completeMood = new Mood(incompleteMood);
                     completeMood.setOnlinePath(storageLocation.getPath());
                     addMood(completeMood);
-                }
-                else {
+                } else {
                     Log.e("Photo upload error", stringPath);
                 }
             }
@@ -298,11 +276,12 @@ public class Database {
 
     /**
      * Method for downloading a photo file from Firebase Storage
+     *
      * @param onlinePath Database path to the file to be downloaded
      */
     // Uses elements of Google's Firebase Storage examples found here: https://firebase.google.com/docs/storage/web/download-files
     // Inspired by elements of StackOverflow post: https://stackoverflow.com/questions/39905719/how-to-download-a-file-from-firebase-storage-to-the-external-storage-of-android
-    public void downloadPhoto(String onlinePath, final ChangeMoodFragment changeMoodFragment, final DatabaseListener listener) {
+    public void downloadPhoto(String onlinePath, final ChangeMoodFragment changeMoodFragment, final FirebaseListener listener) {
         StorageReference storedAt = firebaseStorage.getReference(onlinePath);
 
 //        final MainActivity mainActivity = (MainActivity)changeMoodFragment.getActivity();
@@ -327,7 +306,7 @@ public class Database {
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Log.d("FAILURE","FAILURE");
+                Log.d("FAILURE", "FAILURE");
                 listener.onFailure();
             }
         });
@@ -335,11 +314,11 @@ public class Database {
 
     /**
      * get shared mood list from friends who give permission
-     * @param listener
-     *      custom listener
+     *
+     * @param listener custom listener
      */
-    public void getSharedMoodList(final DatabaseListener listener) {
-        fetchAllowedFriendList(new DatabaseListener() {
+    public void getSharedMoodList(final FirebaseListener listener) {
+        fetchAllowedFriendList(new FirebaseListener() {
             @Override
             public void onSuccess() {
                 if (allowedFriendList.size() > 0) {
@@ -377,10 +356,10 @@ public class Database {
 
     /**
      * get all pending requests
-     * @param listener
-     *      custom listener
+     *
+     * @param listener custom listener
      */
-    public void fetchPendingRequests(final DatabaseListener listener) {
+    public void fetchPendingRequests(final FirebaseListener listener) {
         users.document(this.username).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
@@ -400,12 +379,11 @@ public class Database {
 
     /**
      * send follow request to a user
-     * @param username
-     *      the user you send the request to
-     * @param listener
-     *      custom listener
+     *
+     * @param username the user you send the request to
+     * @param listener custom listener
      */
-    public void sendRequest(String username, final DatabaseListener listener) {
+    public void sendRequest(String username, final FirebaseListener listener) {
         users.document(username).update("pendingRequests", FieldValue.arrayUnion(this.username)).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
@@ -421,8 +399,8 @@ public class Database {
 
     /**
      * get the pending request array list
-     * @return
-     *      pending requests array list
+     *
+     * @return pending requests array list
      */
     public ArrayList<String> getPendingRequests() {
         return this.pendingRequestsList;
@@ -430,16 +408,15 @@ public class Database {
 
     /**
      * accept others' following request
-     * @param username
-     *      the user you accept the request from
-     * @param listener
-     *      custom listener
+     *
+     * @param username the user you accept the request from
+     * @param listener custom listener
      */
-    public void confirmFollowRequest(final String username, final DatabaseListener listener) {
+    public void confirmFollowRequest(final String username, final FirebaseListener listener) {
         users.document(username).update("allowedFollowingUsers", FieldValue.arrayUnion(this.username)).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
-                removeFollowRequest(username,listener);
+                removeFollowRequest(username, listener);
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
@@ -449,7 +426,7 @@ public class Database {
         });
     }
 
-    private void removeFollowRequest(String username, final DatabaseListener listener) {
+    private void removeFollowRequest(String username, final FirebaseListener listener) {
         users.document(this.username).update("pendingRequests", FieldValue.arrayRemove(username)).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
@@ -460,8 +437,8 @@ public class Database {
 
     /**
      * get users who give you permission on following
-     * @return
-     *      an array list of users who give you permission on following
+     *
+     * @return an array list of users who give you permission on following
      */
     public ArrayList<String> getAllowedFriendList() {
         return allowedFriendList;
@@ -469,10 +446,10 @@ public class Database {
 
     /**
      * get all users who give you permission on following
-     * @param listener
-     *      custom listener
+     *
+     * @param listener custom listener
      */
-    public void fetchAllowedFriendList(final DatabaseListener listener) {
+    public void fetchAllowedFriendList(final FirebaseListener listener) {
         users.document(this.username).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {

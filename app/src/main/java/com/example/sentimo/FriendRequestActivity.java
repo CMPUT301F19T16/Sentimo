@@ -62,7 +62,7 @@ public class FriendRequestActivity extends AppCompatActivity {
     }
 
     private void fetchAllRequests() {
-        database.fetchPendingRequests(new DatabaseListener() {
+        database.fetchPendingRequests(new FirebaseListener() {
             @Override
             public void onSuccess() {
                 pendingRequestsList = database.getPendingRequests();
@@ -77,7 +77,7 @@ public class FriendRequestActivity extends AppCompatActivity {
     }
 
     private void confirmFollowRequest(final String username) {
-        database.confirmFollowRequest(username, new DatabaseListener() {
+        database.confirmFollowRequest(username, new FirebaseListener() {
             @Override
             public void onSuccess() {
                 fetchAllRequests();

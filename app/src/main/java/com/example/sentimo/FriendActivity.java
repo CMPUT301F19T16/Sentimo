@@ -4,20 +4,15 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.provider.ContactsContract;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.sentimo.Fragments.EditMoodFragment;
 import com.example.sentimo.Fragments.FriendMoodDisplayFragment;
 import com.example.sentimo.Fragments.FriendSearchFragment;
-import com.google.firebase.firestore.ListenerRegistration;
 
 import java.util.ArrayList;
 
@@ -105,10 +100,10 @@ public class FriendActivity extends AppCompatActivity implements FriendSearchFra
     public void onSearchPressed(final String username){
         // Should check if user exists in the Sentimo database.
         // If not, displays a fragment telling the user that it doesn't exist.
-        database.fetchFollowList(new DatabaseListener() {
+        database.fetchFollowList(new FirebaseListener() {
             @Override
             public void onSuccess() {
-                database.isUserExist(new DatabaseListener() {
+                database.isUserExist(new FirebaseListener() {
                     @Override
                     public void onSuccess() {
                         userFollowing = database.getUserFollowing();
@@ -117,10 +112,10 @@ public class FriendActivity extends AppCompatActivity implements FriendSearchFra
                         } else if (userFollowing.contains(username))
                             Toast.makeText(FriendActivity.this, "Already Followed", Toast.LENGTH_SHORT).show();
                         else {
-                            database.sendRequest(username, new DatabaseListener() {
+                            database.sendRequest(username, new FirebaseListener() {
                                 @Override
                                 public void onSuccess() {
-                                    database.setFollowList(username, new DatabaseListener() {
+                                    database.setFollowList(username, new FirebaseListener() {
                                         @Override
                                         public void onSuccess() {
                                             Toast.makeText(FriendActivity.this, "Request Sent", Toast.LENGTH_SHORT).show();
@@ -156,7 +151,7 @@ public class FriendActivity extends AppCompatActivity implements FriendSearchFra
     }
 
     private void fetchAllMoodsForFriends() {
-        database.getSharedMoodList(new DatabaseListener() {
+        database.getSharedMoodList(new FirebaseListener() {
             @Override
             public void onSuccess() {
                 friendMoodAdapter.notifyDataSetChanged();

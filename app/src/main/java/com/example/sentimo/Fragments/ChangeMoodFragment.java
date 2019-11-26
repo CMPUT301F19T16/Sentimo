@@ -485,6 +485,7 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
         Bitmap myBitmap = BitmapFactory.decodeFile(localPath);
         BitmapDrawable bitmapDrawable = new BitmapDrawable(getResources(), myBitmap);
 //        reasonImageButton.setBackground(bitmapDrawable);
+        reasonImageView.setScaleType(ImageView.ScaleType.FIT_XY);
         reasonImageView.setImageBitmap(myBitmap);
         reasonImageView.setBackgroundColor(getResources().getColor(android.R.color.transparent));
     }

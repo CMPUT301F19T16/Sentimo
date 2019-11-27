@@ -272,9 +272,6 @@ public class MainActivity extends AppCompatActivity implements AddMoodFragment.A
         } else {
             database.deleteMoodOnly(mood);
         }
-        // Is the line below necessary?
-        //        moodDataList.remove(mood);
-        //        moodAdapter.notifyDataSetChanged();
     }
 
     /**
@@ -317,6 +314,10 @@ public class MainActivity extends AppCompatActivity implements AddMoodFragment.A
         }
     }
 
+    /**
+     * Method to launch map display activity
+     * @param button Button associated with the map type to be launched
+     */
     @Override
     public void onMapSelected(String button) {
         if (button != null) {
@@ -341,18 +342,5 @@ public class MainActivity extends AppCompatActivity implements AddMoodFragment.A
                 Toast.makeText(MainActivity.this, "fail to get moods", Toast.LENGTH_SHORT).show();
             }
         });
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        ChangeMoodFragment dialogFragment = (ChangeMoodFragment) (getSupportFragmentManager().findFragmentById(R.id.add_mood_fragment));
-        if (requestCode == 1) {
-            String localImagePath = data.getData().toString();
-            Log.d("TEST", localImagePath);
-//            dialogFragment.setLocalImagePath(localImagePath);
-        } else if (requestCode == 71) {
-            Log.d("REE", "GALLERY HANDLED BY MAIN");
-        }
     }
 }

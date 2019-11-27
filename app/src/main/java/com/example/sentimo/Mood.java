@@ -50,6 +50,7 @@ public class Mood implements Serializable, Comparable{
         longitude = mood.getLongitude();
         latitude = mood.getLatitude();
         onlinePath = mood.getOnlinePath();
+        username = mood.getUsername();
     }
 
     /**

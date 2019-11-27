@@ -21,6 +21,7 @@ import com.example.sentimo.Fragments.ChangeMoodFragment;
 import com.example.sentimo.Fragments.EditMoodFragment;
 import com.example.sentimo.Fragments.FilterFragment;
 import com.example.sentimo.Fragments.MapSelectFragment;
+import com.google.android.gms.tasks.OnSuccessListener;
 
 import java.util.ArrayList;
 
@@ -172,7 +173,8 @@ public class MainActivity extends AppCompatActivity implements AddMoodFragment.A
                             partialDataList.remove(mood);
                             partialAdapter.notifyDataSetChanged();
                         }
-                        deleteMood(mood, true);
+//                        deleteMood(mood, true);
+                        deleteMood(mood);
                     }
                 });
                 alert.setNegativeButton("NO", null);
@@ -235,16 +237,14 @@ public class MainActivity extends AppCompatActivity implements AddMoodFragment.A
      */
     @Override
     public void onConfirmEditPressed(Mood mood, int position, String localPath) {
-        // Start progress bar
         Mood oldMood = moodAdapter.getItem(position);
-        Boolean isDeletePicture = false;
         if (mood.getOnlinePath() == null && oldMood.getOnlinePath() != null) {
-            isDeletePicture = true;
+            deleteMood(oldMood);
+        } else {
+            deleteMoodButNotPhoto(mood);
         }
-        deleteMood(oldMood, isDeletePicture);
+//        deleteMood(oldMood, isDeletePicture);
         uploadMood(mood, localPath);
-        // End progress bar
-        // Timeout on network failure
     }
 
     /**
@@ -266,12 +266,24 @@ public class MainActivity extends AppCompatActivity implements AddMoodFragment.A
      *
      * @param mood the Mood to be deleted
      */
-    private void deleteMood(Mood mood, Boolean deletePicture) {
-        if (deletePicture) {
-            database.deleteMoodAndPicture(mood);
-        } else {
-            database.deleteMoodOnly(mood);
-        }
+    private void deleteMood(Mood mood) {
+        // Deletes the Photo associated with the Mood as well, if any
+        database.deleteMoodAndPicture(mood);
+    }
+
+    /**
+     * Delete method that doesn't delete a photo associated with a mood, for example when
+     * editing a mood but keeping the same online picture
+     * @param mood The Mood to be deleted
+     */
+    private void deleteMoodButNotPhoto(Mood mood) {
+        database.deleteMoodOnly(mood, new OnSuccessListener() {
+            @Override
+            public void onSuccess(Object o) {
+                Log.i("Success", "Mood deleted, photo maintained.");
+                // No behaviour needed here
+            }
+        });
     }
 
     /**

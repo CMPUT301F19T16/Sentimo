@@ -83,21 +83,38 @@ public class Database {
      *
      * @param mood mood to be deleted
      */
-    public void deleteMoodAndPicture(Mood mood) {
-        deleteMoodOnly(mood);
-        if (mood.getOnlinePath() != null) {
-            deletePhoto(mood.getOnlinePath());
-        }
+    public void deleteMoodAndPicture(final Mood mood) {
+        deleteMoodOnly(mood, new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                if (mood.getOnlinePath() != null) {
+                    deletePhoto(mood.getOnlinePath());
+                }
+            }
+        });
     }
 
     /**
-     * Delete the provided Mood that does not have an associated photo in Firebase Storage
+     * Delete the provided Mood from Firebase Database
      * @param mood the mood to be deleted
      */
-    public void deleteMoodOnly(Mood mood) {
+    public void deleteMoodOnly(Mood mood, final OnSuccessListener listener) {
         CollectionReference userMoods = getUserMoods();
         String hashcode = Integer.toString(mood.hashCode());
-        userMoods.document(hashcode).delete();
+        userMoods.document(hashcode).delete()
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.i("success", "Mood deleted. Success listener to be called.");
+                        listener.onSuccess(aVoid);
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.i("Failure", "Mood not deleted.");
+                    }
+                });
     }
 
     /**
@@ -109,12 +126,12 @@ public class Database {
         storageLocation.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
-                Log.d("SUCCESS", "DELETED IMAGE");
+                Log.i("success", "Deleted image.");
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Log.d("FAILURE","Did not delete image");
+                Log.i("Failure","Did not delete image.");
             }
         });
     }
@@ -282,8 +299,7 @@ public class Database {
             @Override
             public void onComplete(@NonNull Task<Uri> task) {
                 if (task.isSuccessful()) {
-                    Uri downloadUri = task.getResult();
-                    Log.d("SUCCESS", storageLocation.getPath());
+                    Log.d("success", "Photo sucessfully uploaded.");
                     Mood completeMood = new Mood(incompleteMood);
                     completeMood.setOnlinePath(storageLocation.getPath());
                     addMood(completeMood);

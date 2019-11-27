@@ -36,8 +36,6 @@ public class EditMoodFragment extends ChangeMoodFragment {
         this.initialMood = new Mood(mood);
     }
 
-    // Subclass UI initialization
-
     /**
      * Subclass specific initialization (required to ensure called after UI hookup)
      */
@@ -64,8 +62,6 @@ public class EditMoodFragment extends ChangeMoodFragment {
         locationCheckBox.setEnabled(false);
     }
 
-    // Subclass listener interfaces and methods
-
     /**
      * Listener for activity calling EditMoodFragment to receive a mood back
      */
@@ -74,6 +70,10 @@ public class EditMoodFragment extends ChangeMoodFragment {
     }
 
 
+    /**
+     * Behaviour for fragment attachment
+     * @param context The context to implement the listners required by the fragment
+     */
     @Override
     public void onAttach(Context context){
         super.onAttach(context);
@@ -110,6 +110,10 @@ public class EditMoodFragment extends ChangeMoodFragment {
                 .setPositiveButton("Confirm Edit", null);
     }
 
+    /**
+     * Returns the location data associated with the Mood, if any
+     * @return A Location with the data for the associated Mood
+     */
     @Override
     protected Location subclassLocationReturnBehaviour() {
         Location newLocation = new Location("");

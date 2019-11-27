@@ -10,7 +10,6 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.graphics.drawable.BitmapDrawable;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
@@ -49,6 +48,10 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
+/**
+ * A class to display all the details of a mood. Different subclasses support working with
+ * brand new moods, editing old moods, and displaying mood information alone.
+ */
 public abstract class ChangeMoodFragment extends DialogFragment implements SelectSituationFragment.SelectSituationListener, SelectMoodFragment.SelectMoodFragmentInteractionListener {
     protected TextView dateTextView;
     protected TextView timeTextView;
@@ -59,27 +62,25 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
     protected ImageView reasonImageView;
     protected Button situationButton;
     protected CheckBox locationCheckBox;
-//    protected ImageButton displayPhotoButton;
 
     protected Mood initialMood;
     protected String localImagePath;
     protected String downloadedImagePath;
 
 
-    final int SUCCESSFUL_GALLERY_RETURN_CODE = 71;
-    final int SUCCESSFUL_CAMERA_RETURN_CODE = 1;
-    final int GALLERY_REQUEST_CODE = 2;
-    final int CAMERA_REQUEST_CODE = 3;
-    final int EXTERNAL_STORAGE_REQUEST_CODE = 4;
+    final private int GALLERY_ACTIVITY_REQUEST_CODE = 71;
+    final private int CAMERA_ACTIVITY_REQUEST_CODE = 1;
+
+    final private int NO_BEHAVIOUR_AFTER_PERMISSION_REQUEST_CODE = 1;
+    final private int GALLERY_PERMISSION_REQUEST_CODE = 2;
+    final private int CAMERA_PERMISSION_REQUEST_CODE = 3;
+    final private int WRITE_EXTERNAL_STORAGE_PERMISSION_REQUEST_CODE = 4;
     String filePathToUse = null;
 
 
     protected View.OnClickListener emotionClick;
     protected View.OnClickListener situationClick;
     protected View view;
-
-    private String lastRequestedPermission = null;
-
 
     /**
      * Initialization for ChangeMoodFragment dialog
@@ -108,20 +109,18 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
         sharedInitialization();
         subclassInitialization();
 
-        TextView testTextView = view.findViewById(R.id.emotion_textview);
-
         AlertDialog.Builder builder = returnBuilder();
         AlertDialog dialog = builder.create();
         dialog.show();
         // Method for reassigning positive button clicker to avoid automatic dismissal found at
         // StackOverflow post:https://stackoverflow.com/questions/2620444/how-to-prevent-a-dialog-from-closing-when-a-button-is-clicked
-        if (dialog.getButton(AlertDialog.BUTTON_POSITIVE).getText() != "delete") {
+        if (dialog.getButton(AlertDialog.BUTTON_POSITIVE).getText() != getString(R.string.friend_mood_display_fragment_positive_text)) {
             dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if (localImagePath != null) {
                         if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                            requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, EXTERNAL_STORAGE_REQUEST_CODE);
+                            requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
                             return;
                         }
                     }
@@ -158,6 +157,7 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
             });
             dialog.getButton(AlertDialog.BUTTON_POSITIVE).setId(R.id.change_mood_fragment_positive_button);
         } else {
+            // Disable submit button for display only view
             dialog.getButton(AlertDialog.BUTTON_POSITIVE).setVisibility(View.INVISIBLE);
         }
 
@@ -237,7 +237,6 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
                 selectImage();
             }
         });
-//        displayPhotoButton = view.findViewById(R.id.displayPhoto);
         reasonImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -259,7 +258,7 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
         if (initialMood.getOnlinePath() != null) { tempMenuOptions.add(getString(R.string.use_online_picture_option)); }
         final String[] menuOptionsTitles = tempMenuOptions.toArray(new String[tempMenuOptions.size()]);
         if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, EXTERNAL_STORAGE_REQUEST_CODE);
+            requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, WRITE_EXTERNAL_STORAGE_PERMISSION_REQUEST_CODE);
             return;
         }
         menuDialogBuilder.setItems(menuOptionsTitles, new DialogInterface.OnClickListener() {
@@ -268,21 +267,16 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
                 if (menuOptionsTitles[item].equals(getString(R.string.select_picture_gallery_option))) {
                     //Photo selection launch inspired by: https://code.tutsplus.com/tutorials/image-upload-to-firebase-in-android-application--cms-29934
                     if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-                        requestPermissions(new String[]{Manifest.permission.CAMERA}, GALLERY_REQUEST_CODE);
+                        requestPermissions(new String[]{Manifest.permission.CAMERA}, GALLERY_PERMISSION_REQUEST_CODE);
                         return;
                     }
                     launchGalleryIntent();
-//                    Log.d("test", "should not get here");
                 } else if (menuOptionsTitles[item].equals(getString(R.string.take_picture_option))) {
                     if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-                        requestPermissions(new String[]{Manifest.permission.CAMERA}, CAMERA_REQUEST_CODE);
+                        requestPermissions(new String[]{Manifest.permission.CAMERA}, CAMERA_PERMISSION_REQUEST_CODE);
                         return;
                     }
-                    if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
-                        launchCameraIntent();
-                    } else {
-                        displayWarning(InputErrorType.CMFNoCameraPermission);
-                    }
+                    launchCameraIntent();
                 } else if (menuOptionsTitles[item].equals(getString(R.string.use_online_picture_option))) {
                     if (initialMood.getOnlinePath() != null) {
                         localImagePath = null;
@@ -294,43 +288,80 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
         menuDialogBuilder.show();
     }
 
+    // Data processing of returned image partially inspired by: https://code.tutsplus.com/tutorials/image-upload-to-firebase-in-android-application--cms-29934
+    /**
+     * Handles activity result returns from the photo selection activity (either from gallery or
+     * from camera)
+     * @param requestCode the type of request
+     * @param resultCode status code for result return
+     * @param data data returned from the activity
+     */
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(requestCode == GALLERY_ACTIVITY_REQUEST_CODE && resultCode == -1 && data != null && data.getData() != null ) {
+            String contentImagePath = data.getData().toString();
+            Uri myUri = Uri.parse(contentImagePath);
+            localImagePath = getAbsolutePathFromContentPathUri(myUri);
+            setThumbnail(localImagePath);
+        } else if (requestCode == CAMERA_ACTIVITY_REQUEST_CODE && resultCode == -1){
+            localImagePath = filePathToUse;
+            if (localImagePath != null) {
+                setThumbnail(localImagePath);
+            }
+        } else {
+            Log.e("Log", "Activity Result case not handled");
+        }
+    }
+
+
+    /**
+     * Method for chaining further actions after permission request granted
+     * @param requestCode The internal code for the type of request
+     * @param permissions Permissions involved
+     * @param grantResults Result of the request
+     */
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-//        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        Log.d("TEST", "GOT HERE 1");
         if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            if (requestCode == CAMERA_REQUEST_CODE) {
-                Log.d("TEST", "GOT HERE CAMERA");
+            if (requestCode == CAMERA_PERMISSION_REQUEST_CODE) {
                 launchCameraIntent();
-            } else if (requestCode == GALLERY_REQUEST_CODE) {
-                Log.d("TEST", "GOT HERE GALLERY");
+            } else if (requestCode == GALLERY_PERMISSION_REQUEST_CODE) {
                 launchGalleryIntent();
-            } else if (requestCode == EXTERNAL_STORAGE_REQUEST_CODE) {
+            } else if (requestCode == WRITE_EXTERNAL_STORAGE_PERMISSION_REQUEST_CODE) {
                 selectImage();
             }
         }
     }
 
+    /**
+     * Launches activity to select photo from gallery
+     */
     private void launchGalleryIntent() {
         Intent intent = new Intent();
         intent.setType("image/*");
         intent.setAction(Intent.ACTION_PICK);
-        startActivityForResult(Intent.createChooser(intent, "Select Photograph for Reason"), SUCCESSFUL_GALLERY_RETURN_CODE);
+        startActivityForResult(Intent.createChooser(intent, "Select Photograph for Reason"), GALLERY_ACTIVITY_REQUEST_CODE);
     }
 
+    /**
+     * Launches activity to take picture for photo with camera
+     */
     private void launchCameraIntent() {
         File photoFile = createImageFile();
         if (photoFile != null) {
             Uri photoToUri = FileProvider.getUriForFile(getContext(), "com.example.sentimo.fileprovider", photoFile);
             Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
             intent.putExtra(MediaStore.EXTRA_OUTPUT, photoToUri);
-            startActivityForResult(intent, 1);
+            startActivityForResult(intent, CAMERA_ACTIVITY_REQUEST_CODE);
         }
     }
 
-        //Method taken from Google documentation found here: https://developer.android.com/training/camera/photobasics
+    //Method taken from Google documentation found here: https://developer.android.com/training/camera/photobasics
+    /**
+     * Creates a unique file path for an image to be saved
+     * @return Returns a file for the image
+     */
     private File createImageFile() {
-        // Create an image file name
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         String imageFileName = "JPEG_" + timeStamp + "_";
         File storageDir = getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
@@ -342,35 +373,12 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
                     storageDir      /* directory */
             );
         } catch (Exception e) {
-            Log.d("WARNING", "EXCEPTION FOR FILE CREATION");
+            Log.d("Log", "EXCEPTION FOR FILE CREATION");
         }
 
         // Save a file: path for use with ACTION_VIEW intents
         filePathToUse = image.getAbsolutePath();
         return image;
-    }
-
-    // Data processing of returned image inspired by: https://code.tutsplus.com/tutorials/image-upload-to-firebase-in-android-application--cms-29934
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-//        super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == SUCCESSFUL_GALLERY_RETURN_CODE && resultCode == -1 && data != null && data.getData() != null ) {
-            localImagePath = data.getData().toString();
-            Log.d("TEST", localImagePath);
-            Uri myUri = Uri.parse(localImagePath);
-            Log.d("MOFIED PATH", getAbsolutePathFromContentPathUri(myUri));
-            localImagePath = getAbsolutePathFromContentPathUri(myUri);
-            setThumbnail(localImagePath);
-//            this.initialMood.setOnlinePath(null);
-        } else if (requestCode == SUCCESSFUL_CAMERA_RETURN_CODE){
-            Log.d("TEST", "GOT TO CAMERA AREA");
-//            Log.d("PATH FOR CAMERA PIC", filePathToUse);
-            Log.d("PATH FOR CAMERA PIC", Uri.parse(filePathToUse).toString());
-            localImagePath = filePathToUse;
-            setThumbnail(localImagePath);
-        } else {
-//            displayWarning(InputErrorType.CMFPhotoReturnError);
-        }
     }
 
     /**
@@ -423,6 +431,9 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
     }
 
 
+    /**
+     * Launches an activity to display a large image of the current photo associated with the Mood
+     */
     public void displayPhotoForMood() {
         if (localImagePath != null) {
             displayLocalImage(localImagePath);
@@ -443,14 +454,17 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
         }
     }
 
+    /**
+     * Downloads a photo from Firebase Storage, if no local copy exists, and calls the provided
+     * listener for further action after download
+     * @param listener
+     */
     public void downloadAndSetPath(FirebaseListener listener) {
         // Path set in Database class download method before calling onSuccess listener
         // Only downloads if local copy not already present
         if (downloadedImagePath != null) {
-            Log.d("TEST", "OLD DOWNLOAD FILE USED");
             listener.onSuccess();
         } else {
-            Log.d("TEST", "NEW DOWNLOAD");
             if (ChangeMoodFragment.this instanceof FriendMoodDisplayFragment) {
                 FriendActivity act = (FriendActivity)getContext();
                 act.database.downloadPhoto(initialMood.getOnlinePath(), this, listener);
@@ -461,6 +475,9 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
         }
     }
 
+    /**
+     * Downloads a photo associated with the Mood from Firebase storage and sets it as the thumbnail
+     */
     public void downloadAndSetThumbnail() {
         downloadAndSetPath(new FirebaseListener() {
             @Override
@@ -475,19 +492,29 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
         });
     }
 
+    /**
+     * Sets the current local filepath for an image downloaded from Firebase storage
+     * @param filepath path to be set as the downloaded image path
+     */
     public void setDownloadedImagePath(String filepath) {
         this.downloadedImagePath = filepath;
     }
 
+    /**
+     * Sets the thumbnail image to the photo currently associated with the Mood
+     * @param localPath path to copy of photo stored locally
+     */
     public void setThumbnail(String localPath) {
         Bitmap myBitmap = BitmapFactory.decodeFile(localPath);
-        BitmapDrawable bitmapDrawable = new BitmapDrawable(getResources(), myBitmap);
-//        reasonImageButton.setBackground(bitmapDrawable);
         reasonImageView.setScaleType(ImageView.ScaleType.FIT_XY);
         reasonImageView.setImageBitmap(myBitmap);
         reasonImageView.setBackgroundColor(getResources().getColor(android.R.color.transparent));
     }
 
+    /**
+     * Displays photo for provided local path
+     * @param localPath path to copy of photo stored locally
+     */
     public void displayLocalImage(String localPath) {
         if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
@@ -500,6 +527,12 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
     }
 
     // Content link parsing method taken from: https://stackoverflow.com/questions/2789276/android-get-real-path-by-uri-getpath/9989900
+
+    /**
+     * Converts a local content link to an absolute file path
+     * @param contentURI content link to be converted
+     * @return absolute file path from the converted content link
+     */
     private String getAbsolutePathFromContentPathUri(Uri contentURI) {
         String result;
         Cursor cursor = getActivity().getContentResolver().query(contentURI, null, null, null, null);

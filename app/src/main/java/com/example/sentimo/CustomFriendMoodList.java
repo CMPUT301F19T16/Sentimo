@@ -15,6 +15,9 @@ import java.util.ArrayList;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+/**
+ * Custom mood list adapter for list view displaying friend most recent moods
+ */
 public class CustomFriendMoodList extends ArrayAdapter<Mood> {
 
     private ArrayList<Mood> moods;
@@ -26,6 +29,13 @@ public class CustomFriendMoodList extends ArrayAdapter<Mood> {
         this.context = context;
     }
 
+    /**
+     * Generates views for the list view cells for the listview
+     * @param position Position of cell to generate
+     * @param convertView
+     * @param parent Parent view container
+     * @return
+     */
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent){
         View view = convertView;
         if (view == null){

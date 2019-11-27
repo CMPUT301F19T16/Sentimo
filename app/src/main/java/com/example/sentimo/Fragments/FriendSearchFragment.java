@@ -15,6 +15,9 @@ import androidx.fragment.app.DialogFragment;
 
 import com.example.sentimo.R;
 
+/**
+ * A fragment to allow a user to search for and add friends
+ */
 public class FriendSearchFragment extends DialogFragment {
 
     private EditText friendSearchField;
@@ -24,6 +27,10 @@ public class FriendSearchFragment extends DialogFragment {
         void onSearchPressed(String name);
     }
 
+    /**
+     * Attach behaviour for fragment
+     * @param context The context that will implement the OnFragmentInteractionListener
+     */
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -35,6 +42,11 @@ public class FriendSearchFragment extends DialogFragment {
         }
     }
 
+    /**
+     * Initialization behaviour for the fragment
+     * @param savedInstanceState Information passed to the fragment for use in initialization
+     * @return
+     */
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState){

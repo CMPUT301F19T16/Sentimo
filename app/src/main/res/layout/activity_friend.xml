@@ -112,7 +112,7 @@
             android:layout_height="match_parent"
             android:layout_marginEnd="8dp"
             android:fontFamily="casual"
-            android:text="Search"
+            android:text="Add"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textColor="#131212"
             android:textSize="20sp"

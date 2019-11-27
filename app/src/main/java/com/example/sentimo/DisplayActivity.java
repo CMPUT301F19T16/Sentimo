@@ -18,6 +18,9 @@ import java.io.IOException;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+/**
+ * Activity for generating a large view of a photo
+ */
 public class DisplayActivity extends AppCompatActivity {
     private ImageView imageView;
     private Button backButton;
@@ -33,23 +36,9 @@ public class DisplayActivity extends AppCompatActivity {
 
         Intent intent  = getIntent();
         String imageFileName = intent.getStringExtra("localPath");
-//        String type = intent.getStringExtra("type");
-//        Log.d("TEST", type);
 
         Bitmap myBitmap = null;
         myBitmap = BitmapFactory.decodeFile(imageFileName);
-//        if (type.equals("local")) {
-//            Uri myUri = Uri.parse(imageFileName);
-//            try {
-//                myBitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), myUri);
-//            } catch (IOException e) {
-//                new InvalidDataWarningFragment(InputErrorType.ImageDisplayError).show(getSupportFragmentManager(), null);
-//            }
-//        } else if (type.equals("download")) {
-//            myBitmap = BitmapFactory.decodeFile(imageFileName);
-//        } else {
-//            throw new RuntimeException("Display type not dealt with");
-//        }
 
         imageView = findViewById(R.id.photo_image_view);
         imageView.setImageBitmap(myBitmap);

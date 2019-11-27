@@ -6,8 +6,19 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import com.example.sentimo.Fragments.ChangeMoodFragment;
-import com.google.android.gms.tasks.*;
-import com.google.firebase.firestore.*;
+import com.google.android.gms.tasks.Continuation;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FieldValue;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.ListenerRegistration;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -35,6 +46,10 @@ public class Database {
     private ArrayList<String> pendingRequestsList;
     private ArrayList<String> allowedFriendList;
 
+    /**
+     * Constructor for a provided user
+     * @param username user for Database instance
+     */
     Database(String username) {
         this.username = username;
         this.moodHistory = new ArrayList<>();
@@ -75,12 +90,20 @@ public class Database {
         }
     }
 
+    /**
+     * Delete the provided Mood that does not have an associated photo in Firebase Storage
+     * @param mood the mood to be deleted
+     */
     public void deleteMoodOnly(Mood mood) {
         CollectionReference userMoods = getUserMoods();
         String hashcode = Integer.toString(mood.hashCode());
         userMoods.document(hashcode).delete();
     }
 
+    /**
+     * Delete a photo in Firebase Storage for the given path
+     * @param onlinePath
+     */
     public void deletePhoto(String onlinePath) {
         StorageReference storageLocation = firebaseStorage.getReference(onlinePath);
         storageLocation.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -91,7 +114,7 @@ public class Database {
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Log.d("SUCCESS", "DELETED IMAGE");
+                Log.d("FAILURE","Did not delete image");
             }
         });
     }
@@ -242,8 +265,6 @@ public class Database {
      */
     // Upload method uses information from Google's Firebase storage upload example: https://firebase.google.com/docs/storage/android/upload-files
     public Uri addPhotoAndMood(final Mood incompleteMood, final String stringPath) {
-//        Uri localPath = Uri.parse(stringPath);
-
         Uri localPath = Uri.fromFile(new File(stringPath));
         final StorageReference reference = firebaseStorage.getReference();
         long millisecondTime = System.currentTimeMillis();
@@ -284,10 +305,8 @@ public class Database {
     public void downloadPhoto(String onlinePath, final ChangeMoodFragment changeMoodFragment, final FirebaseListener listener) {
         StorageReference storedAt = firebaseStorage.getReference(onlinePath);
 
-//        final MainActivity mainActivity = (MainActivity)changeMoodFragment.getActivity();
         Context myContext = changeMoodFragment.getActivity().getApplicationContext();
         File path = new File(myContext.getFilesDir(), "file_name");
-//        File path = new File(mainActivity.getApplicationContext().getFilesDir(), "file_name");
         if (!path.exists()) {
             path.mkdirs();
         }
@@ -299,14 +318,13 @@ public class Database {
         storedAt.getFile(newFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
-                Log.d("download path is", newFile.getPath());
                 changeMoodFragment.setDownloadedImagePath(newFile.getPath());
                 listener.onSuccess();
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Log.d("FAILURE", "FAILURE");
+                Log.d("Failure","Failed to download photo.");
                 listener.onFailure();
             }
         });

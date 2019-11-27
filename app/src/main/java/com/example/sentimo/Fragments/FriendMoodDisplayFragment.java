@@ -9,17 +9,21 @@ import com.example.sentimo.Mood;
 import com.example.sentimo.R;
 import com.example.sentimo.Situations.Situation;
 
+/**
+ * A class to display the most recent Moods of any followed friends who have approved
+ * your follow request.
+ */
 public class FriendMoodDisplayFragment extends ChangeMoodFragment{
 
     public FriendMoodDisplayFragment(Mood mood) {
         this.initialMood = mood;
     }
 
-    @Override
-    protected Location subclassLocationReturnBehaviour() {
-        return null;
-    }
 
+    /**
+     * Initialization behaviour
+     * Disables interactable views, since fragment is display only
+     */
     @Override
     protected void subclassInitialization() {
         emojiImageButton.setOnClickListener(null);
@@ -30,8 +34,6 @@ public class FriendMoodDisplayFragment extends ChangeMoodFragment{
         situationButton.setEnabled(false);
         reasonImageButton.setOnClickListener(null);
         reasonImageButton.setEnabled(false);
-//        displayPhotoButton.setOnClickListener(null);
-//        displayPhotoButton.setEnabled(false);
         reasonEditText.setEnabled(false);
 
 
@@ -56,11 +58,10 @@ public class FriendMoodDisplayFragment extends ChangeMoodFragment{
         locationCheckBox.setEnabled(false);
     }
 
-    @Override
-    protected void callListener(Mood mood) {
-
-    }
-
+    /**
+     * Returns fragment builder for subclass
+     * @return AlertDialog.builder for this subclass
+     */
     @Override
     protected AlertDialog.Builder returnBuilder() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
@@ -69,6 +70,21 @@ public class FriendMoodDisplayFragment extends ChangeMoodFragment{
                 .setTitle("Recent Mood for " + initialMood.getUsername())
                 .setNegativeButton("Back", null)
                 // Positive Button behaviour set in super class to override default dismissal behaviour
-                .setPositiveButton("delete", null);
+                .setPositiveButton(getString(R.string.friend_mood_display_fragment_positive_text), null);
+    }
+
+    /**
+     * No location behaviour required in FriendMoodDisplayFragment
+     */
+    @Override
+    protected Location subclassLocationReturnBehaviour() {
+        return null;
+    }
+
+    /**
+     * No listener behaviour required in FriendMoodDisplayFragment
+     */
+    @Override
+    protected void callListener(Mood mood) {
     }
 }

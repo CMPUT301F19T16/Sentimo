@@ -56,6 +56,10 @@ public class Database {
     private ArrayList<String> pendingRequestsList;
     private ArrayList<String> allowedFriendList;
 
+    /**
+     * Constructor for a provided user
+     * @param username user for Database instance
+     */
     Database(String username) {
         this.username = username;
         this.moodHistory = new ArrayList<>();
@@ -96,12 +100,20 @@ public class Database {
         }
     }
 
+    /**
+     * Delete the provided Mood that does not have an associated photo in Firebase Storage
+     * @param mood the mood to be deleted
+     */
     public void deleteMoodOnly(Mood mood) {
         CollectionReference userMoods = getUserMoods();
         String hashcode = Integer.toString(mood.hashCode());
         userMoods.document(hashcode).delete();
     }
 
+    /**
+     * Delete a photo in Firebase Storage for the given path
+     * @param onlinePath
+     */
     public void deletePhoto(String onlinePath) {
         StorageReference storageLocation = firebaseStorage.getReference(onlinePath);
         storageLocation.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -112,7 +124,7 @@ public class Database {
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Log.d("SUCCESS","DELETED IMAGE");
+                Log.d("FAILURE","Did not delete image");
             }
         });
     }

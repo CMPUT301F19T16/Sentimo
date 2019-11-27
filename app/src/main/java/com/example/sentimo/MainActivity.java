@@ -263,6 +263,10 @@ public class MainActivity extends AppCompatActivity implements AddMoodFragment.A
         }
     }
 
+    private void uploadMoodWithListener() {
+
+    }
+
     /**
      * Method for deleting a Mood from the Firebase database
      *

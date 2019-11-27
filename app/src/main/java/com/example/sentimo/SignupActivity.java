@@ -72,6 +72,7 @@ public class SignupActivity extends AppCompatActivity {
             @Override
             public void onSuccess() {
                 auth.reloadUser();
+                finish();
             }
 
             @Override

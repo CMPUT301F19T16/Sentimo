@@ -173,8 +173,7 @@ public class MainActivity extends AppCompatActivity implements AddMoodFragment.A
                             partialDataList.remove(mood);
                             partialAdapter.notifyDataSetChanged();
                         }
-//                        deleteMood(mood, true);
-                        deleteMood(mood);
+                        deleteMoodAndPhoto(mood);
                     }
                 });
                 alert.setNegativeButton("NO", null);
@@ -242,14 +241,12 @@ public class MainActivity extends AppCompatActivity implements AddMoodFragment.A
         } else {
             oldMood = moodAdapter.getItem(position);
         }
-        Boolean isDeletePicture = false;
         if (mood.getOnlinePath() == null && oldMood.getOnlinePath() != null) {
-            isDeletePicture = true;
+            deleteMoodAndPhoto(oldMood);
+        } else {
+            deleteMoodButNotPhoto(oldMood);
         }
-        deleteMood(oldMood);
         uploadMood(mood, localPath);
-        // End progress bar
-        // Timeout on network failure
     }
 
     /**
@@ -271,7 +268,7 @@ public class MainActivity extends AppCompatActivity implements AddMoodFragment.A
      *
      * @param mood the Mood to be deleted
      */
-    private void deleteMood(Mood mood) {
+    private void deleteMoodAndPhoto(Mood mood) {
         // Deletes the Photo associated with the Mood as well, if any
         database.deleteMoodAndPicture(mood);
     }

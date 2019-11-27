@@ -22,5 +22,6 @@
     <string name="take_picture_option">Take Picture</string>
     <string name="select_picture_gallery_option">Select picture from Gallery</string>
     <string name="use_online_picture_option">Use pre-existing online picture.</string>
+    <string name="no_picture_option">No picture.</string>
     <string name="friend_mood_display_fragment_positive_text">delete</string>
 </resources>

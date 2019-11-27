@@ -234,13 +234,22 @@ public class MainActivity extends AppCompatActivity implements AddMoodFragment.A
      */
     @Override
     public void onConfirmEditPressed(Mood mood, int position, String localPath) {
-        Mood oldMood = moodAdapter.getItem(position);
-        if (mood.getOnlinePath() == null && oldMood.getOnlinePath() != null) {
-            deleteMood(oldMood);
+        Mood oldMood;
+        if (moodList.getAdapter() == partialAdapter){
+            oldMood = partialAdapter.getItem(position);
+            partialDataList.remove(oldMood);
+            partialAdapter.notifyDataSetChanged();
         } else {
-            deleteMoodButNotPhoto(oldMood);
+            oldMood = moodAdapter.getItem(position);
         }
+        Boolean isDeletePicture = false;
+        if (mood.getOnlinePath() == null && oldMood.getOnlinePath() != null) {
+            isDeletePicture = true;
+        }
+        deleteMood(oldMood);
         uploadMood(mood, localPath);
+        // End progress bar
+        // Timeout on network failure
     }
 
     /**

@@ -255,6 +255,7 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
         ArrayList<String> tempMenuOptions = new ArrayList<>();
         tempMenuOptions.add(getString(R.string.take_picture_option));
         tempMenuOptions.add(getString(R.string.select_picture_gallery_option));
+        tempMenuOptions.add(getString(R.string.no_picture_option));
         if (initialMood.getOnlinePath() != null) { tempMenuOptions.add(getString(R.string.use_online_picture_option)); }
         final String[] menuOptionsTitles = tempMenuOptions.toArray(new String[tempMenuOptions.size()]);
         if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
@@ -277,6 +278,8 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
                         return;
                     }
                     launchCameraIntent();
+                } else if (menuOptionsTitles[item].equals(getString(R.string.no_picture_option))) {
+                    setThumbnailEmpty();
                 } else if (menuOptionsTitles[item].equals(getString(R.string.use_online_picture_option))) {
                     if (initialMood.getOnlinePath() != null) {
                         localImagePath = null;
@@ -509,6 +512,11 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
         reasonImageView.setScaleType(ImageView.ScaleType.FIT_XY);
         reasonImageView.setImageBitmap(myBitmap);
         reasonImageView.setBackgroundColor(getResources().getColor(android.R.color.transparent));
+    }
+
+    public void setThumbnailEmpty() {
+        reasonImageView.setImageBitmap(null);
+        reasonImageView.setBackgroundColor(getResources().getColor(android.R.color.darker_gray));
     }
 
     /**

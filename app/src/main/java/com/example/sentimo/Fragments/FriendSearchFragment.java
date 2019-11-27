@@ -58,7 +58,7 @@ public class FriendSearchFragment extends DialogFragment {
         return builder
                 .setView(view)
                 .setNegativeButton("Back", null)
-                .setPositiveButton("Search", new DialogInterface.OnClickListener() {
+                .setPositiveButton("Search and Add", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         String username = friendSearchField.getText().toString();

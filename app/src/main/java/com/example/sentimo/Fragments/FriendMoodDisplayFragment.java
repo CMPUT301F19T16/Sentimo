@@ -35,6 +35,8 @@ public class FriendMoodDisplayFragment extends ChangeMoodFragment{
         reasonImageButton.setOnClickListener(null);
         reasonImageButton.setEnabled(false);
         reasonEditText.setEnabled(false);
+        dateTextView.setEnabled(false);
+        timeTextView.setEnabled(false);
 
 
         dateTextView.setText(initialMood.getTime().getDateString());

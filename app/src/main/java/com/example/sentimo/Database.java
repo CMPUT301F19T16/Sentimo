@@ -504,18 +504,10 @@ public class Database {
     }
 
     /**
-     * Gettere for downloadImagePath
+     * Getter for downloadImagePath
      * @return
      */
     public String getDownloadedImagePath() {
         return downloadedImagePath;
-    }
-
-    /**
-     * Setter for downloadedImagePath
-     * @param downloadedImagePath
-     */
-    public void setDownloadedImagePath(String downloadedImagePath) {
-        this.downloadedImagePath = downloadedImagePath;
     }
 }

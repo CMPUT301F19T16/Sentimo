@@ -282,7 +282,7 @@ public class Database {
      * @return
      */
     // Upload method uses information from Google's Firebase storage upload example: https://firebase.google.com/docs/storage/android/upload-files
-    public Uri addPhotoAndMood(final Mood incompleteMood, final String stringPath) {
+    public void addPhotoAndMood(final Mood incompleteMood, final String stringPath) {
         Uri localPath = Uri.fromFile(new File(stringPath));
         final StorageReference reference = firebaseStorage.getReference();
         long millisecondTime = System.currentTimeMillis();
@@ -309,7 +309,6 @@ public class Database {
                 }
             }
         });
-        return null;
     }
 
 

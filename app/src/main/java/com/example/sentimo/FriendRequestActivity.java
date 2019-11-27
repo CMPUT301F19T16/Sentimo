@@ -42,6 +42,8 @@ public class FriendRequestActivity extends AppCompatActivity {
         if (!auth.isLogin()) {
             Intent intent = new Intent(this, LoginActivity.class);
             startActivity(intent);
+            finish();
+            return;
         }
 
         requestListView = findViewById(R.id.friend_request_listview);

@@ -1,12 +1,8 @@
 package com.example.sentimo;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.net.Uri;
-import android.os.Environment;
 import android.util.Log;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -18,14 +14,12 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.ListenerRegistration;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
@@ -33,10 +27,8 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.File;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -275,8 +267,6 @@ public class Database {
      */
     // Upload method uses information from Google's Firebase storage upload example: https://firebase.google.com/docs/storage/android/upload-files
     public Uri addPhotoAndMood(final Mood incompleteMood, final String stringPath) {
-//        Uri localPath = Uri.parse(stringPath);
-
         Uri localPath = Uri.fromFile(new File(stringPath));
         final StorageReference reference = firebaseStorage.getReference();
         long millisecondTime = System.currentTimeMillis();
@@ -317,10 +307,8 @@ public class Database {
     public void downloadPhoto(String onlinePath, final ChangeMoodFragment changeMoodFragment, final DatabaseListener listener) {
         StorageReference storedAt = firebaseStorage.getReference(onlinePath);
 
-//        final MainActivity mainActivity = (MainActivity)changeMoodFragment.getActivity();
         Context myContext = changeMoodFragment.getActivity().getApplicationContext();
         File path = new File(myContext.getFilesDir(), "file_name");
-//        File path = new File(mainActivity.getApplicationContext().getFilesDir(), "file_name");
         if (!path.exists()) {
             path.mkdirs();
         }
@@ -332,14 +320,13 @@ public class Database {
         storedAt.getFile(newFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
-                Log.d("download path is", newFile.getPath());
                 changeMoodFragment.setDownloadedImagePath(newFile.getPath());
                 listener.onSuccess();
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Log.d("FAILURE","FAILURE");
+                Log.d("Failure","Failed to download photo.");
                 listener.onFailure();
             }
         });

@@ -120,7 +120,7 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
                 public void onClick(View v) {
                     if (localImagePath != null) {
                         if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                            requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
+                            requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, NO_BEHAVIOUR_AFTER_PERMISSION_REQUEST_CODE);
                             return;
                         }
                     }
@@ -322,7 +322,7 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
      */
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+        if (requestCode != NO_BEHAVIOUR_AFTER_PERMISSION_REQUEST_CODE && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             if (requestCode == CAMERA_PERMISSION_REQUEST_CODE) {
                 launchCameraIntent();
             } else if (requestCode == GALLERY_PERMISSION_REQUEST_CODE) {
@@ -517,7 +517,7 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
      */
     public void displayLocalImage(String localPath) {
         if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
+            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, NO_BEHAVIOUR_AFTER_PERMISSION_REQUEST_CODE);
             return;
         } else {
             Intent intent = new Intent(getActivity(), DisplayActivity.class);

@@ -9,15 +9,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 
-import com.example.sentimo.Emotions.Confident;
-import com.example.sentimo.Emotions.Embarrassed;
 import com.example.sentimo.Emotions.Emotion;
-import com.example.sentimo.Emotions.Happy;
-import com.example.sentimo.Emotions.Loved;
-import com.example.sentimo.Emotions.Mad;
-import com.example.sentimo.Emotions.Sad;
-import com.example.sentimo.Emotions.Tired;
-import com.example.sentimo.Emotions.Worried;
+import com.example.sentimo.Emotions.EmotionType;
 import com.example.sentimo.R;
 
 import androidx.annotation.NonNull;
@@ -75,28 +68,28 @@ public class SelectMoodFragment extends DialogFragment {
                 int id = v.getId();
                 switch (id) {
                     case R.id.happyButton:
-                        emotion = new Happy();
+                        emotion = new Emotion(EmotionType.Happy);
                         break;
                     case R.id.sadButton:
-                        emotion = new Sad();
+                        emotion = new Emotion(EmotionType.Sad);
                         break;
                     case R.id.madButton:
-                        emotion = new Mad();
+                        emotion = new Emotion(EmotionType.Mad);
                         break;
                     case R.id.lovedButton:
-                        emotion = new Loved();
+                        emotion = new Emotion(EmotionType.Loved);
                         break;
                     case R.id.embarassedButton:
-                        emotion = new Embarrassed();
+                        emotion = new Emotion(EmotionType.Embarassed);
                         break;
                     case R.id.tiredButton:
-                        emotion = new Tired();
+                        emotion = new Emotion(EmotionType.Tired);
                         break;
                     case R.id.confidentButton:
-                        emotion = new Confident();
+                        emotion = new Emotion(EmotionType.Confident);
                         break;
                     case R.id.worriedButton:
-                        emotion = new Worried();
+                        emotion = new Emotion(EmotionType.Worried);
                         break;
                     default:
                         throw new RuntimeException("Unknown emotion case");

@@ -14,6 +14,9 @@ import java.util.ArrayList;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+/**
+ * Activity for displaying pending friend requests that have not been approved
+ */
 public class FriendRequestActivity extends AppCompatActivity {
     private ArrayList<String> pendingRequestsList;
     private ArrayAdapter<String> requestsAdapter;
@@ -21,6 +24,10 @@ public class FriendRequestActivity extends AppCompatActivity {
     private Database database;
     private Auth auth;
 
+    /**
+     * Initialization behaviour
+     * @param savedInstanceState Information passed to the activity for initialization
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,6 +68,9 @@ public class FriendRequestActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Fetches all pending friend requests
+     */
     private void fetchAllRequests() {
         database.fetchPendingRequests(new DatabaseListener() {
             @Override
@@ -76,6 +86,10 @@ public class FriendRequestActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Confirm a pending friend request
+     * @param username The username for the request to be approved
+     */
     private void confirmFollowRequest(final String username) {
         database.confirmFollowRequest(username, new DatabaseListener() {
             @Override

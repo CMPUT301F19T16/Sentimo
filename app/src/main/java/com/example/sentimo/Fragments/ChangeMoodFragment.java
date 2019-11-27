@@ -76,6 +76,7 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
     final private int CAMERA_PERMISSION_REQUEST_CODE = 3;
     final private int WRITE_EXTERNAL_STORAGE_PERMISSION_REQUEST_CODE = 4;
     String filePathToUse = null;
+    String originalOnlinePath;
 
 
     protected View.OnClickListener emotionClick;
@@ -221,7 +222,8 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
         situationButton = view.findViewById(R.id.situation_button);
         locationCheckBox = view.findViewById(R.id.location_checkbox);
 
-        if (initialMood.getOnlinePath() != null) {
+        originalOnlinePath = initialMood.getOnlinePath();
+        if (originalOnlinePath != null) {
             downloadAndSetThumbnail();
         }
 
@@ -256,7 +258,8 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
         tempMenuOptions.add(getString(R.string.take_picture_option));
         tempMenuOptions.add(getString(R.string.select_picture_gallery_option));
         tempMenuOptions.add(getString(R.string.no_picture_option));
-        if (initialMood.getOnlinePath() != null) { tempMenuOptions.add(getString(R.string.use_online_picture_option)); }
+//        if (initialMood.getOnlinePath() != null) { tempMenuOptions.add(2, getString(R.string.use_online_picture_option)); }
+        if (originalOnlinePath != null && originalOnlinePath != initialMood.getOnlinePath()) { tempMenuOptions.add(2, getString(R.string.use_online_picture_option)); }
         final String[] menuOptionsTitles = tempMenuOptions.toArray(new String[tempMenuOptions.size()]);
         if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, WRITE_EXTERNAL_STORAGE_PERMISSION_REQUEST_CODE);
@@ -279,10 +282,12 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
                     }
                     launchCameraIntent();
                 } else if (menuOptionsTitles[item].equals(getString(R.string.no_picture_option))) {
+                    setNoPicture();
                     setThumbnailEmpty();
                 } else if (menuOptionsTitles[item].equals(getString(R.string.use_online_picture_option))) {
-                    if (initialMood.getOnlinePath() != null) {
+                    if (originalOnlinePath != null) {
                         localImagePath = null;
+                        initialMood.setOnlinePath(originalOnlinePath);
                         downloadAndSetThumbnail();
                     }
                 }
@@ -305,9 +310,11 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
             String contentImagePath = data.getData().toString();
             Uri myUri = Uri.parse(contentImagePath);
             localImagePath = getAbsolutePathFromContentPathUri(myUri);
+            initialMood.setOnlinePath(null);
             setThumbnail(localImagePath);
         } else if (requestCode == CAMERA_ACTIVITY_REQUEST_CODE && resultCode == -1){
             localImagePath = filePathToUse;
+            initialMood.setOnlinePath(null);
             if (localImagePath != null) {
                 setThumbnail(localImagePath);
             }
@@ -440,6 +447,7 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
     public void displayPhotoForMood() {
         if (localImagePath != null) {
             displayLocalImage(localImagePath);
+//        } else if (initialMood.getOnlinePath() != null) {
         } else if (initialMood.getOnlinePath() != null) {
             // Start progress bar with timeout
             downloadAndSetPath(new FirebaseListener() {
@@ -468,12 +476,13 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
         if (downloadedImagePath != null) {
             listener.onSuccess();
         } else {
+            //TODO: fix the database method to only need Context (do setting in listener)
             if (ChangeMoodFragment.this instanceof FriendMoodDisplayFragment) {
                 FriendActivity act = (FriendActivity)getContext();
-                act.database.downloadPhoto(initialMood.getOnlinePath(), this, listener);
+                act.database.downloadPhoto(originalOnlinePath, this, listener);
             } else {
                 MainActivity act = (MainActivity) getContext();
-                act.database.downloadPhoto(initialMood.getOnlinePath(), this, listener);
+                act.database.downloadPhoto(originalOnlinePath, this, listener);
             }
         }
     }
@@ -514,9 +523,20 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
         reasonImageView.setBackgroundColor(getResources().getColor(android.R.color.transparent));
     }
 
+    /**
+     * Sets the thumbnail to its default empty state
+     */
     public void setThumbnailEmpty() {
         reasonImageView.setImageBitmap(null);
         reasonImageView.setBackgroundColor(getResources().getColor(android.R.color.darker_gray));
+    }
+
+    /**
+     * Set the current picture for the fragment to no picture
+     */
+    public void setNoPicture() {
+        localImagePath = null;
+        initialMood.setOnlinePath(null);
     }
 
     /**

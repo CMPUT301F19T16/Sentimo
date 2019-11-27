@@ -146,7 +146,7 @@ public class FriendActivity extends AppCompatActivity implements FriendSearchFra
 
                     @Override
                     public void onFailure() {
-                        Toast.makeText(FriendActivity.this, "User not exist", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(FriendActivity.this, "User does not exist", Toast.LENGTH_SHORT).show();
                     }
                 }, username);
             }

@@ -204,7 +204,6 @@ public class MainActivity extends AppCompatActivity implements AddMoodFragment.A
      */
     @Override
     public void onDonePressed(Mood mood, String localPath) {
-        // Start progress bar, with timeout
         if (mood.getOnlinePath() == null) {
             uploadMood(mood, localPath);
         } else {
@@ -221,8 +220,6 @@ public class MainActivity extends AppCompatActivity implements AddMoodFragment.A
                 partialAdapter.notifyDataSetChanged();
             }
         }
-        // End progress bar
-        // Timeout on network failure
     }
 
     /**
@@ -241,9 +238,8 @@ public class MainActivity extends AppCompatActivity implements AddMoodFragment.A
         if (mood.getOnlinePath() == null && oldMood.getOnlinePath() != null) {
             deleteMood(oldMood);
         } else {
-            deleteMoodButNotPhoto(mood);
+            deleteMoodButNotPhoto(oldMood);
         }
-//        deleteMood(oldMood, isDeletePicture);
         uploadMood(mood, localPath);
     }
 
@@ -281,7 +277,6 @@ public class MainActivity extends AppCompatActivity implements AddMoodFragment.A
             @Override
             public void onSuccess(Object o) {
                 Log.i("Success", "Mood deleted, photo maintained.");
-                // No behaviour needed here
             }
         });
     }

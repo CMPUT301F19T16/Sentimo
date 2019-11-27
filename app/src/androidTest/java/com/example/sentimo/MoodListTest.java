@@ -1,20 +1,7 @@
 package com.example.sentimo;
 
-import com.example.sentimo.Emotions.Happy;
-import com.example.sentimo.Emotions.Sad;
-import com.example.sentimo.Emotions.Tired;
-import com.example.sentimo.Emotions.Worried;
-import com.example.sentimo.Situations.AloneSituation;
-import com.example.sentimo.Situations.CrowdSituation;
-import com.example.sentimo.Situations.OnePersonSituation;
-import com.example.sentimo.Situations.SeveralPeopleSituation;
-
 import org.junit.Assert;
 import org.junit.Test;
-
-import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.List;
 
 public class MoodListTest {
     @Test

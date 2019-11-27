@@ -1,16 +1,7 @@
 package com.example.sentimo;
 
-import com.example.sentimo.Emotions.Emotion;
-import com.example.sentimo.Emotions.Happy;
-import com.example.sentimo.Emotions.Sad;
-import com.example.sentimo.Situations.AloneSituation;
-import com.example.sentimo.Situations.CrowdSituation;
-import com.example.sentimo.Situations.Situation;
-
 import org.junit.Assert;
 import org.junit.Test;
-
-import java.text.ParseException;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;

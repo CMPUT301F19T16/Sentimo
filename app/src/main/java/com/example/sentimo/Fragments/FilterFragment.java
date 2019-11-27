@@ -13,15 +13,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
-import com.example.sentimo.Emotions.Confident;
-import com.example.sentimo.Emotions.Embarrassed;
 import com.example.sentimo.Emotions.Emotion;
-import com.example.sentimo.Emotions.Happy;
-import com.example.sentimo.Emotions.Loved;
-import com.example.sentimo.Emotions.Mad;
-import com.example.sentimo.Emotions.Sad;
-import com.example.sentimo.Emotions.Tired;
-import com.example.sentimo.Emotions.Worried;
+import com.example.sentimo.Emotions.EmotionType;
 import com.example.sentimo.R;
 
 /**
@@ -110,28 +103,28 @@ public class FilterFragment extends DialogFragment {
                 int id = v.getId();
                 switch (id) {
                     case R.id.filter_happy_button:
-                        emotion = new Happy();
+                        emotion = new Emotion(EmotionType.Happy);
                         break;
                     case R.id.filter_sad_button:
-                        emotion = new Sad();
+                        emotion = new Emotion(EmotionType.Sad);
                         break;
                     case R.id.filter_mad_button:
-                        emotion = new Mad();
+                        emotion = new Emotion(EmotionType.Mad);
                         break;
                     case R.id.filter_loved_button:
-                        emotion = new Loved();
+                        emotion = new Emotion(EmotionType.Loved);
                         break;
                     case R.id.filter_embarrassed_button:
-                        emotion = new Embarrassed();
+                        emotion = new Emotion(EmotionType.Embarassed);
                         break;
                     case R.id.filter_tired_button:
-                        emotion = new Tired();
+                        emotion = new Emotion(EmotionType.Tired);
                         break;
                     case R.id.filter_confident_button:
-                        emotion = new Confident();
+                        emotion = new Emotion(EmotionType.Confident);
                         break;
                     case R.id.filter_worried_button:
-                        emotion = new Worried();
+                        emotion = new Emotion(EmotionType.Worried);
                         break;
                     default:
                         throw new RuntimeException("Unknown emotion case");

@@ -29,7 +29,7 @@ public class FriendActivity extends AppCompatActivity implements FriendSearchFra
     private Button searchButton;
     private Button friendRequestButton;
     private ListView friendListView;
-    public Database database;
+    private Database database;
     private Auth auth;
     private ArrayList<String> userFollowing;
 
@@ -173,5 +173,13 @@ public class FriendActivity extends AppCompatActivity implements FriendSearchFra
                 Toast.makeText(FriendActivity.this, "Please check your Internet", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    /**
+     * Getter for database
+     * @return
+     */
+    public Database getDatabase() {
+        return database;
     }
 }

@@ -54,7 +54,7 @@ public class MainActivity extends AppCompatActivity implements AddMoodFragment.A
     private Button mapButton;
     private Button friendButton;
     private Button filterButton;
-    public Database database;
+    private Database database;
     private Button loginButton;
     private Auth auth;
 
@@ -349,5 +349,13 @@ public class MainActivity extends AppCompatActivity implements AddMoodFragment.A
                 Toast.makeText(MainActivity.this, "fail to get moods", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    /**
+     * Getter for database
+     * @return
+     */
+    public Database getDatabase() {
+        return database;
     }
 }

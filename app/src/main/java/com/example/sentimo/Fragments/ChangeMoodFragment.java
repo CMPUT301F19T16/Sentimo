@@ -24,6 +24,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.ImageView;
 
+import com.example.sentimo.Database;
 import com.example.sentimo.FirebaseListener;
 import com.example.sentimo.DisplayActivity;
 import com.example.sentimo.Emotions.Emotion;
@@ -476,13 +477,12 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
         if (downloadedImagePath != null) {
             listener.onSuccess();
         } else {
-            //TODO: fix the database method to only need Context (do setting in listener)
             if (ChangeMoodFragment.this instanceof FriendMoodDisplayFragment) {
                 FriendActivity act = (FriendActivity)getContext();
-                act.database.downloadPhoto(originalOnlinePath, this, listener);
+                act.getDatabase().downloadPhoto(originalOnlinePath, this.getContext(), listener);
             } else {
                 MainActivity act = (MainActivity) getContext();
-                act.database.downloadPhoto(originalOnlinePath, this, listener);
+                act.getDatabase().downloadPhoto(originalOnlinePath, this.getContext(), listener);
             }
         }
     }
@@ -494,6 +494,11 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
         downloadAndSetPath(new FirebaseListener() {
             @Override
             public void onSuccess() {
+                if (ChangeMoodFragment.this instanceof FriendMoodDisplayFragment) {
+                    downloadedImagePath = ((FriendActivity)getActivity()).getDatabase().getDownloadedImagePath();
+                } else {
+                    downloadedImagePath = ((MainActivity)getActivity()).getDatabase().getDownloadedImagePath();
+                }
                 setThumbnail(downloadedImagePath);
             }
 

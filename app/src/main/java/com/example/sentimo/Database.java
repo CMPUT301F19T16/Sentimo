@@ -45,6 +45,7 @@ public class Database {
     private ListenerRegistration sharedMoodListenerReg;
     private ArrayList<String> pendingRequestsList;
     private ArrayList<String> allowedFriendList;
+    private String downloadedImagePath = null;
 
     /**
      * Constructor for a provided user
@@ -311,17 +312,18 @@ public class Database {
         return null;
     }
 
+
     /**
      * Method for downloading a photo file from Firebase Storage
-     *
-     * @param onlinePath Database path to the file to be downloaded
+     * @param onlinePath The path to the photo to be downloaded
+     * @param myContext The context for the file storage area to save the photo to
+     * @param listener The listener to handle on success and failure results
      */
     // Uses elements of Google's Firebase Storage examples found here: https://firebase.google.com/docs/storage/web/download-files
     // Inspired by elements of StackOverflow post: https://stackoverflow.com/questions/39905719/how-to-download-a-file-from-firebase-storage-to-the-external-storage-of-android
-    public void downloadPhoto(String onlinePath, final ChangeMoodFragment changeMoodFragment, final FirebaseListener listener) {
+    public void downloadPhoto(String onlinePath, final Context myContext, final FirebaseListener listener) {
         StorageReference storedAt = firebaseStorage.getReference(onlinePath);
 
-        Context myContext = changeMoodFragment.getActivity().getApplicationContext();
         File path = new File(myContext.getFilesDir(), "file_name");
         if (!path.exists()) {
             path.mkdirs();
@@ -334,13 +336,13 @@ public class Database {
         storedAt.getFile(newFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
-                changeMoodFragment.setDownloadedImagePath(newFile.getPath());
+                Database.this.downloadedImagePath = newFile.getPath();
                 listener.onSuccess();
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Log.d("Failure","Failed to download photo.");
+                Log.i("Failure","Failed to download photo.");
                 listener.onFailure();
             }
         });
@@ -499,5 +501,21 @@ public class Database {
                 listener.onFailure();
             }
         });
+    }
+
+    /**
+     * Gettere for downloadImagePath
+     * @return
+     */
+    public String getDownloadedImagePath() {
+        return downloadedImagePath;
+    }
+
+    /**
+     * Setter for downloadedImagePath
+     * @param downloadedImagePath
+     */
+    public void setDownloadedImagePath(String downloadedImagePath) {
+        this.downloadedImagePath = downloadedImagePath;
     }
 }

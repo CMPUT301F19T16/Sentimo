@@ -160,6 +160,10 @@ public class AddMoodFragment extends ChangeMoodFragment {
     }
 
 
+    /**
+     * Return location associated with current Mood
+     * @return
+     */
     @Override
     protected Location subclassLocationReturnBehaviour() {
         return locationForListener;

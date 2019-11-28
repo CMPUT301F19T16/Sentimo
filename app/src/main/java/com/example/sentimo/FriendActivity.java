@@ -173,14 +173,18 @@ public class FriendActivity extends AppCompatActivity implements FriendSearchFra
      * from the Database
      */
     private void fetchAllMoodsForFriends() {
+        blink();
         database.getSharedMoodList(new FirebaseListener() {
             @Override
             public void onSuccess() {
+                friendListView.setAdapter(friendMoodAdapter);
                 friendMoodAdapter.notifyDataSetChanged();
             }
 
             @Override
             public void onFailure() {
+                friendListView.setAdapter(friendMoodAdapter);
+                friendMoodAdapter.notifyDataSetChanged();
                 Toast.makeText(FriendActivity.this, "Please check your Internet", Toast.LENGTH_SHORT).show();
             }
         });
@@ -192,5 +196,12 @@ public class FriendActivity extends AppCompatActivity implements FriendSearchFra
      */
     public Database getDatabase() {
         return database;
+    }
+
+    private void blink() {
+        ArrayList<Mood> blink = new ArrayList<>();
+        ArrayAdapter<Mood> blinkAdapter = new CustomFriendMoodList(this, blink);
+        friendListView.setAdapter(blinkAdapter);
+        blinkAdapter.notifyDataSetChanged();
     }
 }

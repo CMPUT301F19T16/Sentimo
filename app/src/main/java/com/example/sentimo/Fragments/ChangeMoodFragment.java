@@ -440,9 +440,6 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
         }
         String date = dateTextView.getText().toString();
         String time = timeTextView.getText().toString();
-        Log.d("TEST_DATE", "TEST");
-        Log.d("TEST_DATE", date);
-        Log.d("TEST_DATE", time);
         TimeFormatter timef = new TimeFormatter();
         try {
             timef.setTimeFormat(date, time);

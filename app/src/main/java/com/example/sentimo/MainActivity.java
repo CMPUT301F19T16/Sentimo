@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity implements AddMoodFragment.A
     private Button friendButton;
     private Button filterButton;
     public Database database;
-    private TextView username;
+    private Button loginButton;
     private Auth auth;
 
 
@@ -81,14 +81,14 @@ public class MainActivity extends AppCompatActivity implements AddMoodFragment.A
         mapButton = findViewById(R.id.map_button);
         friendButton = findViewById(R.id.friend_button);
         filterButton = findViewById(R.id.filter_button);
-        username = findViewById(R.id.main_screen_username);
+        loginButton = findViewById(R.id.main_screen_username);
 
         database = new Database(auth.getActiveUsername());
 
         moodDataList = database.getMoodHistory();
         partialDataList = new ArrayList<>();
 
-        username.setText(database.getUsername());
+        loginButton.setText(database.getUsername());
         moodAdapter = new CustomMoodList(this, moodDataList);
         partialAdapter = new CustomMoodList(this, partialDataList);
         moodList.setAdapter(moodAdapter);
@@ -123,6 +123,24 @@ public class MainActivity extends AppCompatActivity implements AddMoodFragment.A
 //                intent.putExtra("username", database.getUsername());
                 startActivity(intent);
             }
+        });
+
+        loginButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AlertDialog.Builder alert = new AlertDialog.Builder(MainActivity.this);
+                alert.setMessage("Do you want to logout?");
+                alert.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        auth.logoutUser();
+                        Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+                        startActivity(intent);
+                    }
+                });
+                alert.setNegativeButton("NO", null);
+                alert.show();
+           }
         });
 
         moodList.setOnItemClickListener(new AdapterView.OnItemClickListener() {

@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.InputType;
 import android.text.TextUtils;
-import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
@@ -138,7 +137,17 @@ public class LoginActivity extends AppCompatActivity {
                 String email = resetEmailEditText.getText().toString();
                 // Email validation inspired by this Stack Overflow post: https://stackoverflow.com/questions/12947620/email-address-validation-in-android-on-edittext
                 if (!TextUtils.isEmpty(email) && Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-                    //TODO Implement sending reset email
+                    auth.sendResetEmail(email, new FirebaseListener() {
+                        @Override
+                        public void onSuccess() {
+                            Toast.makeText(LoginActivity.this, "Email sent", Toast.LENGTH_SHORT).show();
+                        }
+
+                        @Override
+                        public void onFailure() {
+                            Toast.makeText(LoginActivity.this, "Email not registered", Toast.LENGTH_SHORT).show();
+                        }
+                    });
                 } else {
                     Toast.makeText(LoginActivity.this, "Not a valid email", Toast.LENGTH_SHORT).show();
                 }

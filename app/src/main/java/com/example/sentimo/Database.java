@@ -45,6 +45,7 @@ public class Database {
     private ListenerRegistration sharedMoodListenerReg;
     private ArrayList<String> pendingRequestsList;
     private ArrayList<String> allowedFriendList;
+    private String downloadedImagePath = null;
 
     /**
      * Constructor for a provided user
@@ -83,21 +84,38 @@ public class Database {
      *
      * @param mood mood to be deleted
      */
-    public void deleteMoodAndPicture(Mood mood) {
-        deleteMoodOnly(mood);
-        if (mood.getOnlinePath() != null) {
-            deletePhoto(mood.getOnlinePath());
-        }
+    public void deleteMoodAndPicture(final Mood mood) {
+        deleteMoodOnly(mood, new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                if (mood.getOnlinePath() != null) {
+                    deletePhoto(mood.getOnlinePath());
+                }
+            }
+        });
     }
 
     /**
-     * Delete the provided Mood that does not have an associated photo in Firebase Storage
+     * Delete the provided Mood from Firebase Database
      * @param mood the mood to be deleted
      */
-    public void deleteMoodOnly(Mood mood) {
+    public void deleteMoodOnly(Mood mood, final OnSuccessListener listener) {
         CollectionReference userMoods = getUserMoods();
         String hashcode = Integer.toString(mood.hashCode());
-        userMoods.document(hashcode).delete();
+        userMoods.document(hashcode).delete()
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.i("success", "Mood deleted. Success listener to be called.");
+                        listener.onSuccess(aVoid);
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.i("Failure", "Mood not deleted.");
+                    }
+                });
     }
 
     /**
@@ -109,12 +127,12 @@ public class Database {
         storageLocation.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
-                Log.d("SUCCESS", "DELETED IMAGE");
+                Log.i("success", "Deleted image.");
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Log.d("FAILURE","Did not delete image");
+                Log.i("Failure","Did not delete image.");
             }
         });
     }
@@ -264,7 +282,7 @@ public class Database {
      * @return
      */
     // Upload method uses information from Google's Firebase storage upload example: https://firebase.google.com/docs/storage/android/upload-files
-    public Uri addPhotoAndMood(final Mood incompleteMood, final String stringPath) {
+    public void addPhotoAndMood(final Mood incompleteMood, final String stringPath) {
         Uri localPath = Uri.fromFile(new File(stringPath));
         final StorageReference reference = firebaseStorage.getReference();
         long millisecondTime = System.currentTimeMillis();
@@ -282,8 +300,7 @@ public class Database {
             @Override
             public void onComplete(@NonNull Task<Uri> task) {
                 if (task.isSuccessful()) {
-                    Uri downloadUri = task.getResult();
-                    Log.d("SUCCESS", storageLocation.getPath());
+                    Log.d("success", "Photo sucessfully uploaded.");
                     Mood completeMood = new Mood(incompleteMood);
                     completeMood.setOnlinePath(storageLocation.getPath());
                     addMood(completeMood);
@@ -292,20 +309,20 @@ public class Database {
                 }
             }
         });
-        return null;
     }
+
 
     /**
      * Method for downloading a photo file from Firebase Storage
-     *
-     * @param onlinePath Database path to the file to be downloaded
+     * @param onlinePath The path to the photo to be downloaded
+     * @param myContext The context for the file storage area to save the photo to
+     * @param listener The listener to handle on success and failure results
      */
     // Uses elements of Google's Firebase Storage examples found here: https://firebase.google.com/docs/storage/web/download-files
     // Inspired by elements of StackOverflow post: https://stackoverflow.com/questions/39905719/how-to-download-a-file-from-firebase-storage-to-the-external-storage-of-android
-    public void downloadPhoto(String onlinePath, final ChangeMoodFragment changeMoodFragment, final FirebaseListener listener) {
+    public void downloadPhoto(String onlinePath, final Context myContext, final FirebaseListener listener) {
         StorageReference storedAt = firebaseStorage.getReference(onlinePath);
 
-        Context myContext = changeMoodFragment.getActivity().getApplicationContext();
         File path = new File(myContext.getFilesDir(), "file_name");
         if (!path.exists()) {
             path.mkdirs();
@@ -318,13 +335,13 @@ public class Database {
         storedAt.getFile(newFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
-                changeMoodFragment.setDownloadedImagePath(newFile.getPath());
+                Database.this.downloadedImagePath = newFile.getPath();
                 listener.onSuccess();
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Log.d("Failure","Failed to download photo.");
+                Log.i("Failure","Failed to download photo.");
                 listener.onFailure();
             }
         });
@@ -483,5 +500,13 @@ public class Database {
                 listener.onFailure();
             }
         });
+    }
+
+    /**
+     * Getter for downloadImagePath
+     * @return
+     */
+    public String getDownloadedImagePath() {
+        return downloadedImagePath;
     }
 }

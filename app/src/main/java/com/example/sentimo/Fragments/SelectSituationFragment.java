@@ -10,11 +10,8 @@ import android.view.View;
 import android.widget.Button;
 
 import com.example.sentimo.R;
-import com.example.sentimo.Situations.AloneSituation;
-import com.example.sentimo.Situations.CrowdSituation;
-import com.example.sentimo.Situations.OnePersonSituation;
-import com.example.sentimo.Situations.SeveralPeopleSituation;
 import com.example.sentimo.Situations.Situation;
+import com.example.sentimo.Situations.SituationType;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -68,16 +65,16 @@ public class SelectSituationFragment extends DialogFragment {
                 Situation situation = null;
                 switch (id) {
                     case R.id.aloneButton:
-                        situation = new AloneSituation();
+                        situation = new Situation(SituationType.Alone);
                         break;
                     case R.id.onePersonButton:
-                        situation = new OnePersonSituation();
+                        situation = new Situation(SituationType.OnePerson);
                         break;
                     case R.id.severalPeopleButton:
-                        situation = new SeveralPeopleSituation();
+                        situation = new Situation(SituationType.SeveralPeople);
                         break;
                     case R.id.crowdButton:
-                        situation = new CrowdSituation();
+                        situation = new Situation(SituationType.Crowd);
                         break;
                     case R.id.noSituationButton:
                         situation = null;

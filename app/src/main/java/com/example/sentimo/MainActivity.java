@@ -21,6 +21,7 @@ import com.example.sentimo.Fragments.ChangeMoodFragment;
 import com.example.sentimo.Fragments.EditMoodFragment;
 import com.example.sentimo.Fragments.FilterFragment;
 import com.example.sentimo.Fragments.MapSelectFragment;
+import com.google.android.gms.tasks.OnSuccessListener;
 
 import java.util.ArrayList;
 
@@ -53,7 +54,7 @@ public class MainActivity extends AppCompatActivity implements AddMoodFragment.A
     private Button mapButton;
     private Button friendButton;
     private Button filterButton;
-    public Database database;
+    private Database database;
     private Button loginButton;
     private Auth auth;
 
@@ -174,7 +175,7 @@ public class MainActivity extends AppCompatActivity implements AddMoodFragment.A
                             partialDataList.remove(mood);
                             partialAdapter.notifyDataSetChanged();
                         }
-                        deleteMood(mood, true);
+                        deleteMoodAndPhoto(mood);
                     }
                 });
                 alert.setNegativeButton("NO", null);
@@ -204,7 +205,6 @@ public class MainActivity extends AppCompatActivity implements AddMoodFragment.A
      */
     @Override
     public void onDonePressed(Mood mood, String localPath) {
-        // Start progress bar, with timeout
         if (mood.getOnlinePath() == null) {
             uploadMood(mood, localPath);
         } else {
@@ -221,8 +221,6 @@ public class MainActivity extends AppCompatActivity implements AddMoodFragment.A
                 partialAdapter.notifyDataSetChanged();
             }
         }
-        // End progress bar
-        // Timeout on network failure
     }
 
     /**
@@ -237,16 +235,20 @@ public class MainActivity extends AppCompatActivity implements AddMoodFragment.A
      */
     @Override
     public void onConfirmEditPressed(Mood mood, int position, String localPath) {
-        // Start progress bar
-        Mood oldMood = moodAdapter.getItem(position);
-        Boolean isDeletePicture = false;
-        if (mood.getOnlinePath() == null && oldMood.getOnlinePath() != null) {
-            isDeletePicture = true;
+        Mood oldMood;
+        if (moodList.getAdapter() == partialAdapter){
+            oldMood = partialAdapter.getItem(position);
+            partialDataList.remove(oldMood);
+            partialAdapter.notifyDataSetChanged();
+        } else {
+            oldMood = moodAdapter.getItem(position);
         }
-        deleteMood(oldMood, isDeletePicture);
+        if (mood.getOnlinePath() == null && oldMood.getOnlinePath() != null) {
+            deleteMoodAndPhoto(oldMood);
+        } else {
+            deleteMoodButNotPhoto(oldMood);
+        }
         uploadMood(mood, localPath);
-        // End progress bar
-        // Timeout on network failure
     }
 
     /**
@@ -263,17 +265,32 @@ public class MainActivity extends AppCompatActivity implements AddMoodFragment.A
         }
     }
 
+    private void uploadMoodWithListener() {
+
+    }
+
     /**
      * Method for deleting a Mood from the Firebase database
      *
      * @param mood the Mood to be deleted
      */
-    private void deleteMood(Mood mood, Boolean deletePicture) {
-        if (deletePicture) {
-            database.deleteMoodAndPicture(mood);
-        } else {
-            database.deleteMoodOnly(mood);
-        }
+    private void deleteMoodAndPhoto(Mood mood) {
+        // Deletes the Photo associated with the Mood as well, if any
+        database.deleteMoodAndPicture(mood);
+    }
+
+    /**
+     * Delete method that doesn't delete a photo associated with a mood, for example when
+     * editing a mood but keeping the same online picture
+     * @param mood The Mood to be deleted
+     */
+    private void deleteMoodButNotPhoto(Mood mood) {
+        database.deleteMoodOnly(mood, new OnSuccessListener() {
+            @Override
+            public void onSuccess(Object o) {
+                Log.i("Success", "Mood deleted, photo maintained.");
+            }
+        });
     }
 
     /**
@@ -344,5 +361,13 @@ public class MainActivity extends AppCompatActivity implements AddMoodFragment.A
                 Toast.makeText(MainActivity.this, "fail to get moods", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    /**
+     * Getter for database
+     * @return
+     */
+    public Database getDatabase() {
+        return database;
     }
 }

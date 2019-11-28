@@ -24,6 +24,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.ImageView;
 
+import com.example.sentimo.Database;
 import com.example.sentimo.FirebaseListener;
 import com.example.sentimo.DisplayActivity;
 import com.example.sentimo.Emotions.Emotion;
@@ -76,6 +77,7 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
     final private int CAMERA_PERMISSION_REQUEST_CODE = 3;
     final private int WRITE_EXTERNAL_STORAGE_PERMISSION_REQUEST_CODE = 4;
     String filePathToUse = null;
+    String originalOnlinePath;
 
 
     protected View.OnClickListener emotionClick;
@@ -120,7 +122,7 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
                 public void onClick(View v) {
                     if (localImagePath != null) {
                         if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                            requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
+                            requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, NO_BEHAVIOUR_AFTER_PERMISSION_REQUEST_CODE);
                             return;
                         }
                     }
@@ -221,7 +223,8 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
         situationButton = view.findViewById(R.id.situation_button);
         locationCheckBox = view.findViewById(R.id.location_checkbox);
 
-        if (initialMood.getOnlinePath() != null) {
+        originalOnlinePath = initialMood.getOnlinePath();
+        if (originalOnlinePath != null) {
             downloadAndSetThumbnail();
         }
 
@@ -255,7 +258,9 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
         ArrayList<String> tempMenuOptions = new ArrayList<>();
         tempMenuOptions.add(getString(R.string.take_picture_option));
         tempMenuOptions.add(getString(R.string.select_picture_gallery_option));
-        if (initialMood.getOnlinePath() != null) { tempMenuOptions.add(getString(R.string.use_online_picture_option)); }
+        tempMenuOptions.add(getString(R.string.no_picture_option));
+//        if (initialMood.getOnlinePath() != null) { tempMenuOptions.add(2, getString(R.string.use_online_picture_option)); }
+        if (originalOnlinePath != null && originalOnlinePath != initialMood.getOnlinePath()) { tempMenuOptions.add(2, getString(R.string.use_online_picture_option)); }
         final String[] menuOptionsTitles = tempMenuOptions.toArray(new String[tempMenuOptions.size()]);
         if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, WRITE_EXTERNAL_STORAGE_PERMISSION_REQUEST_CODE);
@@ -277,9 +282,13 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
                         return;
                     }
                     launchCameraIntent();
+                } else if (menuOptionsTitles[item].equals(getString(R.string.no_picture_option))) {
+                    setNoPicture();
+                    setThumbnailEmpty();
                 } else if (menuOptionsTitles[item].equals(getString(R.string.use_online_picture_option))) {
-                    if (initialMood.getOnlinePath() != null) {
+                    if (originalOnlinePath != null) {
                         localImagePath = null;
+                        initialMood.setOnlinePath(originalOnlinePath);
                         downloadAndSetThumbnail();
                     }
                 }
@@ -302,9 +311,11 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
             String contentImagePath = data.getData().toString();
             Uri myUri = Uri.parse(contentImagePath);
             localImagePath = getAbsolutePathFromContentPathUri(myUri);
+            initialMood.setOnlinePath(null);
             setThumbnail(localImagePath);
         } else if (requestCode == CAMERA_ACTIVITY_REQUEST_CODE && resultCode == -1){
             localImagePath = filePathToUse;
+            initialMood.setOnlinePath(null);
             if (localImagePath != null) {
                 setThumbnail(localImagePath);
             }
@@ -322,7 +333,7 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
      */
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+        if (requestCode != NO_BEHAVIOUR_AFTER_PERMISSION_REQUEST_CODE && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             if (requestCode == CAMERA_PERMISSION_REQUEST_CODE) {
                 launchCameraIntent();
             } else if (requestCode == GALLERY_PERMISSION_REQUEST_CODE) {
@@ -437,6 +448,7 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
     public void displayPhotoForMood() {
         if (localImagePath != null) {
             displayLocalImage(localImagePath);
+//        } else if (initialMood.getOnlinePath() != null) {
         } else if (initialMood.getOnlinePath() != null) {
             // Start progress bar with timeout
             downloadAndSetPath(new FirebaseListener() {
@@ -467,10 +479,10 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
         } else {
             if (ChangeMoodFragment.this instanceof FriendMoodDisplayFragment) {
                 FriendActivity act = (FriendActivity)getContext();
-                act.database.downloadPhoto(initialMood.getOnlinePath(), this, listener);
+                act.getDatabase().downloadPhoto(originalOnlinePath, this.getContext(), listener);
             } else {
                 MainActivity act = (MainActivity) getContext();
-                act.database.downloadPhoto(initialMood.getOnlinePath(), this, listener);
+                act.getDatabase().downloadPhoto(originalOnlinePath, this.getContext(), listener);
             }
         }
     }
@@ -482,6 +494,11 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
         downloadAndSetPath(new FirebaseListener() {
             @Override
             public void onSuccess() {
+                if (ChangeMoodFragment.this instanceof FriendMoodDisplayFragment) {
+                    downloadedImagePath = ((FriendActivity)getActivity()).getDatabase().getDownloadedImagePath();
+                } else {
+                    downloadedImagePath = ((MainActivity)getActivity()).getDatabase().getDownloadedImagePath();
+                }
                 setThumbnail(downloadedImagePath);
             }
 
@@ -512,12 +529,28 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
     }
 
     /**
+     * Sets the thumbnail to its default empty state
+     */
+    public void setThumbnailEmpty() {
+        reasonImageView.setImageBitmap(null);
+        reasonImageView.setBackgroundColor(getResources().getColor(android.R.color.darker_gray));
+    }
+
+    /**
+     * Set the current picture for the fragment to no picture
+     */
+    public void setNoPicture() {
+        localImagePath = null;
+        initialMood.setOnlinePath(null);
+    }
+
+    /**
      * Displays photo for provided local path
      * @param localPath path to copy of photo stored locally
      */
     public void displayLocalImage(String localPath) {
         if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
+            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, NO_BEHAVIOUR_AFTER_PERMISSION_REQUEST_CODE);
             return;
         } else {
             Intent intent = new Intent(getActivity(), DisplayActivity.class);

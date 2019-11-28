@@ -1,7 +1,7 @@
 package com.example.sentimo;
 
 import com.example.sentimo.Emotions.Emotion;
-import com.example.sentimo.Emotions.Happy;
+import com.example.sentimo.Emotions.EmotionType;
 
 import org.junit.Test;
 
@@ -16,7 +16,7 @@ import static org.junit.Assert.assertNotNull;
 public class EmotionTest {
 
     private Emotion mockEmotion(){
-        return new Happy();
+        return new Emotion(EmotionType.Happy);
     }
 
     @Test

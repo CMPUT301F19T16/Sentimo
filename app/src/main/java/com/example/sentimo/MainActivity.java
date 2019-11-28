@@ -57,6 +57,7 @@ public class MainActivity extends AppCompatActivity implements AddMoodFragment.A
     private Database database;
     private Button loginButton;
     private Auth auth;
+    private Emotion partialEmotion;
 
 
     /**
@@ -235,14 +236,9 @@ public class MainActivity extends AppCompatActivity implements AddMoodFragment.A
      */
     @Override
     public void onConfirmEditPressed(Mood mood, int position, String localPath) {
-        Mood oldMood;
-        if (moodList.getAdapter() == partialAdapter){
-            oldMood = partialAdapter.getItem(position);
-            partialDataList.remove(oldMood);
-            partialAdapter.notifyDataSetChanged();
-        } else {
-            oldMood = moodAdapter.getItem(position);
-        }
+
+        Mood oldMood = moodAdapter.getItem(position);
+
         if (mood.getOnlinePath() == null && oldMood.getOnlinePath() != null) {
             deleteMoodAndPhoto(oldMood);
         } else {
@@ -313,11 +309,13 @@ public class MainActivity extends AppCompatActivity implements AddMoodFragment.A
             // get old list back
             partialDataList.clear();
             moodList.setAdapter(moodAdapter);
-            filterButton.setText("FILTER");
+            partialEmotion = null;
+            filterButton.setText("Filter");
         } else if (emotion != null) {
             // make new list
             // set moodList
             partialDataList.clear();
+            partialEmotion = emotion;
             String name = emotion.getName();
             String oldName;
             filterButton.setText(name);
@@ -353,6 +351,9 @@ public class MainActivity extends AppCompatActivity implements AddMoodFragment.A
         database.addMoodListener(new FirebaseListener() {
             @Override
             public void onSuccess() {
+                if (moodList.getAdapter() == partialAdapter){
+                    onFilterPressed(partialEmotion, false);
+                }
                 moodAdapter.notifyDataSetChanged();
             }
 

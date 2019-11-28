@@ -13,6 +13,8 @@ import com.example.sentimo.Situations.Situation;
 
 import java.text.ParseException;
 
+import androidx.core.content.ContextCompat;
+
 /**
  *
  *The EditMoodFragment class is a fragment that edits a Mood object that is then sent to
@@ -58,6 +60,8 @@ public class EditMoodFragment extends ChangeMoodFragment {
         emojiImageButton.setVisibility(View.INVISIBLE);
         emojiImageView.setVisibility(View.VISIBLE);
         emojiImageView.setBackgroundColor(Color.parseColor(initialMood.getEmotion().getColour()));
+        dateTextView.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.colorPrimary));
+        timeTextView.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.colorPrimary));
 
         locationCheckBox.setEnabled(false);
     }

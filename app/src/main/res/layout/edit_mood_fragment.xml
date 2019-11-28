@@ -97,7 +97,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"></TextView>
 
-        <EditText
+        <TextView
             android:id="@+id/date_text"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
@@ -115,7 +115,8 @@
             app:layout_constraintHorizontal_bias="0.52"
             app:layout_constraintStart_toEndOf="@+id/edit_date_textview"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="1.0"></EditText>
+            app:layout_constraintVertical_bias="1.0">
+        </TextView>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -145,7 +146,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"></TextView>
 
-        <EditText
+        <TextView
             android:id="@+id/time_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -163,7 +164,8 @@
             app:layout_constraintHorizontal_bias="0.415"
             app:layout_constraintStart_toEndOf="@+id/edit_time_textview"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.0"></EditText>
+            app:layout_constraintVertical_bias="0.0">
+        </TextView>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout

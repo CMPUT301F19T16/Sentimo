@@ -47,13 +47,16 @@ import java.io.File;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
 /**
  * A class to display all the details of a mood. Different subclasses support working with
  * brand new moods, editing old moods, and displaying mood information alone.
  */
-public abstract class ChangeMoodFragment extends DialogFragment implements SelectSituationFragment.SelectSituationListener, SelectMoodFragment.SelectMoodFragmentInteractionListener {
+public abstract class ChangeMoodFragment extends DialogFragment implements SelectSituationFragment.SelectSituationListener, SelectMoodFragment.SelectMoodFragmentInteractionListener,
+                                                                            DatePickerFragment.DatePickerListener, TimePickerFragment.TimePickerListener {
     protected TextView dateTextView;
     protected TextView timeTextView;
     protected ImageView emojiImageView;
@@ -82,6 +85,8 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
 
     protected View.OnClickListener emotionClick;
     protected View.OnClickListener situationClick;
+    protected View.OnClickListener dateClick;
+    protected View.OnClickListener timeClick;
     protected View view;
 
     /**
@@ -105,6 +110,20 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
             @Override
             public void onClick(View v) {
                 new SelectSituationFragment().show(getChildFragmentManager(), "SELECT_SITUATION");
+            }
+        };
+
+        dateClick = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new DatePickerFragment().show(getChildFragmentManager(), "SELECT_DATE");
+            }
+        };
+
+        timeClick = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new TimePickerFragment().show(getChildFragmentManager(), "SELECT_TIME");
             }
         };
 
@@ -196,6 +215,25 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
         }
     }
 
+    @Override
+    public void DateReturned(int year, int month, int day) {
+        SimpleDateFormat df = new SimpleDateFormat("MMM d, yyyy", Locale.CANADA);
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.YEAR, year);
+        cal.set(Calendar.MONTH, month);
+        cal.set(Calendar.DAY_OF_MONTH, day);
+        dateTextView.setText(df.format(cal.getTime()));
+    }
+
+    @Override
+    public void TimeReturned(int hourOfDay, int minute) {
+        SimpleDateFormat df = new SimpleDateFormat("h:mm a", Locale.CANADA);
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.HOUR_OF_DAY, hourOfDay);
+        cal.set(Calendar.MINUTE, minute);
+        timeTextView.setText(df.format(cal.getTime()));
+    }
+
     /**
      *Shared initialization between subclasses
      *Separate non-constructor function required to allow hookup of UI before initialization
@@ -232,6 +270,9 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
         emojiImageView.setOnClickListener(emotionClick);
 
         situationButton.setOnClickListener(situationClick);
+
+        dateTextView.setOnClickListener(dateClick);
+        timeTextView.setOnClickListener(timeClick);
 
         reasonImageButton = view.findViewById(R.id.reason_image_button);
         reasonImageButton.setOnClickListener(new View.OnClickListener() {

@@ -58,7 +58,9 @@ public class AddMoodFragment extends ChangeMoodFragment {
         time.setTime(Calendar.getInstance().getTimeInMillis());
         timef.setTime(time);
         dateTextView.setText(timef.getDateString());
+        dateTextView.setEnabled(false);
         timeTextView.setText(timef.getTimeString());
+        timeTextView.setEnabled(false);
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this.getContext());
         if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {

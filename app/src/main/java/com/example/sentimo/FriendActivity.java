@@ -32,6 +32,7 @@ public class FriendActivity extends AppCompatActivity implements FriendSearchFra
     private Database database;
     private Auth auth;
     private ArrayList<String> userFollowing;
+    private Button refreshButton;
 
     /**
      * Initialization behaviour for activity
@@ -96,6 +97,14 @@ public class FriendActivity extends AppCompatActivity implements FriendSearchFra
             public void onClick(View v) {
                 Intent intent = new Intent(FriendActivity.this, FriendRequestActivity.class);
                 startActivity(intent);
+            }
+        });
+
+        refreshButton = findViewById(R.id.refresh_button);
+        refreshButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                fetchAllMoodsForFriends();
             }
         });
     }

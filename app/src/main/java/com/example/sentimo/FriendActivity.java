@@ -71,6 +71,8 @@ public class FriendActivity extends AppCompatActivity implements FriendSearchFra
         if (!auth.isLogin()) {
             Intent intent = new Intent(this, LoginActivity.class);
             startActivity(intent);
+            finish();
+            return;
         }
 
         friendMoodDataList = database.getSharedMood();

@@ -78,6 +78,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onSuccess() {
                 auth.reloadUser();
+                finish();
             }
 
             @Override

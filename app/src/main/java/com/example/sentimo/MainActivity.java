@@ -84,6 +84,8 @@ public class MainActivity extends AppCompatActivity implements AddMoodFragment.A
         if (!auth.isLogin()) {
             Intent intent = new Intent(this, LoginActivity.class);
             startActivity(intent);
+            finish();
+            return;
         }
 
         moodList = findViewById(R.id.mood_list);

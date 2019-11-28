@@ -48,6 +48,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
 /**
  * A class to display all the details of a mood. Different subclasses support working with
@@ -214,7 +215,7 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
 
     @Override
     public void DateReturned(int year, int month, int day) {
-        SimpleDateFormat df = new SimpleDateFormat("MMM. d, yyyy");
+        SimpleDateFormat df = new SimpleDateFormat("MMM d, yyyy", Locale.CANADA);
         Calendar cal = Calendar.getInstance();
         cal.set(Calendar.YEAR, year);
         cal.set(Calendar.MONTH, month);
@@ -224,7 +225,7 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
 
     @Override
     public void TimeReturned(int hourOfDay, int minute) {
-        SimpleDateFormat df = new SimpleDateFormat("h:mm a");
+        SimpleDateFormat df = new SimpleDateFormat("h:mm a", Locale.CANADA);
         Calendar cal = Calendar.getInstance();
         cal.set(Calendar.HOUR_OF_DAY, hourOfDay);
         cal.set(Calendar.MINUTE, minute);
@@ -439,6 +440,9 @@ public abstract class ChangeMoodFragment extends DialogFragment implements Selec
         }
         String date = dateTextView.getText().toString();
         String time = timeTextView.getText().toString();
+        Log.d("TEST_DATE", "TEST");
+        Log.d("TEST_DATE", date);
+        Log.d("TEST_DATE", time);
         TimeFormatter timef = new TimeFormatter();
         try {
             timef.setTimeFormat(date, time);

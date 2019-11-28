@@ -1,12 +1,17 @@
 package com.example.sentimo;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.InputType;
+import android.text.TextUtils;
+import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import com.example.sentimo.Fragments.InvalidDataWarningFragment;
 
@@ -22,6 +27,7 @@ public class LoginActivity extends AppCompatActivity {
     private Button signupButton;
     private Auth auth;
     private boolean allowLogin = true;
+    private Button resetEmailButton;
 
     /**
      * Initial activity setup
@@ -56,6 +62,13 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
+        resetEmailButton = findViewById(R.id.reset_email_button);
+        resetEmailButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                launchResetEmailDialog();
+            }
+        });
     }
 
 
@@ -107,5 +120,40 @@ public class LoginActivity extends AppCompatActivity {
     private void launchSignup() {
         Intent intent = new Intent(this, SignupActivity.class);
         startActivity(intent);
+    }
+
+    /**
+     * Method to launch reset email dialog
+     */
+    private void launchResetEmailDialog() {
+        AlertDialog.Builder alert = new AlertDialog.Builder(LoginActivity.this);
+        final EditText resetEmailEditText = new EditText(this);
+        resetEmailEditText.setInputType(InputType.TYPE_CLASS_TEXT);
+        alert.setView(resetEmailEditText);
+        alert.setMessage("Please enter the email for the account to reset.");
+        alert.setPositiveButton("Submit", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                String email = resetEmailEditText.getText().toString();
+                // Email validation inspired by this Stack Overflow post: https://stackoverflow.com/questions/12947620/email-address-validation-in-android-on-edittext
+                if (!TextUtils.isEmpty(email) && Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                    auth.sendResetEmail(email, new FirebaseListener() {
+                        @Override
+                        public void onSuccess() {
+                            Toast.makeText(LoginActivity.this, "Email sent", Toast.LENGTH_SHORT).show();
+                        }
+
+                        @Override
+                        public void onFailure() {
+                            Toast.makeText(LoginActivity.this, "Email not registered", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                } else {
+                    Toast.makeText(LoginActivity.this, "Not a valid email", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+        alert.setNegativeButton("Cancel", null);
+        alert.show();
     }
 }

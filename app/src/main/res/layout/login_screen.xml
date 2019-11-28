@@ -87,13 +87,24 @@
             android:textColor="#fff"
             android:textStyle="bold" />
 
+        <Button
+            android:id="@+id/reset_email_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="casual"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textColor="#fff"
+            android:textStyle="bold"
+            android:background="@drawable/buttonstyleselector"
+            android:text="Forgot password?" />
+
         <TextView
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:fontFamily="cursive"
             android:gravity="center_horizontal"
             android:text="Join the Sentimo family"
-            android:layout_marginTop="50dp"
+            android:layout_marginTop="10dp"
             android:textAllCaps="false"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textColor="#FFFFFD"

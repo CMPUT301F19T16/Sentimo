@@ -81,7 +81,7 @@ public class InvalidDataWarningFragment extends DialogFragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         return builder
                 .setView(view)
-                .setTitle("Data Warning")
+                .setTitle("                    Warning         ")
                 .setPositiveButton("Back", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {

@@ -32,14 +32,14 @@
         <TextView
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
             android:fontFamily="cursive"
             android:gravity="top|center_horizontal"
             android:text="Celebrate your Sentiments with Sentimo"
-            android:layout_marginBottom="10dp"
             android:textAllCaps="false"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textColor="#1A1A1B"
-            android:textSize="20sp"
+            android:textSize="24sp"
             android:textStyle="bold" />
 
         <EditText

@@ -17,7 +17,7 @@
         android:paddingTop="20dp"
         android:paddingRight="20dp"
         android:paddingBottom="20dp"
-        android:text="WARNING INVALID DATA !!!"
+        android:text="WARNING !!!"
         android:textAlignment="center"
         android:textAllCaps="true"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"

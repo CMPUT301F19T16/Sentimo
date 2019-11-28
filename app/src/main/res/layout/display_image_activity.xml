@@ -1,14 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#48CFCBCB"
+    android:orientation="vertical">
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
+
         <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="400dp"
-            android:id="@+id/photo_image_view"></ImageView>
+            android:id="@+id/photo_image_view"
+            android:layout_width="400dp"
+            android:layout_height="400dp"></ImageView>
 
     </LinearLayout>
 
@@ -17,10 +21,17 @@
         android:layout_height="wrap_content">
 
         <Button
+            android:id="@+id/display_photo_back_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="20dp"
+            android:background="#60635B5B"
+            android:fontFamily="casual"
             android:text="Back"
-            android:id="@+id/display_photo_back_button"></Button>
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textColor="#F70E0D0D"
+            android:textStyle="bold"></Button>
 
     </LinearLayout>
 

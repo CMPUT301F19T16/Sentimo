@@ -148,6 +148,7 @@ public class MainActivity extends AppCompatActivity implements AddMoodFragment.A
                         auth.logoutUser();
                         Intent intent = new Intent(MainActivity.this, LoginActivity.class);
                         startActivity(intent);
+                        finish();
                     }
                 });
                 alert.setNegativeButton("NO", null);
@@ -238,7 +239,6 @@ public class MainActivity extends AppCompatActivity implements AddMoodFragment.A
     public void onConfirmEditPressed(Mood mood, int position, String localPath) {
 
         Mood oldMood = moodAdapter.getItem(position);
-
         if (mood.getOnlinePath() == null && oldMood.getOnlinePath() != null) {
             deleteMoodAndPhoto(oldMood);
         } else {

@@ -104,7 +104,7 @@ public class FriendActivity extends AppCompatActivity implements FriendSearchFra
         refreshButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO: Refresh behaviour
+                fetchAllMoodsForFriends();
             }
         });
     }

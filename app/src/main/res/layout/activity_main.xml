@@ -39,7 +39,8 @@
             android:textSize="35sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"></TextView>
+            app:layout_constraintTop_toTopOf="parent">
+        </TextView>
 
 
         <Button
@@ -61,35 +62,37 @@
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/sentimo"
-            app:layout_constraintVertical_bias="0.166"></Button>
+            app:layout_constraintVertical_bias="0.166">
+        </Button>
 
         <Button
             android:id="@+id/main_screen_username"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:layout_marginStart="4dp"
             android:layout_marginTop="4dp"
             android:layout_marginEnd="4dp"
             android:layout_marginBottom="4dp"
             android:background="@drawable/logintextstyle"
             android:backgroundTint="#8FF8F6F7"
             android:fontFamily="casual"
-            android:text="username"
-            android:layout_marginRight="10dp"
-            android:paddingRight="10dp"
             android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:text="username"
             android:textAlignment="viewEnd"
             android:textAllCaps="false"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-            android:textColor="#673AB7"
-            android:textSize="20dp"
+            android:textColor="#FC1F1D1D"
+            android:textSize="15dp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toEndOf="@+id/sentimo"
+            app:layout_constraintStart_toEndOf="@+id/filter_button"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.695"></Button>
+            app:layout_constraintVertical_bias="1.0">
+        </Button>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 

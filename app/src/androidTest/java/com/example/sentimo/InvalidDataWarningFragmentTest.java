@@ -26,6 +26,7 @@ import static org.hamcrest.core.AllOf.allOf;
 // A class for testing data validation feature on ChangeMoodFragment
 public class InvalidDataWarningFragmentTest {
     Context context;
+    TestingSharedFunctions sharedFunctions = new TestingSharedFunctions();
 
 
     @Rule
@@ -46,6 +47,9 @@ public class InvalidDataWarningFragmentTest {
      */
     @Test
     public void testNullEmotion() {
+        sharedFunctions.logout();
+        sharedFunctions.login("DONOTDELETEtestUserFriendActivity", "123456");
+        sharedFunctions.sleep(4);
         onView(withId(R.id.add_button)).perform(click());
         onView(withId(R.id.change_mood_fragment_positive_button)).perform(click());
         onView(allOf(withId(R.id.warning_text),withText(context.getString(R.string.warning_CMFNullMoodError)))).check(ViewAssertions.matches(isDisplayed()));
@@ -57,6 +61,9 @@ public class InvalidDataWarningFragmentTest {
      */
     @Test
     public void testReasonTooManyWords() {
+        sharedFunctions.logout();
+        sharedFunctions.login("DONOTDELETEtestUserFriendActivity", "123456");
+        sharedFunctions.sleep(4);
         onView(withId(R.id.add_button)).perform(click());
         onView(withId(R.id.emotion_button)).perform(click());
         onView(withId(R.id.happyButton)).perform(click());

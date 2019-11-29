@@ -64,15 +64,20 @@ public class MainActivity extends AppCompatActivity implements AddMoodFragment.A
      * This is function that represents what happens when the Main Screen is
      * first created. It makes sure that each of the buttons of the Main Screen
      * have their own listeners and that the ListView has the Moods of the user.
-     * Currently,
-     * Allows the user to create a new mood by pressing the add button,
+     * Allows the user to create a new mood by pressing the add button.
      * Allows the user to edit a previously created mood by pressing on
-     * one of the moods in their ListView,
-     * and Allows the user to delete the moods that they wish by pressing
+     * one of the moods in their ListView.
+     * Allows the user to delete the moods that they wish by pressing
      * and holding on one of the moods in their ListView and selecting "yes"
-     * when prompted
+     * when prompted.
+     * Allows the user to logout by pressing their username in the top-right
+     * corner of the screen.
+     * Allows the user to access their friend's moods by pressing the friend button.
+     * Allows the user to view the maps of their moods or their friends moods by pressing
+     * the map button.
      *
-     * @param savedInstanceState This is the state of the Main Screen when created.
+     * @param savedInstanceState
+     *   This is the state of the Main Screen when created.
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -201,6 +206,9 @@ public class MainActivity extends AppCompatActivity implements AddMoodFragment.A
      * This is the function that is required for the AddMoodFragment.
      * Takes a mood and adds it to the database.
      * Should then show up on the ListView.
+     * If the user is in a filtered view, makes sure that the mood is still added to the
+     * database, and if that mood is the same as their filtered view, adds the mood to
+     * the filtered view.
      *
      * @param mood      This is the mood that the user created in the AddMoodFragment.
      * @param localPath This is the local path to a stored image associated with the Mood, if any
@@ -345,7 +353,10 @@ public class MainActivity extends AppCompatActivity implements AddMoodFragment.A
     }
 
     /**
-     * listen to the cloud's change on moods
+     * This function allows a listener to be added to the database. The listener
+     * listens to changes in the database when the user adds a mood. It also makes
+     * sure that the filtered moods are updated appropriately. Makes sure that the
+     * moods get added to the database.
      */
     private void addMoodListener() {
         database.addMoodListener(new FirebaseListener() {

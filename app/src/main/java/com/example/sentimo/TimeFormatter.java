@@ -67,12 +67,19 @@ public class TimeFormatter {
 
     @Override
     public int hashCode() {
-        String timeString = getTimeString();
-        String dateString = getDateString();
         int hash = 7;
-        hash = 31 * hash + (timeString == null ? 0 : timeString.hashCode());
-        hash = 31 * hash + (dateString == null ? 0 : dateString.hashCode());
+        hash = 31 * hash + (time == null ? 0 : time.hashCode());
         return hash;
     }
+
+//    @Override
+//    public int hashCode() {
+//        String timeString = getTimeString();
+//        String dateString = getDateString();
+//        int hash = 7;
+//        hash = 31 * hash + (timeString == null ? 0 : timeString.hashCode());
+//        hash = 31 * hash + (dateString == null ? 0 : dateString.hashCode());
+//        return hash;
+//    }
 
 }

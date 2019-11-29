@@ -79,7 +79,7 @@
             android:paddingRight="10dp"
             android:paddingLeft="10dp"
             android:textAlignment="viewEnd"
-            android:textAllCaps="true"
+            android:textAllCaps="false"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textColor="#673AB7"
             android:textSize="20dp"

@@ -92,9 +92,9 @@ public class FriendActivityTest {
                 .perform(click());
         // Check that view exists, indicating launch successful
         onView(withId(R.id.edit_mood_fragment));
-        onView(withId(R.id.date_text)).check(matches(withText("Mar. 28, 2022")));
+        onView(withId(R.id.date_text)).check(matches(withText("Mar 28, 2022")));
         onView(withId(R.id.date_text)).check(matches(not(isEnabled())));
-        onView(withId(R.id.time_text)).check(matches(withText("9:25 a.m.")));
+        onView(withId(R.id.time_text)).check(matches(withText("9:25 AM")));
         onView(withId(R.id.time_text)).check(matches(not(isEnabled())));
         onView(withId(R.id.situation_button)).check(matches(withText("Crowd")));
         onView(withId(R.id.location_checkbox)).check(matches(isChecked()));

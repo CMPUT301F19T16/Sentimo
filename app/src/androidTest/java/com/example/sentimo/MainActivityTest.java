@@ -28,19 +28,21 @@ public class MainActivityTest {
 
     /**
      * Runs before all tests and creates solo instance.
-     *
      */
     @Before
     public void setUp() {
         solo = new Solo(InstrumentationRegistry.getInstrumentation(), rule.getActivity());
-        login();
     }
 
     private void removeOldMoods() {
         solo.assertCurrentActivity("Wrong Activity", MainActivity.class);
         solo.waitForView(R.id.mood_list);
+        ListView moodList;
         // delete all existing moods for testing
-        ListView moodList = (ListView) solo.getView(R.id.mood_list);
+        do {
+            moodList = (ListView) solo.getView(R.id.mood_list);
+        }
+        while (moodList == null || moodList.getAdapter() == null);
         int moodCount = moodList.getAdapter().getCount();
         for (int i = 0; i < moodCount; ++i) {
             solo.clickLongInList(0);
@@ -62,11 +64,13 @@ public class MainActivityTest {
         solo.clickOnButton("Login");
     }
 
+
     /**
      * Test if adding a mood works
      */
     @Test
     public void addMood() {
+        login();
         solo.assertCurrentActivity("Wrong Activity", MainActivity.class);
         removeOldMoods();
         solo.clickOnButton("Add");
@@ -91,6 +95,7 @@ public class MainActivityTest {
      */
     @Test
     public void editMood() {
+        login();
         solo.assertCurrentActivity("Wrong Activity", MainActivity.class);
 
         // add a mood to edit
@@ -126,6 +131,7 @@ public class MainActivityTest {
      */
     @Test
     public void deleteMoodAndPicture() {
+        login();
         solo.assertCurrentActivity("Wrong Activity", MainActivity.class);
         removeOldMoods();
 
@@ -156,6 +162,7 @@ public class MainActivityTest {
      */
     @Test
     public void sortMood() {
+        login();
         removeOldMoods();
         // add 3 moods to sort
         solo.clickOnButton("Add");

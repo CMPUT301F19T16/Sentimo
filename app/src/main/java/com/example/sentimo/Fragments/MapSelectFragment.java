@@ -14,6 +14,13 @@ import androidx.fragment.app.DialogFragment;
 
 import com.example.sentimo.R;
 
+/**
+ * This class represents the action that happens when the user presses the map button
+ * on the main screen. It is a fragment that prompts the user to pick which of the
+ * maps they want to few, either their map (My Map) or their friends' map (Friend Map).
+ * This class also contains an interface for the MainActivity to implement which
+ * forces the MainActivity to call the DisplayMapActivity when one of the buttons are pressed.
+ */
 public class MapSelectFragment extends DialogFragment{
 
     private Button myMapButton;
@@ -35,6 +42,16 @@ public class MapSelectFragment extends DialogFragment{
         }
     }
 
+    /**
+     * This function tells the function what should happen when a user presses on the buttons
+     * on the fragment. It takes the savedInstanceState as an argument so that the function
+     * understands the context and can set up what it needs to do appropriately. If the "My Map"
+     * button is pressed, the fragment automatically closes and MainActivity passes the "My Map"
+     * string to the DisplayMapActivity. Vice versa for the "Friend Map" button. If the user
+     * presses cancel, the fragment closes and the user is returned to the MainActivity screen.
+     * @param savedInstanceState
+     * @return
+     */
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {

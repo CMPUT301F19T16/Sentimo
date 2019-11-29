@@ -14,62 +14,60 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="4dp"
-            android:paddingTop="4dp"
-            android:paddingBottom="4dp"
             android:fontFamily="casual"
             android:gravity="center_horizontal"
+            android:paddingTop="4dp"
+            android:paddingBottom="4dp"
             android:text="    Happy   "
             android:textAllCaps="false"
             android:textAppearance="@style/TextAppearance.AppCompat.Small"
             android:textColor="#8BC34A"
-            android:textSize="14sp"
+            android:textSize="18sp"
             android:textStyle="bold" />
 
         <Button
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:textAlignment="center"
-            android:layout_marginRight="20dp"
-            android:layout_marginBottom="10dp"
+            android:id="@+id/happyButton"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
             android:layout_marginLeft="25dp"
             android:layout_marginTop="10dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/happy"
             android:paddingLeft="10dp"
+            android:paddingTop="10dp"
             android:paddingRight="10dp"
             android:paddingBottom="10dp"
-            android:paddingTop="10dp"
-            android:background="@drawable/happy"
-            android:id="@+id/happyButton">
-        </Button>
+            android:textAlignment="center"></Button>
 
         <TextView
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:fontFamily="casual"
             android:gravity="center_horizontal"
-            android:text="     Sad   "
+            android:paddingTop="4dp"
+            android:paddingBottom="4dp"
+            android:text="    Sad   "
             android:textAllCaps="false"
             android:textAppearance="@style/TextAppearance.AppCompat.Small"
             android:textColor="#3F51B5"
-            android:paddingBottom="4dp"
-            android:paddingTop="4dp"
-            android:textSize="14sp"
+            android:textSize="18sp"
             android:textStyle="bold" />
 
         <Button
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:textAlignment="center"
-            android:layout_marginRight="10dp"
-            android:layout_marginBottom="10dp"
+            android:id="@+id/sadButton"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
             android:layout_marginLeft="10dp"
             android:layout_marginTop="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/sad"
             android:paddingLeft="10dp"
+            android:paddingTop="10dp"
             android:paddingRight="10dp"
             android:paddingBottom="10dp"
-            android:paddingTop="10dp"
-            android:background="@drawable/sad"
-            android:id="@+id/sadButton">
-        </Button>
+            android:textAlignment="center"></Button>
 
     </LinearLayout>
 
@@ -81,32 +79,32 @@
         <TextView
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:fontFamily="casual"
             android:layout_marginLeft="4dp"
+            android:fontFamily="casual"
             android:gravity="center_horizontal"
-            android:text="     Mad      "
             android:paddingTop="4dp"
             android:paddingBottom="4dp"
+            android:text="    Mad      "
             android:textAllCaps="false"
             android:textAppearance="@style/TextAppearance.AppCompat.Small"
             android:textColor="#8D2017"
+            android:textSize="18sp"
             android:textStyle="bold" />
 
         <Button
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:textAlignment="center"
-            android:layout_marginRight="20dp"
-            android:layout_marginBottom="10dp"
+            android:id="@+id/madButton"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
             android:layout_marginLeft="20dp"
             android:layout_marginTop="10dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/mad"
             android:paddingLeft="10dp"
+            android:paddingTop="10dp"
             android:paddingRight="10dp"
             android:paddingBottom="10dp"
-            android:paddingTop="10dp"
-            android:background="@drawable/mad"
-            android:id="@+id/madButton">
-        </Button>
+            android:textAlignment="center"></Button>
 
 
         <TextView
@@ -120,23 +118,23 @@
             android:textAllCaps="false"
             android:textAppearance="@style/TextAppearance.AppCompat.Small"
             android:textColor="#F81C0C"
+            android:textSize="18sp"
             android:textStyle="bold" />
 
         <Button
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:textAlignment="center"
-            android:layout_marginRight="20dp"
-            android:layout_marginBottom="10dp"
+            android:id="@+id/lovedButton"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
             android:layout_marginLeft="20dp"
             android:layout_marginTop="10dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/loved"
             android:paddingLeft="10dp"
+            android:paddingTop="10dp"
             android:paddingRight="10dp"
             android:paddingBottom="10dp"
-            android:paddingTop="10dp"
-            android:background="@drawable/loved"
-            android:id="@+id/lovedButton">
-        </Button>
+            android:textAlignment="center"></Button>
 
     </LinearLayout>
 
@@ -149,32 +147,32 @@
         <TextView
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="1dp"
             android:fontFamily="casual"
             android:gravity="center_horizontal"
             android:paddingTop="4dp"
             android:paddingBottom="4dp"
-            android:layout_marginLeft="4dp"
             android:text="Embarrassed"
             android:textAllCaps="false"
             android:textAppearance="@style/TextAppearance.AppCompat.Small"
             android:textColor="#F11E63"
+            android:textSize="18sp"
             android:textStyle="bold" />
 
         <Button
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:textAlignment="center"
+            android:id="@+id/embarassedButton"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_marginLeft="13dp"
+            android:layout_marginTop="10dp"
             android:layout_marginRight="15dp"
             android:layout_marginBottom="10dp"
-            android:layout_marginLeft="15dp"
-            android:layout_marginTop="10dp"
+            android:background="@drawable/embarrased"
             android:paddingLeft="10dp"
+            android:paddingTop="10dp"
             android:paddingRight="10dp"
             android:paddingBottom="10dp"
-            android:paddingTop="10dp"
-            android:background="@drawable/embarrased"
-            android:id="@+id/embarassedButton">
-        </Button>
+            android:textAlignment="center"></Button>
 
 
         <TextView
@@ -182,29 +180,29 @@
             android:layout_height="wrap_content"
             android:fontFamily="casual"
             android:gravity="center_horizontal"
-            android:text="   Tired  "
-            android:paddingBottom="4dp"
             android:paddingTop="4dp"
+            android:paddingBottom="4dp"
+            android:text="   Tired "
             android:textAllCaps="false"
             android:textAppearance="@style/TextAppearance.AppCompat.Small"
             android:textColor="#241F1F"
+            android:textSize="18sp"
             android:textStyle="bold" />
 
         <Button
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:textAlignment="center"
-            android:layout_marginRight="20dp"
-            android:layout_marginBottom="10dp"
+            android:id="@+id/tiredButton"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
             android:layout_marginLeft="22dp"
             android:layout_marginTop="10dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/tired"
             android:paddingLeft="10dp"
+            android:paddingTop="10dp"
             android:paddingRight="10dp"
             android:paddingBottom="10dp"
-            android:paddingTop="10dp"
-            android:background="@drawable/tired"
-            android:id="@+id/tiredButton">
-        </Button>
+            android:textAlignment="center"></Button>
 
     </LinearLayout>
 
@@ -217,32 +215,32 @@
         <TextView
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="4dp"
             android:fontFamily="casual"
             android:gravity="center_horizontal"
-            android:text="  Confident "
             android:paddingTop="4dp"
             android:paddingBottom="4dp"
-            android:layout_marginLeft="4dp"
+            android:text="  Confident "
             android:textAllCaps="false"
             android:textAppearance="@style/TextAppearance.AppCompat.Small"
             android:textColor="#F8E207"
+            android:textSize="18sp"
             android:textStyle="bold" />
 
         <Button
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:textAlignment="center"
-            android:layout_marginRight="20dp"
-            android:layout_marginBottom="10dp"
+            android:id="@+id/confidentButton"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
             android:layout_marginLeft="22dp"
             android:layout_marginTop="10dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/confident"
             android:paddingLeft="10dp"
+            android:paddingTop="10dp"
             android:paddingRight="10dp"
             android:paddingBottom="10dp"
-            android:paddingTop="10dp"
-            android:background="@drawable/confident"
-            android:id="@+id/confidentButton">
-        </Button>
+            android:textAlignment="center"></Button>
 
 
         <TextView
@@ -250,29 +248,29 @@
             android:layout_height="wrap_content"
             android:fontFamily="casual"
             android:gravity="center_horizontal"
-            android:text=" Worried "
-            android:paddingBottom="4dp"
             android:paddingTop="4dp"
+            android:paddingBottom="4dp"
+            android:text=" Worried"
             android:textAllCaps="false"
             android:textAppearance="@style/TextAppearance.AppCompat.Small"
             android:textColor="#00BCD4"
+            android:textSize="18sp"
             android:textStyle="bold" />
 
         <Button
-            android:layout_width="78dp"
-            android:layout_height="78dp"
-            android:textAlignment="center"
-            android:layout_marginRight="16dp"
-            android:layout_marginBottom="10dp"
+            android:id="@+id/worriedButton"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
             android:layout_marginLeft="12dp"
             android:layout_marginTop="10dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/worried"
             android:paddingLeft="10dp"
+            android:paddingTop="10dp"
             android:paddingRight="10dp"
             android:paddingBottom="10dp"
-            android:paddingTop="10dp"
-            android:background="@drawable/worried"
-            android:id="@+id/worriedButton">
-        </Button>
+            android:textAlignment="center"></Button>
 
     </LinearLayout>
 

@@ -34,10 +34,11 @@ public class MainActivityTest {
     @Before
     public void setUp() throws Exception {
         solo = new Solo(InstrumentationRegistry.getInstrumentation(), rule.getActivity());
+        login();
     }
 
-
     private void removeOldMoods() {
+        solo.assertCurrentActivity("Wrong Activity", MainActivity.class);
         solo.waitForView(R.id.mood_list);
         // delete all existing moods for testing
         ListView moodList = (ListView) solo.getView(R.id.mood_list);
@@ -48,6 +49,18 @@ public class MainActivityTest {
             solo.waitForView(R.id.mood_list);
         }
         assertEquals(moodList.getAdapter().getCount(), 0);
+    }
+
+    private void login() {
+        final Auth auth = new Auth(InstrumentationRegistry.getInstrumentation().getContext());
+        if (auth.isLogin()) {
+            solo.clickOnView(solo.getView(R.id.main_screen_username));
+            solo.clickOnText("YES");
+            solo.assertCurrentActivity("Wrong Activity", LoginActivity.class);
+        }
+        solo.enterText((EditText) solo.getView(R.id.Username_LS_editText), "moodlisttest");
+        solo.enterText((EditText) solo.getView(R.id.Password_LS_editText), "password");
+        solo.clickOnButton("Login");
     }
 
     /**
@@ -91,6 +104,7 @@ public class MainActivityTest {
         // get current date and time to search for after adding
         TextView dateTextView = (TextView) solo.getView(R.id.date_text);
         TextView timeTextView = (TextView) solo.getView(R.id.time_text);
+
         String date = dateTextView.getText().toString();
         String time = timeTextView.getText().toString();
 
@@ -168,8 +182,6 @@ public class MainActivityTest {
         for (int i = 0; i < 3; ++i) {
             for (int j = 0; j < 3; ++j) {
                 solo.clickInList(j);
-                solo.clearEditText((EditText) solo.getView(R.id.time_text));
-                solo.clearEditText((EditText) solo.getView(R.id.date_text));
                 Random random = new Random();
                 int day = random.nextInt(25) + 1;
                 int month = random.nextInt(11) + 1;
@@ -177,8 +189,12 @@ public class MainActivityTest {
                 int hour = random.nextInt(12);
                 // generate a number between 0 to 60
                 int minute = random.nextInt(12);
-                solo.enterText((EditText) solo.getView(R.id.time_text), String.format("%d:%d", hour, minute));
-                solo.enterText((EditText) solo.getView(R.id.date_text), String.format("%d/%d/2019", day, month));
+                solo.clickOnView(solo.getView(R.id.date_text));
+                solo.setDatePicker(0, 2019, month, day);
+                solo.clickOnButton("OK");
+                solo.clickOnView(solo.getView(R.id.time_text));
+                solo.setTimePicker(0, hour, minute);
+                solo.clickOnButton("OK");
                 solo.clickOnButton("Confirm Edit");
                 solo.waitForView(R.id.mood_list);
             }

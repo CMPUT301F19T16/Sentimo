@@ -1,10 +1,15 @@
 package com.example.sentimo;
 
+import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.widget.ListView;
 
+import androidx.test.filters.LargeTest;
 import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.rule.ActivityTestRule;
+import androidx.test.rule.GrantPermissionRule;
 
 import com.robotium.solo.Solo;
 
@@ -15,37 +20,65 @@ import org.junit.Test;
 
 import java.text.ParseException;
 
+import static androidx.test.espresso.Espresso.onView;
+import static androidx.test.espresso.action.ViewActions.click;
+import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
+import static androidx.test.espresso.action.ViewActions.longClick;
+import static androidx.test.espresso.action.ViewActions.typeText;
+import static androidx.test.espresso.matcher.ViewMatchers.hasErrorText;
+import static androidx.test.espresso.matcher.ViewMatchers.withId;
+import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.junit.Assert.assertEquals;
 
 public class FilterTest {
     private Solo solo;
     private ListView moodList;
+    private int moodListId;
 
     @Rule
-    public ActivityTestRule<MainActivity> activityTestRule = new ActivityTestRule<>(MainActivity.class);
+    public ActivityTestRule<MainActivity> testRule = new ActivityTestRule<>(MainActivity.class);
+
+    @Rule
+    public GrantPermissionRule permissionRule = GrantPermissionRule.grant(Manifest.permission.ACCESS_FINE_LOCATION);
 
     @Before
     public void setUp() throws Exception{
-        solo = new Solo(InstrumentationRegistry.getInstrumentation(), activityTestRule.getActivity());
-        moodList = (ListView)solo.getView(R.id.mood_list);
-    }
+        solo = new Solo(InstrumentationRegistry.getInstrumentation(), testRule.getActivity());
+        moodListId = R.id.mood_list;
+        try{
+            onView(withId(R.id.main_screen_username)).perform(click());
+            onView(withText("YES")).perform(click());
+        } catch (Exception e){
 
-    private void removeOldMoods(){
-        solo.waitForView(R.id.mood_list);
+        }
+        onView(withId(R.id.Username_LS_editText)).perform(typeText("DONOTDELETEFilter"));
+        onView(withId(R.id.Username_LS_editText)).perform(closeSoftKeyboard());
+        onView(withId(R.id.Password_LS_editText)).perform(typeText("password"));
+        onView(withId(R.id.Password_LS_editText)).perform(closeSoftKeyboard());
+        onView(withId(R.id.button_login)).perform(click());
+
+        solo.waitForView(moodListId);
+        moodList = (ListView)solo.getView(moodListId);
         while(moodList.getAdapter().getCount() > 0){
             solo.clickLongInList(0);
-            solo.clickOnButton("YES");
+            onView(withText("YES")).perform(click());
             solo.waitForView(R.id.mood_list);
         }
         assertEquals(moodList.getAdapter().getCount(), 0);
     }
 
+
+    @After
+    public void cleanUp(){
+    }
+
+
     @Test
     public void emptyIfEmpty(){
+
         solo.assertCurrentActivity("Wrong Activity", MainActivity.class);
-        removeOldMoods();
-        solo.clickOnButton("Filter");
-        solo.clickOnView(solo.getView(R.id.filter_happy_button));
+        onView(withId(R.id.filter_button)).perform(click());
+        onView(withId(R.id.filter_happy_button)).perform(click());
         solo.waitForView(R.id.mood_list);
         assertEquals(moodList.getAdapter().getCount(), 0);
     }
@@ -53,15 +86,13 @@ public class FilterTest {
     @Test
     public void moodNotThere(){
         solo.assertCurrentActivity("Wrong Activity", MainActivity.class);
-        removeOldMoods();
-        solo.clickOnButton("Add");
-        solo.clickOnButton("Add Emotion");
-        solo.clickOnView(solo.getView(R.id.happyButton));
-        solo.clickOnButton("Done");
-        solo.waitForView(R.id.mood_list);
+        onView(withId(R.id.add_button)).perform(click());
+        onView(withId(R.id.emotion_button)).perform(click());
+        onView(withId(R.id.happyButton)).perform(click());
+        onView(withText("Done")).perform(click());
         assertEquals(moodList.getAdapter().getCount(), 1);
-        solo.clickOnButton("Filter");
-        solo.clickOnView(solo.getView(R.id.filter_confident_button));
+        onView(withId(R.id.filter_button)).perform(click());
+        onView(withId(R.id.filter_confident_button)).perform(click());
         solo.waitForView(R.id.mood_list);
         assertEquals(moodList.getAdapter().getCount(), 0);
     }
@@ -69,41 +100,37 @@ public class FilterTest {
     @Test
     public void moodThere(){
         solo.assertCurrentActivity("Wrong Activity", MainActivity.class);
-        removeOldMoods();
-        solo.clickOnButton("Add");
-        solo.clickOnButton("Add Emotion");
-        solo.clickOnView(solo.getView(R.id.happyButton));
-        solo.clickOnButton("Done");
-        solo.waitForView(R.id.mood_list);
+        onView(withId(R.id.add_button)).perform(click());
+        onView(withId(R.id.emotion_button)).perform(click());
+        onView(withId(R.id.happyButton)).perform(click());
+        onView(withText("Done")).perform(click());
         assertEquals(moodList.getAdapter().getCount(), 1);
-        solo.clickOnButton("Filter");
-        solo.clickOnView(solo.getView(R.id.filter_happy_button));
-        solo.waitForView(R.id.mood_list);
+        onView(withId(R.id.filter_button));
+        onView(withId(R.id.filter_happy_button));
         assertEquals(moodList.getAdapter().getCount(), 1);
     }
 
     @Test
     public void addMoodWhileDifferentFilter(){
         solo.assertCurrentActivity("Wrong Activity", MainActivity.class);
-        removeOldMoods();
-        solo.clickOnButton("Add");
-        solo.clickOnButton("Add Emotion");
-        solo.clickOnView(solo.getView(R.id.happyButton));
-        solo.clickOnButton("Done");
+        onView(withId(R.id.add_button)).perform(click());
+        onView(withId(R.id.emotion_button)).perform(click());
+        onView(withId(R.id.happyButton)).perform(click());
+        onView(withText("Done")).perform(click());
         solo.waitForView(R.id.mood_list);
         assertEquals(moodList.getAdapter().getCount(), 1);
-        solo.clickOnButton("Filter");
-        solo.clickOnView(solo.getView(R.id.filter_happy_button));
+        onView(withId(R.id.filter_button)).perform(click());
+        onView(withId(R.id.filter_happy_button)).perform(click());
         solo.waitForView(R.id.mood_list);
         assertEquals(moodList.getAdapter().getCount(), 1);
-        solo.clickOnButton("Add");
-        solo.clickOnButton("Add Emotion");
-        solo.clickOnView(solo.getView(R.id.sadButton));
-        solo.clickOnButton("Done");
+        onView(withId(R.id.add_button)).perform(click());
+        onView(withId(R.id.emotion_button)).perform(click());
+        onView(withId(R.id.sadButton)).perform(click());
+        onView(withText("Done")).perform(click());
         solo.waitForView(R.id.mood_list);
         assertEquals(moodList.getAdapter().getCount(), 1);
-        solo.clickOnView(solo.getView(R.id.filter_button));
-        solo.clickOnView(solo.getView(R.id.filter_all_button));
+        onView(withId(R.id.filter_button)).perform(click());
+        onView(withId(R.id.filter_all_button)).perform(click());
         solo.waitForView(R.id.mood_list);
         assertEquals(moodList.getAdapter().getCount(), 2);
     }
@@ -111,21 +138,20 @@ public class FilterTest {
     @Test
     public void addMoodWhileFiltered(){
         solo.assertCurrentActivity("Wrong Activity", MainActivity.class);
-        removeOldMoods();
-        solo.clickOnButton("Add");
-        solo.clickOnButton("Add Emotion");
-        solo.clickOnView(solo.getView(R.id.happyButton));
-        solo.clickOnButton("Done");
+        onView(withId(R.id.add_button)).perform(click());
+        onView(withId(R.id.emotion_button)).perform(click());
+        onView(withId(R.id.happyButton)).perform(click());
+        onView(withText("Done")).perform(click());
         solo.waitForView(R.id.mood_list);
         assertEquals(moodList.getAdapter().getCount(), 1);
-        solo.clickOnButton("Filter");
-        solo.clickOnView(solo.getView(R.id.filter_happy_button));
+        onView(withId(R.id.filter_button)).perform(click());
+        onView(withId(R.id.filter_happy_button)).perform(click());
         solo.waitForView(R.id.mood_list);
         assertEquals(moodList.getAdapter().getCount(), 1);
-        solo.clickOnButton("Add");
-        solo.clickOnButton("Add Emotion");
-        solo.clickOnView(solo.getView(R.id.happyButton));
-        solo.clickOnButton("Done");
+        onView(withId(R.id.add_button)).perform(click());
+        onView(withId(R.id.emotion_button)).perform(click());
+        onView(withId(R.id.happyButton)).perform(click());
+        onView(withText("Done")).perform(click());
         solo.waitForView(R.id.mood_list);
         assertEquals(moodList.getAdapter().getCount(), 2);
     }
@@ -133,31 +159,27 @@ public class FilterTest {
     @Test
     public void deleteFromFiltered(){
         solo.assertCurrentActivity("Wrong Activity", MainActivity.class);
-        removeOldMoods();
-        solo.clickOnButton("Add");
-        solo.clickOnButton("Add Emotion");
-        solo.clickOnView(solo.getView(R.id.happyButton));
-        solo.clickOnButton("Done");
+        onView(withId(R.id.add_button)).perform(click());
+        onView(withId(R.id.emotion_button)).perform(click());
+        onView(withId(R.id.happyButton)).perform(click());
+        onView(withText("Done")).perform(click());
         solo.waitForView(R.id.mood_list);
         assertEquals(moodList.getAdapter().getCount(), 1);
-        solo.clickOnButton("Add");
-        solo.clickOnButton("Add Emotion");
-        solo.clickOnView(solo.getView(R.id.sadButton));
-        solo.clickOnButton("Done");
-        solo.waitForView(moodList);
-        solo.clickOnView(solo.getView(R.id.filter_button));
-        solo.clickOnView(solo.getView(R.id.filter_all_button));
+        onView(withId(R.id.add_button)).perform(click());
+        onView(withId(R.id.emotion_button)).perform(click());
+        onView(withId(R.id.sadButton)).perform(click());
+        onView(withText("Done")).perform(click());
         solo.waitForView(moodList);
         assertEquals(moodList.getAdapter().getCount(), 2);
-        solo.clickOnView(solo.getView(R.id.filter_button));
-        solo.clickOnView(solo.getView(R.id.filter_happy_button));
+        onView(withId(R.id.filter_button)).perform(click());
+        onView(withId(R.id.filter_happy_button)).perform(click());
         solo.waitForView(R.id.mood_list);
         solo.clickLongInList(0);
-        solo.clickOnButton("YES");
+        onView(withText("YES")).perform(click());
         solo.waitForView(moodList);
         assertEquals(moodList.getAdapter().getCount(), 0);
-        solo.clickOnView(solo.getView(R.id.filter_button));
-        solo.clickOnView(solo.getView(R.id.filter_all_button));
+        onView(withId(R.id.filter_button)).perform(click());
+        onView(withId(R.id.filter_all_button)).perform(click());
         solo.waitForView(moodList);
         assertEquals(moodList.getAdapter().getCount(), 1);
     }

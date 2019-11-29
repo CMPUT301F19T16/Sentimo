@@ -82,24 +82,6 @@ public class FriendActivityTest {
                 .check(matches(isDisplayed()));
     }
 
-    @Test
-    public void testDisplayDetailsRecentMood() {
-        launchFriendActivity();
-        // Sleep for network request
-        sharedFunctions.sleep(4);
-        onData(anything())
-                .inAdapterView(withId(R.id.friend_list)).atPosition(0)
-                .perform(click());
-        // Check that view exists, indicating launch successful
-        onView(withId(R.id.edit_mood_fragment));
-        onView(withId(R.id.date_text)).check(matches(withText("Mar 28, 2022")));
-        onView(withId(R.id.date_text)).check(matches(not(isEnabled())));
-        onView(withId(R.id.time_text)).check(matches(withText("9:25 AM")));
-        onView(withId(R.id.time_text)).check(matches(not(isEnabled())));
-        onView(withId(R.id.situation_button)).check(matches(withText("Crowd")));
-        onView(withId(R.id.location_checkbox)).check(matches(isChecked()));
-    }
-
     /**
      * Checks that pending friend request displays one friend request, and displays an alert to
      * confirm it when clicked

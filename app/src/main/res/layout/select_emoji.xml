@@ -16,7 +16,6 @@
             android:layout_marginLeft="4dp"
             android:paddingTop="4dp"
             android:paddingBottom="4dp"
-            android:background="#54B0E96F"
             android:fontFamily="casual"
             android:gravity="center_horizontal"
             android:text="    Happy   "
@@ -45,7 +44,6 @@
         <TextView
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:background="#666274DB"
             android:fontFamily="casual"
             android:gravity="center_horizontal"
             android:text="     Sad   "
@@ -83,7 +81,6 @@
         <TextView
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:background="#85B93226"
             android:fontFamily="casual"
             android:layout_marginLeft="4dp"
             android:gravity="center_horizontal"
@@ -115,7 +112,6 @@
         <TextView
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:background="#85DD5A50"
             android:fontFamily="casual"
             android:gravity="center_horizontal"
             android:paddingTop="4dp"
@@ -153,7 +149,6 @@
         <TextView
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:background="#41E91E63"
             android:fontFamily="casual"
             android:gravity="center_horizontal"
             android:paddingTop="4dp"
@@ -185,7 +180,6 @@
         <TextView
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:background="#660F0F0F"
             android:fontFamily="casual"
             android:gravity="center_horizontal"
             android:text="   Tired  "
@@ -223,7 +217,6 @@
         <TextView
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:background="#51FFEB3B"
             android:fontFamily="casual"
             android:gravity="center_horizontal"
             android:text="  Confident "
@@ -255,7 +248,6 @@
         <TextView
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:background="#572196F3"
             android:fontFamily="casual"
             android:gravity="center_horizontal"
             android:text=" Worried "

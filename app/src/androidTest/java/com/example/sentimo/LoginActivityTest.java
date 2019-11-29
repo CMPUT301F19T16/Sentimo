@@ -24,6 +24,7 @@ import static org.hamcrest.core.AllOf.allOf;
  */
 public class LoginActivityTest {
     private Context context;
+    private TestingSharedFunctions sharedFunctions = new TestingSharedFunctions();
 
     @Rule
     public ActivityTestRule<LoginActivity> activityRule = new ActivityTestRule<>(LoginActivity.class);
@@ -43,6 +44,7 @@ public class LoginActivityTest {
      */
     @Test
     public void testNoUsername() {
+        sharedFunctions.logout();
         onView(withId(R.id.button_login)).perform(click());
         onView(allOf(withId(R.id.warning_text),withText(context.getString(R.string.warning_LoginUsernameTooShortError)))).check(ViewAssertions.matches(isDisplayed()));
     }
@@ -52,6 +54,7 @@ public class LoginActivityTest {
      */
     @Test
     public void testNotValidEmail() {
+        sharedFunctions.logout();
         onView(withId(R.id.Username_LS_editText)).perform(typeText("hello"));
         onView(withId(R.id.Username_LS_editText)).perform(closeSoftKeyboard());
         onView(withId(R.id.button_login)).perform(click());
@@ -63,6 +66,7 @@ public class LoginActivityTest {
      */
     @Test
     public void noPassword() {
+        sharedFunctions.logout();
         onView(withId(R.id.Username_LS_editText)).perform(typeText("hello@test.com"));
         onView(withId(R.id.Username_LS_editText)).perform(closeSoftKeyboard());
         onView(withId(R.id.button_login)).perform(click());
@@ -74,6 +78,7 @@ public class LoginActivityTest {
      */
     @Test
     public void tooShortPassword() {
+        sharedFunctions.logout();
         onView(withId(R.id.Username_LS_editText)).perform(typeText("hello@test.com"));
         onView(withId(R.id.Username_LS_editText)).perform(closeSoftKeyboard());
         onView(withId(R.id.Password_LS_editText)).perform(typeText("hello"));

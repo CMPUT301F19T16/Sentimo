@@ -9,16 +9,13 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
-
-import com.example.sentimo.InputErrorType;
-import com.example.sentimo.LoginInfo;
-import com.example.sentimo.R;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.DialogFragment;
+import com.example.sentimo.InputErrorType;
+import com.example.sentimo.R;
 
 /**
  * This class displays an invalid data warning message, customized to the received
@@ -29,6 +26,7 @@ public class InvalidDataWarningFragment extends DialogFragment {
 
     /**
      * Constructor for setting warning type
+     *
      * @param warningType warning type to display
      */
     public InvalidDataWarningFragment(InputErrorType warningType) {
@@ -74,10 +72,13 @@ public class InvalidDataWarningFragment extends DialogFragment {
             case CMFNoCameraPermission:
                 warningMessage = getString(R.string.warning_CMFNoCameraPermission);
                 break;
+            case EmailNotValidError:
+                warningMessage = getString(R.string.warning_InvalidEmail);
+                break;
             default:
-                new RuntimeException("Warning Type Not Supported");
+                throw new RuntimeException("Warning Type Not Supported");
         }
-        ((TextView)(view.findViewById(R.id.warning_text))).setText(warningMessage);
+        ((TextView) (view.findViewById(R.id.warning_text))).setText(warningMessage);
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         return builder
                 .setView(view)

@@ -11,8 +11,10 @@ import java.io.Serializable;
 import java.util.Objects;
 
 /**
- * A class to contain information about a mood.
- * TODO: Implement Location and Photo.
+ * This class represents a Mood. A Mood is an object that has an emotion, date, time, and
+ * username. A mood can also have a location, situation, and reason.
+ * The class implements the Serializable and Comparable interfaces so that a Mood object can be
+ * compared to other Mood objects. The functions of the Mood class are mostly getters and setters.
  */
 public class Mood implements Serializable, Comparable{
 

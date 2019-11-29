@@ -5,7 +5,9 @@ import com.example.sentimo.R;
 
 
 /**
- *  This is a class that represents a specific emotion.
+ *  This is a class that represents a specific emotion. Each emotion has
+ *  a name, a colour, and an image (emoji) associated with it. It includes 8 different
+ *  emotions including happy, sad, mad, tired, loved, conficent, worried, and tired.
  */
 public class Emotion{
     private String colour;
@@ -30,6 +32,13 @@ public class Emotion{
 //        this.image = image;
 //    }
 
+    /**
+     * This is the constructor for the emotion class. It takes an enum value that
+     * represents the different possible emotions and then sets the attributes for
+     * the emotion object appropriately.
+     * @param emotionType
+     *      EmotionType that represents one of the eight emotions.
+     */
     public Emotion(EmotionType emotionType) {
         switch (emotionType) {
             case Confident:

@@ -30,8 +30,6 @@ public class LoginInfo {
     }
 
     public static InputErrorType validUserNamePassword(String username, String password) {
-        // Email validation method inspired by: https://stackoverflow.com/questions/12947620/email-address-validation-in-android-on-edittext
-//        boolean isValidEmail = Patterns.EMAIL_ADDRESS.matcher(username).matches();
         if (username.length() < USERNAME_MIN) {
             return InputErrorType.LoginUsernameTooShortError;
         }
@@ -39,6 +37,13 @@ public class LoginInfo {
             return InputErrorType.LoginPasswordTooShortError;
         }
         return InputErrorType.DataValid;
+    }
+
+    public static InputErrorType validEmail(String email) {
+        // Email validation method inspired by: https://stackoverflow.com/questions/12947620/email-address-validation-in-android-on-edittext
+        if (!email.isEmpty() && Patterns.EMAIL_ADDRESS.matcher(email).matches())
+            return InputErrorType.DataValid;
+        return InputErrorType.EmailNotValidError;
     }
 
 }

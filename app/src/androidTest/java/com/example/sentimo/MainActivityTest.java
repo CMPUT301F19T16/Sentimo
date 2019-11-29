@@ -29,10 +29,9 @@ public class MainActivityTest {
     /**
      * Runs before all tests and creates solo instance.
      *
-     * @throws Exception
      */
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         solo = new Solo(InstrumentationRegistry.getInstrumentation(), rule.getActivity());
         login();
     }
@@ -58,7 +57,7 @@ public class MainActivityTest {
             solo.clickOnText("YES");
             solo.assertCurrentActivity("Wrong Activity", LoginActivity.class);
         }
-        solo.enterText((EditText) solo.getView(R.id.Username_LS_editText), "moodlisttest");
+        solo.enterText((EditText) solo.getView(R.id.Username_LS_editText), "DONOTDELETEtestmoodlist");
         solo.enterText((EditText) solo.getView(R.id.Password_LS_editText), "password");
         solo.clickOnButton("Login");
     }

@@ -67,7 +67,14 @@ public class SignupActivity extends AppCompatActivity {
             allowLogin = true;
             return;
         }
-        // TODO: Validate email
+
+        warningType = LoginInfo.validEmail(email);
+        if (warningType != InputErrorType.DataValid) {
+            displayWarning(warningType);
+            allowLogin = true;
+            return;
+        }
+
         auth.createUser(new LoginInfo(username, password), email, new FirebaseListener() {
             @Override
             public void onSuccess() {
